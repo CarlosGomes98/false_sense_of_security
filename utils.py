@@ -71,11 +71,12 @@ def gradient_information(model, data, target, step=0.01, eps=0.5, iters=20, targ
     grad_information[adv_examples_index] = cos(grad, diff_vector)
     return grad_information
 
-def adversarial_accuracy(model, dataset_loader, attack, **kwargs):
+def adversarial_accuracy(model, dataset_loader, **kwargs):
     correct = 0
+    device = model.device
     for batch_idx, (data, target) in enumerate(dataset_loader):
         data, target = data.to(device), target.to(device)
-        adv = attack(model, data, target, 0.1, 0.5, iters=7, targeted=False, device=device, clip_min=normalized_min, clip_max=normalized_max)
+        adv = pgd_(model, data, target, 0.1, 0.5, iters=20, targeted=False, device=device, clip_min=model.normalized_min, clip_max=model.normalized_max)
         output = model(adv)
         pred = output.argmax(dim=1, keepdim=True)
         correct += pred.eq(target.view_as(pred)).sum().item()

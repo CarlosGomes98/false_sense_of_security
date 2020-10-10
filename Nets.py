@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
+from utils import fgsm_
 
 class MNIST_Net(nn.Module):
     def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000):
@@ -17,6 +18,7 @@ class MNIST_Net(nn.Module):
         self.fc1 = nn.Linear(9216, 128)
         self.fc2 = nn.Linear(128, 10)
         self.device = device
+        self.log_interval=log_interval
         transform=transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.1307,), (0.3081,))
@@ -27,8 +29,9 @@ class MNIST_Net(nn.Module):
                                transform=transform)
         self.test_dataset = datasets.MNIST('data', train=True, download=True,
                                transform=transform)
-        self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, num_workers=2, shuffle=True)
-        self.test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=test_batch_size, num_workers=2, shuffle=False)
+        self.train_loader = torch.utils.data.DataLoader(self.train_dataset, batch_size=batch_size, num_workers=2, shuffle=True)
+        self.test_loader = torch.utils.data.DataLoader(self.test_dataset, batch_size=test_batch_size, num_workers=2, shuffle=False)
+        self.to(device)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -63,23 +66,44 @@ class MNIST_Net(nn.Module):
                 pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
                 correct += pred.eq(target.view_as(pred)).sum().item()
 
-        test_loss /= len(test_loader.dataset)
+        test_loss /= len(self.test_loader.dataset)
 
         print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-            test_loss, correct, len(test_loader.dataset),
-            100. * correct / len(test_loader.dataset)))
+            test_loss, correct, len(self.test_loader.dataset),
+            100. * correct / len(self.test_loader.dataset)))
 
         
     def train_epoch(self, epoch, optimizer, criterion):
         self.train()
-        for batch_idx, (data, target) in enumerate(train_loader):
+        for batch_idx, (data, target) in enumerate(self.train_loader):
             data, target = data.to(self.device), target.to(self.device)
             optimizer.zero_grad()
             output = self(data)
             loss = criterion(output, target)
             loss.backward()
             optimizer.step()
-            if batch_idx % log_interval == 0:
+            if batch_idx % self.log_interval == 0:
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                    epoch, batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.item()))
+                    epoch, batch_idx * len(data), len(self.train_loader.dataset),
+                    100. * batch_idx / len(self.train_loader), loss.item()))
+
+class Gradient_Masked_MNIST(MNIST_Net):
+    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000):
+        super(Gradient_Masked_MNIST, self).__init__(device=device, log_interval=log_interval, batch_size=batch_size, test_batch_size=test_batch_size)
+    
+    def train_epoch(self, epoch, optimizer, criterion):
+        # adversarially train using large FGSM single step
+        self.train()
+        for batch_idx, (data, target) in enumerate(self.train_loader):
+            data, target = data.to(self.device), target.to(self.device)
+            adv_data = fgsm_(self, data, target, 1.5,targeted=False, device=self.device, clip_min=self.normalized_min, clip_max=self.normalized_max)
+            optimizer.zero_grad()
+            output = self(adv_data)
+            loss = criterion(output, target)
+            loss.backward()
+            optimizer.step()
+            if batch_idx % self.log_interval == 0:
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                    epoch, batch_idx * len(data), len(self.train_loader.dataset),
+                    100. * batch_idx / len(self.train_loader), loss.item()))
+    
