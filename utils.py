@@ -46,15 +46,15 @@ def pgd_(model, x, target, step, eps, iters=7, targeted=True, device='cpu', clip
         x.clamp_(min=clip_min, max=clip_max)
     return x
 
-def gradient_information(model, data, target, step=0.05, eps=0.5, iters=20, targeted=False, device='cpu', clip_min=None, clip_max=None):
-    adv = pgd_(model, data, target, step, eps, iters=iters, targeted=targeted, device=device, clip_min=clip_min, clip_max=clip_max)
+def gradient_information(model, data, target, step=0.01, eps=0.5, iters=20, targeted=False, device='cpu', clip_min=None, clip_max=None):
+    adv = pgd_(model, data, target, step, eps, iters=iters, targeted=targeted, device=device, clip_min=clip_min, clip_max=clip_max).to(device)
     # only keep those for which an adversarial example was found
     new_labels = model(adv).argmax(axis=-1)
     adv_examples_index = new_labels != target
     if adv_examples_index.sum() == 0:
         return None
     
-    grad_information = torch.Tensor(adv.shape[0])
+    grad_information = torch.Tensor(adv.shape[0]).to(device)
     grad_information[~adv_examples_index] = float('nan')
     
     adv = adv[adv_examples_index].detach().clone()
@@ -71,5 +71,17 @@ def gradient_information(model, data, target, step=0.05, eps=0.5, iters=20, targ
     grad_information[adv_examples_index] = cos(grad, diff_vector)
     return grad_information
 
+def adversarial_accuracy(model, dataset_loader, attack, **kwargs):
+    correct = 0
+    for batch_idx, (data, target) in enumerate(dataset_loader):
+        data, target = data.to(device), target.to(device)
+        adv = attack(model, data, target, 0.1, 0.5, iters=7, targeted=False, device=device, clip_min=normalized_min, clip_max=normalized_max)
+        output = model(adv)
+        pred = output.argmax(dim=1, keepdim=True)
+        correct += pred.eq(target.view_as(pred)).sum().item()
+        if (batch_idx % 100 == 0):
+            print('{} / {}'.format(batch_idx * dataset_loader.batch_size, len(dataset_loader.dataset)))
+    print ((correct/len(dataset_loader.dataset) * 100))
+    
 if __name__ == "__main__":
     pass
