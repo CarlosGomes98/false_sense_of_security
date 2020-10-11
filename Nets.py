@@ -6,10 +6,10 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
-from utils import fgsm_
+from utils import fgsm_, pgd_
 
 class MNIST_Net(nn.Module):
-    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000):
+    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000, oracle=None):
         super(MNIST_Net, self).__init__()
         self.conv1 = nn.Conv2d(1, 32, 3, 1)
         self.conv2 = nn.Conv2d(32, 64, 3, 1)
@@ -31,6 +31,7 @@ class MNIST_Net(nn.Module):
                                transform=transform)
         self.train_loader = torch.utils.data.DataLoader(self.train_dataset, batch_size=batch_size, num_workers=2, shuffle=True)
         self.test_loader = torch.utils.data.DataLoader(self.test_dataset, batch_size=test_batch_size, num_workers=2, shuffle=False)
+        self.oracle = oracle
         self.to(device)
 
     def forward(self, x):
@@ -77,6 +78,9 @@ class MNIST_Net(nn.Module):
         self.train()
         for batch_idx, (data, target) in enumerate(self.train_loader):
             data, target = data.to(self.device), target.to(self.device)
+            if self.oracle is not None:
+                with torch.no_grad():
+                    target = self.oracle(data).argmax(axis=1).type(torch.cuda.LongTensor)
             optimizer.zero_grad()
             output = self(data)
             loss = criterion(output, target)
@@ -96,7 +100,7 @@ class Gradient_Masked_MNIST(MNIST_Net):
         self.train()
         for batch_idx, (data, target) in enumerate(self.train_loader):
             data, target = data.to(self.device), target.to(self.device)
-            adv_data = fgsm_(self, data, target, 1.5,targeted=False, device=self.device, clip_min=self.normalized_min, clip_max=self.normalized_max)
+            adv_data = fgsm_(self, data, target, eps=1, targeted=False, device=self.device, clip_min=self.normalized_min, clip_max=self.normalized_max)
             optimizer.zero_grad()
             output = self(adv_data)
             loss = criterion(output, target)
@@ -106,4 +110,26 @@ class Gradient_Masked_MNIST(MNIST_Net):
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(self.train_loader.dataset),
                     100. * batch_idx / len(self.train_loader), loss.item()))
-    
+                
+class PGD_MNIST(MNIST_Net):
+    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000, step=0.1, eps=0.7, iters=7):
+        super(PGD_MNIST, self).__init__(device=device, log_interval=log_interval, batch_size=batch_size, test_batch_size=test_batch_size)
+        self.step = step
+        self.eps = eps
+        self.iters = iters
+        
+    def train_epoch(self, epoch, optimizer, criterion):
+        # adversarially train using PGD
+        self.train()
+        for batch_idx, (data, target) in enumerate(self.train_loader):
+            data, target = data.to(self.device), target.to(self.device)
+            adv_data = pgd_(self, data, target, step=self.step, eps=self.eps, iters=self.iters, targeted=False, device=self.device, clip_min=self.normalized_min, clip_max=self.normalized_max)
+            optimizer.zero_grad()
+            output = self(adv_data)
+            loss = criterion(output, target)
+            loss.backward()
+            optimizer.step()
+            if batch_idx % self.log_interval == 0:
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                    epoch, batch_idx * len(data), len(self.train_loader.dataset),
+                    100. * batch_idx / len(self.train_loader), loss.item()))
