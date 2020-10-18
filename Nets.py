@@ -9,16 +9,19 @@ from torch.optim.lr_scheduler import StepLR
 from utils import fgsm_, pgd_
 
 class MNIST_Net(nn.Module):
-    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000, oracle=None):
+    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000, oracle=None, binary=False):
         super(MNIST_Net, self).__init__()
         self.conv1 = nn.Conv2d(1, 32, 3, 1)
         self.conv2 = nn.Conv2d(32, 64, 3, 1)
         self.dropout1 = nn.Dropout2d(0.25)
         self.dropout2 = nn.Dropout2d(0.5)
         self.fc1 = nn.Linear(9216, 128)
-        self.fc2 = nn.Linear(128, 10)
+        if binary:
+            self.fc2 = nn.Linear(128, 2)
+        else:
+            self.fc2 = nn.Linear(128, 10)
         self.device = device
-        self.log_interval=log_interval
+        self.log_interval = log_interval
         transform=transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.1307,), (0.3081,))
@@ -29,9 +32,20 @@ class MNIST_Net(nn.Module):
                                transform=transform)
         self.test_dataset = datasets.MNIST('data', train=True, download=True,
                                transform=transform)
+        
+        if binary:
+            mask = self.train_dataset.targets < 2
+            self.train_dataset.data = self.train_dataset.data[mask]
+            self.train_dataset.targets = self.train_dataset.targets[mask]
+            
+            mask = self.test_dataset.targets < 2
+            self.test_dataset.data = self.test_dataset.data[mask]
+            self.test_dataset.targets = self.test_dataset.targets[mask]
+            
         self.train_loader = torch.utils.data.DataLoader(self.train_dataset, batch_size=batch_size, num_workers=2, shuffle=True)
         self.test_loader = torch.utils.data.DataLoader(self.test_dataset, batch_size=test_batch_size, num_workers=2, shuffle=False)
         self.oracle = oracle
+        self.binary = binary
         self.to(device)
 
     def forward(self, x):
@@ -92,15 +106,16 @@ class MNIST_Net(nn.Module):
                     100. * batch_idx / len(self.train_loader), loss.item()))
 
 class Gradient_Masked_MNIST(MNIST_Net):
-    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000):
-        super(Gradient_Masked_MNIST, self).__init__(device=device, log_interval=log_interval, batch_size=batch_size, test_batch_size=test_batch_size)
+    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000, binary=False, eps=0.5):
+        super(Gradient_Masked_MNIST, self).__init__(device=device, log_interval=log_interval, batch_size=batch_size, test_batch_size=test_batch_size, binary=binary)
+        self.eps=eps
     
     def train_epoch(self, epoch, optimizer, criterion):
         # adversarially train using large FGSM single step
         self.train()
         for batch_idx, (data, target) in enumerate(self.train_loader):
             data, target = data.to(self.device), target.to(self.device)
-            adv_data = fgsm_(self, data, target, eps=1, targeted=False, device=self.device, clip_min=self.normalized_min, clip_max=self.normalized_max)
+            adv_data = fgsm_(self, data, target, eps=self.eps, targeted=False, device=self.device, clip_min=self.normalized_min, clip_max=self.normalized_max)
             optimizer.zero_grad()
             output = self(adv_data)
             loss = criterion(output, target)
@@ -111,9 +126,10 @@ class Gradient_Masked_MNIST(MNIST_Net):
                     epoch, batch_idx * len(data), len(self.train_loader.dataset),
                     100. * batch_idx / len(self.train_loader), loss.item()))
                 
+                
 class PGD_MNIST(MNIST_Net):
-    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000, step=0.1, eps=0.7, iters=7):
-        super(PGD_MNIST, self).__init__(device=device, log_interval=log_interval, batch_size=batch_size, test_batch_size=test_batch_size)
+    def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000, step=0.1, eps=0.7, iters=7, binary=False):
+        super(PGD_MNIST, self).__init__(device=device, log_interval=log_interval, batch_size=batch_size, test_batch_size=test_batch_size, binary=binary)
         self.step = step
         self.eps = eps
         self.iters = iters

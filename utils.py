@@ -28,7 +28,7 @@ def fgsm_(model, x, target, eps=0.5, targeted=True, device='cpu', clip_min=None,
         out.clamp_(min=clip_min, max=clip_max)
     return out
 
-def pgd_(model, x, target, step, eps, iters=7, targeted=True, device='cpu', clip_min=None, clip_max=None, random_step=True):
+def pgd_(model, x, target, step, eps, iters=7, targeted=True, device='cpu', clip_min=None, clip_max=None, random_step=True, early_stop=False):
     projection_min = (x - eps).clamp_(min=clip_min)
     projection_max = (x + eps).clamp_(max=clip_max)
     
@@ -37,21 +37,36 @@ def pgd_(model, x, target, step, eps, iters=7, targeted=True, device='cpu', clip
       offset = torch.rand_like(x)
       offset = (offset*2*eps - eps)
       x = x + offset
-    for _ in range(iters):
-        x = fgsm_(model, x, target, eps=step, targeted=targeted, device=device, clip_min=None, clip_max=None)
+    done = torch.BoolTensor(x.shape[0]).to(device)
+    done[:] = False
+    for i in range(iters):
+        if early_stop:
+            x_to_change = x.clone()[~done]
+            x_to_change = fgsm_(model, x_to_change, target[~done], eps=step, targeted=targeted, device=device, clip_min=None, clip_max=None)
+            x[~done] = x_to_change
+        else:
+            x = fgsm_(model, x, target, eps=step, targeted=targeted, device=device, clip_min=None, clip_max=None)
         # project
         x = torch.where(x < projection_min, projection_min, x)
         x = torch.where(x > projection_max, projection_max, x)
+        if (clip_min is not None) or (clip_max is not None):
+            x.clamp_(min=clip_min, max=clip_max)
         
-    if (clip_min is not None) or (clip_max is not None):
-        x.clamp_(min=clip_min, max=clip_max)
+        # check for adv examples
+        if early_stop:
+            with torch.no_grad():
+                new_labels = model(x).argmax(axis=-1)
+                done = new_labels != target
+            if done.all():
+                break
     return x
 
 def gradient_information(model, data, target, step=0.01, eps=0.5, iters=20, targeted=False, device='cpu', clip_min=None, clip_max=None):
-    adv = pgd_(model, data, target, step, eps, iters=iters, targeted=targeted, device=device, clip_min=clip_min, clip_max=clip_max, random_step=False).to(device)
+    adv = pgd_(model, data, target, step, eps, iters=iters, targeted=targeted, device=device, clip_min=clip_min, clip_max=clip_max, random_step=False, early_stop=True).to(device)
     # only keep those for which an adversarial example was found
     new_labels = model(adv).argmax(axis=-1)
     adv_examples_index = new_labels != target
+    print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
     if adv_examples_index.sum() == 0:
         return None
     
@@ -68,7 +83,7 @@ def gradient_information(model, data, target, step=0.01, eps=0.5, iters=20, targ
 
     grad = adv.grad.reshape(adv.shape[0], -1)
     diff_vector = (adv - data[adv_examples_index]).reshape(adv.shape[0], -1)
-    cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+    cos = nn.CosineSimilarity(dim=1, eps=1e-12)
     grad_information[adv_examples_index] = cos(grad, diff_vector)
     return grad_information
 
@@ -97,6 +112,7 @@ def adversarial_accuracy(model, dataset_loader, attack=pgd_, iters=20, eps=0.5, 
         if (batch_idx % 100 == 0):
             print('{} / {}'.format(batch_idx * dataset_loader.batch_size, len(dataset_loader.dataset)))
     print ((correct/len(dataset_loader.dataset) * 100))
+    return adv[:10]
     
 if __name__ == "__main__":
     pass
