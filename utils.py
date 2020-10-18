@@ -34,9 +34,9 @@ def pgd_(model, x, target, step, eps, iters=7, targeted=True, device='cpu', clip
     
     # generate a random point in the +-eps box around x
     if random_step:
-      offset = torch.rand_like(x)
-      offset = (offset*2*eps - eps)
-      x = x + offset
+        offset = torch.rand_like(x)
+        offset = (offset*2*eps - eps)
+        x = x + offset
     done = torch.BoolTensor(x.shape[0]).to(device)
     done[:] = False
     for i in range(iters):
