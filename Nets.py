@@ -7,7 +7,30 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 from utils import fgsm_, pgd_
+from robustbench.model_zoo.models import Carmon2019UnlabeledNet
 
+class CIFAR_Net(nn.Module):
+    def __init__(self, device="cpu"):
+        super(CIFAR_Net, self).__init__()
+        self.conv1 = nn.Conv2d(3, 32, 5)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(32, 64, 5)
+        self.fc1 = nn.Linear(64 * 5 * 5, 512)
+        self.fc2 = nn.Linear(512, 128)
+        self.fc3 = nn.Linear(128, 10)
+        
+        self.device = device      
+        self.to(device)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = x.view(-1, 64 * 5 * 5)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x               
+                
 class MNIST_Net(nn.Module):
     def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000, oracle=None, binary=False):
         super(MNIST_Net, self).__init__()
