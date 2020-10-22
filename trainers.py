@@ -56,10 +56,10 @@ class Trainer:
                     100. * batch_idx / len(train_loader), loss.item()))
                 
 class FGSMTrainer(Trainer):
-    def __init__(self, device="cpu", log_interval=10, normalized_min=0, normalized_max=1, eps=(8/255)):
+    def __init__(self, device="cpu", log_interval=10, clip_min=0, clip_max=1, eps=(8/255)):
         super(FGSMTrainer, self).__init__(device=device, log_interval=log_interval)
-        self.normalized_min = normalized_min
-        self.normalized_max = normalized_max
+        self.clip_min = clip_min
+        self.clip_max = clip_max
         self.eps = eps
         
     def train(self, model, train_loader, epochs, test_loader=None, optimizer=None):
@@ -74,7 +74,7 @@ class FGSMTrainer(Trainer):
     def train_step(self, model, train_loader, epoch, optimizer, criterion):
         for batch_idx, (data, target) in enumerate(train_loader):
             data, target = data.to(self.device), target.to(self.device)
-            adv_data = fgsm_(model, data, target, eps=self.eps, targeted=False, device=self.device, clip_min=self.normalized_min, clip_max=self.normalized_max)
+            adv_data = fgsm_(model, data, target, eps=self.eps, targeted=False, device=self.device, clip_min=self.clip_min, clip_max=self.clip_max)
             optimizer.zero_grad()
             output = model(adv_data)
             loss = criterion(output, target)

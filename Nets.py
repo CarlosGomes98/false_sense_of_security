@@ -9,9 +9,33 @@ from torch.optim.lr_scheduler import StepLR
 from utils import fgsm_, pgd_
 from robustbench.model_zoo.models import Carmon2019UnlabeledNet
 
+# This normalization class ensures the attacks do not need to know about 
+# the preprocessing steps done on the data
+class Normalization(nn.Module):
+
+    def __init__(self, device, mean, std):
+        super(Normalization, self).__init__()
+        self.mean = torch.FloatTensor([mean]).view((1, 1, 1, 1)).to(device)
+        self.sigma = torch.FloatTensor([std]).view((1, 1, 1, 1)).to(device)
+
+    def forward(self, x):
+        return (x - self.mean) / self.sigma
+
+class CIFAR_Wide_Res_Net(Carmon2019UnlabeledNet):
+    def __init__(self, device):
+        super(CIFAR_Wide_Res_Net, self).__init__()
+        self.norm = Normalization(device, 0.5, 0.5)
+
+        self.to(device)
+    
+    def forward(self, x):
+        x = self.norm(x)
+        return super().forward(x)
+
 class CIFAR_Net(nn.Module):
     def __init__(self, device="cpu"):
         super(CIFAR_Net, self).__init__()
+        self.norm = Normalization(device, 0.5, 0.5)
         self.conv1 = nn.Conv2d(3, 32, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(32, 64, 5)
@@ -23,6 +47,7 @@ class CIFAR_Net(nn.Module):
         self.to(device)
 
     def forward(self, x):
+        x = self.norm(x)
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
         x = x.view(-1, 64 * 5 * 5)
@@ -30,7 +55,9 @@ class CIFAR_Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
         return x               
-                
+     
+# OLD DEPRECATED BELOW:
+# dont want to remove them yet as might be useful to look at
 class MNIST_Net(nn.Module):
     def __init__(self, device="cpu", log_interval=100, batch_size=64, test_batch_size=1000, oracle=None, binary=False):
         super(MNIST_Net, self).__init__()

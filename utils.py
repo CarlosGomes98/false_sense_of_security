@@ -1,4 +1,4 @@
-# some code from RAI
+# some of the code from RAI
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -11,8 +11,7 @@ def fgsm_(model, x, target, eps=0.5, targeted=True, device='cpu', clip_min=None,
     # ... and make sure we are differentiating toward that variable
     input_.requires_grad_()
 
-    # run the model and obtain the loss
-    
+    # run the model and obtain the los
     model.zero_grad()
     logits = model(input_)
     loss = nn.CrossEntropyLoss()(logits, target)
@@ -29,8 +28,8 @@ def fgsm_(model, x, target, eps=0.5, targeted=True, device='cpu', clip_min=None,
     return out
 
 def pgd_(model, x, target, step, eps, iters=7, targeted=True, device='cpu', clip_min=None, clip_max=None, random_step=True, early_stop=False):
-    projection_min = (x - eps).clamp_(min=clip_min)
-    projection_max = (x + eps).clamp_(max=clip_max)
+    projection_min = x - eps
+    projection_max = x + eps
     
     # generate a random point in the +-eps box around x
     if random_step:
@@ -100,19 +99,17 @@ def gradient_norm(model, data, target, device='cpu'):
     grad_norm = torch.norm(grad, p=2, dim=1)
     return grad_norm.mean()
 
-def adversarial_accuracy(model, dataset_loader, attack=pgd_, iters=20, eps=0.5, step=0.1, random_step=True):
+def adversarial_accuracy(model, dataset_loader, attack=pgd_, iters=20, eps=0.5, step=0.1, random_step=False, device="cpu"):
     correct = 0
-    device = model.device
     for batch_idx, (data, target) in enumerate(dataset_loader):
         data, target = data.to(device), target.to(device)
-        adv = attack(model, data, target, step=step, eps=eps, iters=iters, targeted=False, device=device, clip_min=model.normalized_min, clip_max=model.normalized_max, random_step=random_step)
+        adv = attack(model, data, target, step=step, eps=eps, iters=iters, targeted=False, device=device, clip_min=0, clip_max=1, random_step=random_step)
         output = model(adv)
         pred = output.argmax(dim=1, keepdim=True)
         correct += pred.eq(target.view_as(pred)).sum().item()
-        if (batch_idx % 100 == 0):
+        if (batch_idx % 10 == 0):
             print('{} / {}'.format(batch_idx * dataset_loader.batch_size, len(dataset_loader.dataset)))
-    print ((correct/len(dataset_loader.dataset) * 100))
-    return adv[:10]
+    return (correct/len(dataset_loader.dataset) * 100)
     
 if __name__ == "__main__":
     pass
