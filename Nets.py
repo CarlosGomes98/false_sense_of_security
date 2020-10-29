@@ -8,6 +8,7 @@ from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 from utils import fgsm_, pgd_
 from robustbench.model_zoo.models import Carmon2019UnlabeledNet
+from robustbench.model_zoo.resnet import ResNet, BasicBlock
 
 # This normalization class ensures the attacks do not need to know about 
 # the preprocessing steps done on the data
@@ -21,6 +22,17 @@ class Normalization(nn.Module):
     def forward(self, x):
         return (x - self.mean) / self.sigma
 
+# ResNet 18
+class CIFAR_Res_Net(ResNet):
+    def __init__(self, device):
+        super(CIFAR_Res_Net, self).__init__(BasicBlock, [2, 2, 2, 2])
+        self.norm = Normalization(device, 0.5, 0.5)
+
+        self.to(device)
+    
+    def forward(self, x):
+        x = self.norm(x)
+        return super().forward(x)
 class CIFAR_Wide_Res_Net(Carmon2019UnlabeledNet):
     def __init__(self, device):
         super(CIFAR_Wide_Res_Net, self).__init__()
