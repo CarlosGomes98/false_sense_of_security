@@ -1,0 +1,2345 @@
+---------------------------------- page 1 ----------------------------------
+#### DownExpandingContainer('title')
+  StaticGroupedFlowables()
+    Paragraph('False Sense of Security', style='title page title')
+         > (0,0,1,0,2) title page title
+           (0,0,0,0,2) body
+      SingleStyledText('False Sense of Security')
+    Paragraph('Release ', style='title page subtitle')
+         > (0,0,1,0,2) title page subtitle
+           (0,0,0,0,2) body
+      SingleStyledText('Release ')
+    Paragraph('Carlos Gomes', style='title page author')
+         > (0,0,1,0,2) title page author
+           (0,0,0,0,2) body
+      SingleStyledText('Carlos Gomes')
+    Paragraph('Nov 04, 2020', style='title page date')
+         > (0,0,1,0,2) title page date
+           (0,0,0,0,2) body
+      SingleStyledText('Nov 04, 2020')
+---------------------------------- page i ----------------------------------
+#### FootnoteContainer('footnotes')
+  StaticGroupedFlowables()
+#### DownExpandingContainer('floats')
+  StaticGroupedFlowables()
+#### FlowablesContainer('chapter title')
+  Paragraph('Table of Contents', style='front matter section title')
+       > (0,0,1,0,2) front matter section title
+         (0,0,0,0,2) body
+    Field('Table of Contents')
+      SingleStyledText('Table of Contents')
+#### ChainedContainer('column1')
+  StaticGroupedFlowables()
+    TableOfContentsSection(style='table of contents')
+         > (0,0,1,0,1) table of contents section
+           (0,0,0,1,1) chapter
+      TableOfContents()   table of contents
+           > (0,0,0,0,2) table of contents
+        TableOfContentsEntry('1	Project	1')
+             > (0,0,0,1,2) toc level 1
+            MixedStyledText('1	Project	1')
+              ReferenceField('1')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('1')
+              Tab('	')
+              ReferenceField('Project')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('Project')
+              Tab('	')
+              ReferenceField('1')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('1')
+        TableOfContentsEntry('2	Documentation for the Code	3')
+             > (0,0,0,1,2) toc level 1
+            MixedStyledText('2	Documentation for the Code	3')
+              ReferenceField('2')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('2')
+              Tab('	')
+              ReferenceField('Documentation for the Code')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('Documentation for the Code')
+              Tab('	')
+              ReferenceField('3')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        TableOfContentsEntry('	Python Module Index	7')
+             > (0,0,0,1,2) toc level 1
+            MixedStyledText('	Python Module Index	7')
+              ReferenceField('')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('')
+              Tab('	')
+              ReferenceField('Python Module Index')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('Python Module Index')
+              Tab('	')
+              ReferenceField('7')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('7')
+        TableOfContentsEntry('	Index	9')
+             > (0,0,0,1,2) toc level 1
+            MixedStyledText('	Index	9')
+              ReferenceField('')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('')
+              Tab('	')
+              ReferenceField('Index')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('Index')
+              Tab('	')
+              ReferenceField('9')
+                   x (0,0,0,1,3) toc linked reference
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('9')
+#### DownExpandingContainer('footer')
+  StaticGroupedFlowables()
+    Footer('		i')
+         > (0,0,0,0,2) footer
+           (0,0,0,0,1) body
+      MixedStyledText('		i')
+        Tab('	')
+        Tab('	')
+        Field('i')
+          SingleStyledText('i')
+---------------------------------- page 1 ----------------------------------
+#### FootnoteContainer('footnotes')
+  StaticGroupedFlowables()
+#### DownExpandingContainer('floats')
+  StaticGroupedFlowables()
+#### FlowablesContainer('chapter title')
+  Paragraph('Chapter 1', style='body matter chapter label')
+       > (0,0,1,0,2) body matter chapter label
+         (0,0,0,0,2) body
+    MixedStyledText('Chapter 1')
+      MixedStyledText('Chapter ')
+        StringField('Chapter')
+          SingleStyledText('Chapter')
+        SingleStyledText(' ')
+      Field('1', style='number')
+           > (0,0,2,0,3) body matter chapter number
+        SingleStyledText('1')
+  Paragraph('Project', style='body matter chapter title')
+       > (0,0,1,0,2) body matter chapter title
+         (0,0,0,0,2) body
+    Field('Project')
+      SingleStyledText('Project')
+#### ChainedContainer('column1')
+  StaticGroupedFlowables()
+    DocumentTree()
+      Section(id='project')   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:10 <section>
+           > (0,0,0,1,2) chapter
+        Paragraph('This work seeks to find convenie...')   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:12 <paragraph>
+             > (0,0,0,0,2) body
+          MixedStyledText('This work seeks to find convenie...')
+            SingleStyledText('This work seeks to find convenie...')
+#### DownExpandingContainer('footer')
+  StaticGroupedFlowables()
+    Footer('		1')
+         > (0,0,0,0,2) footer
+           (0,0,0,0,1) body
+      MixedStyledText('		1')
+        Tab('	')
+        Tab('	')
+        Field('1')
+          SingleStyledText('1')
+---------------------------------- page 2 ----------------------------------
+#### FootnoteContainer('footnotes')
+  StaticGroupedFlowables()
+#### DownExpandingContainer('floats')
+  StaticGroupedFlowables()
+#### ChainedContainer('column1')
+  (continued) StaticGroupedFlowables()
+    (continued) DocumentTree()
+#### UpExpandingContainer('header')
+  StaticGroupedFlowables()
+    Header('False Sense of Security, Release...')
+         > (0,0,0,0,2) header
+           (0,0,0,0,1) body
+      MixedStyledText('False Sense of Security, Release...')
+        Field('False Sense of Security')
+          SingleStyledText('False Sense of Security')
+        SingleStyledText(', ')
+        Field('Release ')
+          SingleStyledText('Release ')
+#### DownExpandingContainer('footer')
+  StaticGroupedFlowables()
+    Footer('2		Chapter 1.  Project')
+         > (0,0,0,0,2) footer
+           (0,0,0,0,1) body
+      MixedStyledText('2		Chapter 1.  Project')
+        Field('2')
+          SingleStyledText('2')
+        Tab('	')
+        Tab('	')
+        StringField('Chapter')
+          SingleStyledText('Chapter')
+        SingleStyledText(' ')
+        Field('1')
+          SingleStyledText('1')
+        SingleStyledText('.  ')
+        Field('Project')
+          SingleStyledText('Project')
+---------------------------------- page 3 ----------------------------------
+#### FootnoteContainer('footnotes')
+  StaticGroupedFlowables()
+#### DownExpandingContainer('floats')
+  StaticGroupedFlowables()
+#### FlowablesContainer('chapter title')
+  Paragraph('Chapter 2', style='body matter chapter label')
+       > (0,0,1,0,2) body matter chapter label
+         (0,0,0,0,2) body
+    MixedStyledText('Chapter 2')
+      MixedStyledText('Chapter ')
+        StringField('Chapter')
+          SingleStyledText('Chapter')
+        SingleStyledText(' ')
+      Field('2', style='number')
+           > (0,0,2,0,3) body matter chapter number
+        SingleStyledText('2')
+  Paragraph('Documentation for the Code', style='body matter chapter title')
+       > (0,0,1,0,2) body matter chapter title
+         (0,0,0,0,2) body
+    Field('Documentation for the Code')
+      SingleStyledText('Documentation for the Code')
+#### ChainedContainer('column1')
+  (continued) StaticGroupedFlowables()
+    (continued) DocumentTree()
+      Section(id='documentation-for-the-code')   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:16 <section>
+           > (0,0,0,1,2) chapter
+        StaticGroupedFlowables()   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:None <compound>
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.get_accuracy:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('gradient_masking_tests.get_accur...', id='gradient_masking_tests.get_accuracy')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.get_accuracy:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('gradient_masking_tests.get_accur...')
+                MixedStyledText('gradient_masking_tests.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.get_accuracy:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('gradient_masking_tests.')
+                MixedStyledText('get_accuracy', style='main object name')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.get_accuracy:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('get_accuracy')
+                MixedStyledText(' ( model, test_dataset, attack=N...')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.get_accuracy:None <desc_parameterlist>
+                  MixedStyledText(' ( model, test_dataset, attack=N...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('model, test_dataset, attack=None...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('model', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('model')   None:None <inline>
+                          SingleStyledText('model')
+                      SingleStyledText(', ')
+                      MixedStyledText('test_dataset', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('test_dataset')   None:None <inline>
+                          SingleStyledText('test_dataset')
+                      SingleStyledText(', ')
+                      MixedStyledText('attack=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('attack')   None:None <inline>
+                          SingleStyledText('attack')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                      SingleStyledText(', ')
+                      MixedStyledText('epsilon=0.03', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('epsilon')   None:None <inline>
+                          SingleStyledText('epsilon')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.03')   None:None <inline>
+                          SingleStyledText('0.03')
+                      SingleStyledText(', ')
+                      MixedStyledText('subset_size=10000', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('subset_size')   None:None <inline>
+                          SingleStyledText('subset_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('10000')   None:None <inline>
+                          SingleStyledText('10000')
+                      SingleStyledText(', ')
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('batch_size=32', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('batch_size')   None:None <inline>
+                          SingleStyledText('batch_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('32')   None:None <inline>
+                          SingleStyledText('32')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.get_accuracy:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Reports the accuracy of the mode...')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.get_accuracy:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Reports the accuracy of the mode...')
+                SingleStyledText('Reports the accuracy of the mode...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.run_masking_benchmarks:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('gradient_masking_tests.run_maski...', id='gradient_masking_tests.run_masking_benchmarks')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.run_masking_benchmarks:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('gradient_masking_tests.run_maski...')
+                MixedStyledText('gradient_masking_tests.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.run_masking_benchmarks:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('gradient_masking_tests.')
+                MixedStyledText('run_masking_benchmarks', style='main object name')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.run_masking_benchmarks:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('run_masking_benchmarks')
+                MixedStyledText(' ( model, test_dataset, epsilon=...')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.run_masking_benchmarks:None <desc_parameterlist>
+                  MixedStyledText(' ( model, test_dataset, epsilon=...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('model, test_dataset, epsilon=0.0...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('model', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('model')   None:None <inline>
+                          SingleStyledText('model')
+                      SingleStyledText(', ')
+                      MixedStyledText('test_dataset', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('test_dataset')   None:None <inline>
+                          SingleStyledText('test_dataset')
+                      SingleStyledText(', ')
+                      MixedStyledText('epsilon=0.06', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('epsilon')   None:None <inline>
+                          SingleStyledText('epsilon')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.06')   None:None <inline>
+                          SingleStyledText('0.06')
+                      SingleStyledText(', ')
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('batch_size=32', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('batch_size')   None:None <inline>
+                          SingleStyledText('batch_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('32')   None:None <inline>
+                          SingleStyledText('32')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.run_masking_benchmarks:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('This method runs through a check...')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.run_masking_benchmarks:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('This method runs through a check...')
+                SingleStyledText('This method runs through a check...')
+                AnnotatedText('https://arxiv.org/pdf/1802.00420...', style='external link')   None:None <reference>
+                     > (0,0,1,0,1) external hyperlink
+                  MixedStyledText('https://arxiv.org/pdf/1802.00420...')
+                    SingleStyledText('https://arxiv.org/pdf/1802.00420...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.spsa_accuracy:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('gradient_masking_tests.spsa_accu...', id='gradient_masking_tests.spsa_accuracy')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.spsa_accuracy:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('gradient_masking_tests.spsa_accu...')
+                MixedStyledText('gradient_masking_tests.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.spsa_accuracy:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('gradient_masking_tests.')
+                MixedStyledText('spsa_accuracy', style='main object name')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.spsa_accuracy:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('spsa_accuracy')
+                MixedStyledText(' ( model, test_dataset, eps=0.03...')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.spsa_accuracy:None <desc_parameterlist>
+                  MixedStyledText(' ( model, test_dataset, eps=0.03...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('model, test_dataset, eps=0.03, i...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('model', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('model')   None:None <inline>
+                          SingleStyledText('model')
+                      SingleStyledText(', ')
+                      MixedStyledText('test_dataset', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('test_dataset')   None:None <inline>
+                          SingleStyledText('test_dataset')
+                      SingleStyledText(', ')
+                      MixedStyledText('eps=0.03', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('eps')   None:None <inline>
+                          SingleStyledText('eps')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.03')   None:None <inline>
+                          SingleStyledText('0.03')
+                      SingleStyledText(', ')
+                      MixedStyledText('iters=1', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('iters')   None:None <inline>
+                          SingleStyledText('iters')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('1')   None:None <inline>
+                          SingleStyledText('1')
+                      SingleStyledText(', ')
+                      MixedStyledText('nb_sample=128', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('nb_sample')   None:None <inline>
+                          SingleStyledText('nb_sample')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('128')   None:None <inline>
+                          SingleStyledText('128')
+                      SingleStyledText(', ')
+                      MixedStyledText('batch_size=8', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('batch_size')   None:None <inline>
+                          SingleStyledText('batch_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('8')   None:None <inline>
+                          SingleStyledText('8')
+                      SingleStyledText(', ')
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('subset_size=100', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('subset_size')   None:None <inline>
+                          SingleStyledText('subset_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('100')   None:None <inline>
+                          SingleStyledText('100')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.spsa_accuracy:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Reports the accuracy of the mode...')   D:\Libraries\Documents\false_sense_of_security\gradient_masking_tests.py:docstring of gradient_masking_tests.spsa_accuracy:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Reports the accuracy of the mode...')
+                SingleStyledText('Reports the accuracy of the mode...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class Nets.CIFAR_Net ( device='c...', id='Nets.CIFAR_Net')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class Nets.CIFAR_Net ( device='c...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('Nets.')
+                MixedStyledText('CIFAR_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('CIFAR_Net')
+                MixedStyledText(' ( device='cpu' ) ')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_parameterlist>
+                  MixedStyledText(' ( device='cpu'')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device='cpu'', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Very simple Conv Net for CIFAR-1...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Very simple Conv Net for CIFAR-1...')
+                SingleStyledText('Very simple Conv Net for CIFAR-1...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class Nets.CIFAR_Res_Net ( devic...', id='Nets.CIFAR_Res_Net')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class Nets.CIFAR_Res_Net ( devic...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('Nets.')
+                MixedStyledText('CIFAR_Res_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('CIFAR_Res_Net')
+                MixedStyledText(' ( device ) ')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_parameterlist>
+                  MixedStyledText(' ( device')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('ResNet 18 from robustbench zoo e...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('ResNet 18 from robustbench zoo e...')
+                SingleStyledText('ResNet 18 from robustbench zoo e...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class Nets.CIFAR_Wide_Res_Net ( ...', id='Nets.CIFAR_Wide_Res_Net')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class Nets.CIFAR_Wide_Res_Net ( ...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('Nets.')
+                MixedStyledText('CIFAR_Wide_Res_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('CIFAR_Wide_Res_Net')
+                MixedStyledText(' ( device ) ')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_parameterlist>
+                  MixedStyledText(' ( device')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('WideResNet-28-10 from robustbenc...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('WideResNet-28-10 from robustbenc...')
+                SingleStyledText('WideResNet-28-10 from robustbenc...')
+        LabeledFlowable(style='object description')   None:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class Nets.Gradient_Masked_MNIST...', id='Nets.Gradient_Masked_MNIST')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class Nets.Gradient_Masked_MNIST...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('Nets.')
+                MixedStyledText('Gradient_Masked_MNIST', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('Gradient_Masked_MNIST')
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_parameterlist>
+                  MixedStyledText(' ( device='cpu', log_interval=10...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device='cpu', log_interval=100, ...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('log_interval=100', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('log_interval')   None:None <inline>
+                          SingleStyledText('log_interval')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('100')   None:None <inline>
+                          SingleStyledText('100')
+                      SingleStyledText(', ')
+                      MixedStyledText('batch_size=64', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('batch_size')   None:None <inline>
+                          SingleStyledText('batch_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('64')   None:None <inline>
+                          SingleStyledText('64')
+                      SingleStyledText(', ')
+                      MixedStyledText('test_batch_size=1000', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('test_batch_size')   None:None <inline>
+                          SingleStyledText('test_batch_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('1000')   None:None <inline>
+                          SingleStyledText('1000')
+                      SingleStyledText(', ')
+                      MixedStyledText('binary=False', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('binary')   None:None <inline>
+                          SingleStyledText('binary')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('False')   None:None <inline>
+                          SingleStyledText('False')
+                      SingleStyledText(', ')
+                      MixedStyledText('eps=0.5', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('eps')   None:None <inline>
+                          SingleStyledText('eps')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.5')   None:None <inline>
+                          SingleStyledText('0.5')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_content>
+               > (0,0,2,0,3) object description content
+        LabeledFlowable(style='object description')   None:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class Nets.MNIST_Net ( device='c...', id='Nets.MNIST_Net')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class Nets.MNIST_Net ( device='c...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('Nets.')
+                MixedStyledText('MNIST_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('MNIST_Net')
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_parameterlist>
+                  MixedStyledText(' ( device='cpu', log_interval=10...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device='cpu', log_interval=100, ...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('log_interval=100', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('log_interval')   None:None <inline>
+                          SingleStyledText('log_interval')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('100')   None:None <inline>
+                          SingleStyledText('100')
+                      SingleStyledText(', ')
+                      MixedStyledText('batch_size=64', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('batch_size')   None:None <inline>
+                          SingleStyledText('batch_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('64')   None:None <inline>
+                          SingleStyledText('64')
+                      SingleStyledText(', ')
+                      MixedStyledText('test_batch_size=1000', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('test_batch_size')   None:None <inline>
+                          SingleStyledText('test_batch_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('1000')   None:None <inline>
+                          SingleStyledText('1000')
+                      SingleStyledText(', ')
+                      MixedStyledText('oracle=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('oracle')   None:None <inline>
+                          SingleStyledText('oracle')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                      SingleStyledText(', ')
+                      MixedStyledText('binary=False', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('binary')   None:None <inline>
+                          SingleStyledText('binary')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('False')   None:None <inline>
+                          SingleStyledText('False')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_content>
+               > (0,0,2,0,3) object description content
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class Nets.Normalization ( devic...', id='Nets.Normalization')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class Nets.Normalization ( devic...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('Nets.')
+                MixedStyledText('Normalization', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('Normalization')
+                MixedStyledText(' ( device, mean, std ) ')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_parameterlist>
+                  MixedStyledText(' ( device, mean, std')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device, mean, std', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                      SingleStyledText(', ')
+                      MixedStyledText('mean', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('mean')   None:None <inline>
+                          SingleStyledText('mean')
+                      SingleStyledText(', ')
+                      MixedStyledText('std', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('std')   None:None <inline>
+                          SingleStyledText('std')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Torch layer that handles normali...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Torch layer that handles normali...')
+                SingleStyledText('Torch layer that handles normali...')
+            Paragraph('This normalization class ensures...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:3 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('This normalization class ensures...')
+                SingleStyledText('This normalization class ensures...')
+        LabeledFlowable(style='object description')   None:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class Nets.PGD_MNIST ( device='c...', id='Nets.PGD_MNIST')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class Nets.PGD_MNIST ( device='c...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('Nets.')
+                MixedStyledText('PGD_MNIST', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('PGD_MNIST')
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_parameterlist>
+                  MixedStyledText(' ( device='cpu', log_interval=10...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device='cpu', log_interval=100, ...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('log_interval=100', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('log_interval')   None:None <inline>
+                          SingleStyledText('log_interval')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('100')   None:None <inline>
+                          SingleStyledText('100')
+                      SingleStyledText(', ')
+                      MixedStyledText('batch_size=64', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('batch_size')   None:None <inline>
+                          SingleStyledText('batch_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('64')   None:None <inline>
+                          SingleStyledText('64')
+                      SingleStyledText(', ')
+                      MixedStyledText('test_batch_size=1000', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('test_batch_size')   None:None <inline>
+                          SingleStyledText('test_batch_size')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('1000')   None:None <inline>
+                          SingleStyledText('1000')
+                      SingleStyledText(', ')
+                      MixedStyledText('step=0.1', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('step')   None:None <inline>
+                          SingleStyledText('step')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.1')   None:None <inline>
+                          SingleStyledText('0.1')
+                      SingleStyledText(', ')
+                      MixedStyledText('eps=0.7', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('eps')   None:None <inline>
+                          SingleStyledText('eps')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.7')   None:None <inline>
+                          SingleStyledText('0.7')
+                      SingleStyledText(', ')
+                      MixedStyledText('iters=7', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('iters')   None:None <inline>
+                          SingleStyledText('iters')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('7')   None:None <inline>
+                          SingleStyledText('7')
+                      SingleStyledText(', ')
+                      MixedStyledText('binary=False', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('binary')   None:None <inline>
+                          SingleStyledText('binary')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('False')   None:None <inline>
+                          SingleStyledText('False')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_content>
+               > (0,0,2,0,3) object description content
+#### DownExpandingContainer('footer')
+  StaticGroupedFlowables()
+    Footer('		3')
+         > (0,0,0,0,2) footer
+           (0,0,0,0,1) body
+      MixedStyledText('		3')
+        Tab('	')
+        Tab('	')
+        Field('3')
+          SingleStyledText('3')
+---------------------------------- page 4 ----------------------------------
+#### FootnoteContainer('footnotes')
+  StaticGroupedFlowables()
+#### DownExpandingContainer('floats')
+  StaticGroupedFlowables()
+#### ChainedContainer('column1')
+  (continued) StaticGroupedFlowables()
+    (continued) DocumentTree()
+      (continued) Section(id='documentation-for-the-code')   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:16 <section>
+           > (0,0,0,1,2) chapter
+        LabeledFlowable(style='object description')   None:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class trainers.CurvatureRegulari...', id='trainers.CurvatureRegularizationTrainer')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class trainers.CurvatureRegulari...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('trainers.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('trainers.')
+                MixedStyledText('CurvatureRegularizationTrainer', style='main object name')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('CurvatureRegularizationTrainer')
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer:None <desc_parameterlist>
+                  MixedStyledText(' ( device='cpu', log_interval=10...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device='cpu', log_interval=10, l...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('log_interval=10', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('log_interval')   None:None <inline>
+                          SingleStyledText('log_interval')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('10')   None:None <inline>
+                          SingleStyledText('10')
+                      SingleStyledText(', ')
+                      MixedStyledText('lambda_=4', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('lambda_')   None:None <inline>
+                          SingleStyledText('lambda_')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('4')   None:None <inline>
+                          SingleStyledText('4')
+                      SingleStyledText(', ')
+                      MixedStyledText('report_gradient_norm=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('report_gradient_norm')   None:None <inline>
+                          SingleStyledText('report_gradient_norm')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Extends the base trainer to trai...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Extends the base trainer to trai...')
+                SingleStyledText('Extends the base trainer to trai...')
+                AnnotatedText('https://github.com/F-Salehi/CURE...', style='external link')   None:None <reference>
+                     > (0,0,1,0,1) external hyperlink
+                  MixedStyledText('https://github.com/F-Salehi/CURE...')
+                    SingleStyledText('https://github.com/F-Salehi/CURE...')
+                SingleStyledText(' “Robustness via curvature regul...')
+            Paragraph('TODO: Currently not working.')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer:5 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('TODO: Currently not working.')
+                SingleStyledText('TODO: Currently not working.')
+            LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer.regularizer:None <desc>
+                 > (0,0,1,0,2) object description
+              StaticGroupedFlowables(style='signatures')
+                   > (0,0,2,0,3) object signatures
+                Paragraph('regularizer ( model, criterion, ...', id='trainers.CurvatureRegularizationTrainer.regularizer')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer.regularizer:1 <desc_signature>
+                     > (0,0,2,0,5) object signature
+                       (0,0,0,0,2) body
+                  MixedStyledText('regularizer ( model, criterion, ...')
+                    MixedStyledText('regularizer', style='main object name')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer.regularizer:None <desc_name>
+                         > (0,0,3,0,6) object name
+                      SingleStyledText('regularizer')
+                    MixedStyledText(' ( model, criterion, inputs, tar...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer.regularizer:None <desc_parameterlist>
+                      MixedStyledText(' ( model, criterion, inputs, tar...')
+                        SingleStyledText(' ( ', style='parentheses')
+                             > (0,0,3,0,6) object parentheses
+                        MixedStyledText('model, criterion, inputs, target...', style='parameter list')
+                             > (0,0,3,0,6) object parameter list
+                          MixedStyledText('model', style='parameter')   None:None <desc_parameter>
+                               > (0,0,3,0,6) object parameter
+                            MixedStyledText('model')   None:None <inline>
+                              SingleStyledText('model')
+                          SingleStyledText(', ')
+                          MixedStyledText('criterion', style='parameter')   None:None <desc_parameter>
+                               > (0,0,3,0,6) object parameter
+                            MixedStyledText('criterion')   None:None <inline>
+                              SingleStyledText('criterion')
+                          SingleStyledText(', ')
+                          MixedStyledText('inputs', style='parameter')   None:None <desc_parameter>
+                               > (0,0,3,0,6) object parameter
+                            MixedStyledText('inputs')   None:None <inline>
+                              SingleStyledText('inputs')
+                          SingleStyledText(', ')
+                          MixedStyledText('targets', style='parameter')   None:None <desc_parameter>
+                               > (0,0,3,0,6) object parameter
+                            MixedStyledText('targets')   None:None <inline>
+                              SingleStyledText('targets')
+                          SingleStyledText(', ')
+                          MixedStyledText('h=3.0', style='parameter')   None:None <desc_parameter>
+                               > (0,0,3,0,6) object parameter
+                            MixedStyledText('h')   None:None <inline>
+                              SingleStyledText('h')
+                            MixedStyledText('=')   None:None <inline>
+                              SingleStyledText('=')
+                            MixedStyledText('3.0')   None:None <inline>
+                              SingleStyledText('3.0')
+                      SingleStyledText(' ) ', style='parentheses')
+                           > (0,0,3,0,6) object parentheses
+              StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer.regularizer:None <desc_content>
+                   > (0,0,2,0,3) object description content
+                Paragraph('Regularizer term in CURE')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.CurvatureRegularizationTrainer.regularizer:1 <paragraph>
+                     > (0,0,2,0,5) object description content paragraph
+                       (0,0,0,0,2) body
+                  MixedStyledText('Regularizer term in CURE')
+                    SingleStyledText('Regularizer term in CURE')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.FGSMTrainer:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class trainers.FGSMTrainer ( dev...', id='trainers.FGSMTrainer')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.FGSMTrainer:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class trainers.FGSMTrainer ( dev...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.FGSMTrainer:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('trainers.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.FGSMTrainer:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('trainers.')
+                MixedStyledText('FGSMTrainer', style='main object name')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.FGSMTrainer:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('FGSMTrainer')
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.FGSMTrainer:None <desc_parameterlist>
+                  MixedStyledText(' ( device='cpu', log_interval=10...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device='cpu', log_interval=10, c...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('log_interval=10', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('log_interval')   None:None <inline>
+                          SingleStyledText('log_interval')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('10')   None:None <inline>
+                          SingleStyledText('10')
+                      SingleStyledText(', ')
+                      MixedStyledText('clip_min=0', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('clip_min')   None:None <inline>
+                          SingleStyledText('clip_min')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0')   None:None <inline>
+                          SingleStyledText('0')
+                      SingleStyledText(', ')
+                      MixedStyledText('clip_max=1', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('clip_max')   None:None <inline>
+                          SingleStyledText('clip_max')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('1')   None:None <inline>
+                          SingleStyledText('1')
+                      SingleStyledText(', ')
+                      MixedStyledText('eps=0.03137254901960784', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('eps')   None:None <inline>
+                          SingleStyledText('eps')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.03137254901960784')   None:None <inline>
+                          SingleStyledText('0.03137254901960784')
+                      SingleStyledText(', ')
+                      MixedStyledText('report_gradient_norm=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('report_gradient_norm')   None:None <inline>
+                          SingleStyledText('report_gradient_norm')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.FGSMTrainer:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Extends base trainer class to im...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.FGSMTrainer:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Extends base trainer class to im...')
+                SingleStyledText('Extends base trainer class to im...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.GradientRegularizationTrainer:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class trainers.GradientRegulariz...', id='trainers.GradientRegularizationTrainer')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.GradientRegularizationTrainer:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class trainers.GradientRegulariz...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.GradientRegularizationTrainer:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('trainers.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.GradientRegularizationTrainer:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('trainers.')
+                MixedStyledText('GradientRegularizationTrainer', style='main object name')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.GradientRegularizationTrainer:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('GradientRegularizationTrainer')
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.GradientRegularizationTrainer:None <desc_parameterlist>
+                  MixedStyledText(' ( device='cpu', log_interval=10...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device='cpu', log_interval=10, l...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('log_interval=10', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('log_interval')   None:None <inline>
+                          SingleStyledText('log_interval')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('10')   None:None <inline>
+                          SingleStyledText('10')
+                      SingleStyledText(', ')
+                      MixedStyledText('lambda_=0.1', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('lambda_')   None:None <inline>
+                          SingleStyledText('lambda_')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.1')   None:None <inline>
+                          SingleStyledText('0.1')
+                      SingleStyledText(', ')
+                      MixedStyledText('annealing=False', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('annealing')   None:None <inline>
+                          SingleStyledText('annealing')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('False')   None:None <inline>
+                          SingleStyledText('False')
+                      SingleStyledText(', ')
+                      MixedStyledText('report_gradient_norm=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('report_gradient_norm')   None:None <inline>
+                          SingleStyledText('report_gradient_norm')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.GradientRegularizationTrainer:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Extends the base trainer class t...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.GradientRegularizationTrainer:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Extends the base trainer class t...')
+                SingleStyledText('Extends the base trainer class t...')
+            Paragraph('TODO: Decide on good value for l...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.GradientRegularizationTrainer:3 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('TODO: Decide on good value for l...')
+                SingleStyledText('TODO: Decide on good value for l...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.Trainer:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('class trainers.Trainer ( device=...', id='trainers.Trainer')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.Trainer:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('class trainers.Trainer ( device=...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.Trainer:None <desc_annotation>
+                     > (0,0,3,0,6) object annotation
+                  SingleStyledText('class ')
+                MixedStyledText('trainers.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.Trainer:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('trainers.')
+                MixedStyledText('Trainer', style='main object name')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.Trainer:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('Trainer')
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.Trainer:None <desc_parameterlist>
+                  MixedStyledText(' ( device='cpu', log_interval=10...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('device='cpu', log_interval=10, r...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('log_interval=10', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('log_interval')   None:None <inline>
+                          SingleStyledText('log_interval')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('10')   None:None <inline>
+                          SingleStyledText('10')
+                      SingleStyledText(', ')
+                      MixedStyledText('report_gradient_norm=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('report_gradient_norm')   None:None <inline>
+                          SingleStyledText('report_gradient_norm')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.Trainer:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Base class that trains a given m...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.Trainer:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Base class that trains a given m...')
+                SingleStyledText('Base class that trains a given m...')
+            Paragraph('All other trainer classes are ex...')   D:\Libraries\Documents\false_sense_of_security\trainers.py:docstring of trainers.Trainer:3 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('All other trainer classes are ex...')
+                SingleStyledText('All other trainer classes are ex...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.adversarial_accuracy:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('utils.adversarial_accuracy ( mod...', id='utils.adversarial_accuracy')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.adversarial_accuracy:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('utils.adversarial_accuracy ( mod...')
+                MixedStyledText('utils.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.adversarial_accuracy:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('utils.')
+                MixedStyledText('adversarial_accuracy', style='main object name')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.adversarial_accuracy:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('adversarial_accuracy')
+                MixedStyledText(' ( model, dataset_loader, attack...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.adversarial_accuracy:None <desc_parameterlist>
+                  MixedStyledText(' ( model, dataset_loader, attack...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('model, dataset_loader, attack=<f...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('model', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        SingleStyledText('model')
+                      SingleStyledText(', ')
+                      MixedStyledText('dataset_loader', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        SingleStyledText('dataset_loader')
+                      SingleStyledText(', ')
+                      MixedStyledText('attack=<function pgd_>', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        SingleStyledText('attack=<function pgd_>')
+                      SingleStyledText(', ')
+                      MixedStyledText('iters=20', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        SingleStyledText('iters=20')
+                      SingleStyledText(', ')
+                      MixedStyledText('eps=0.5', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        SingleStyledText('eps=0.5')
+                      SingleStyledText(', ')
+                      MixedStyledText('step=0.1', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        SingleStyledText('step=0.1')
+                      SingleStyledText(', ')
+                      MixedStyledText('random_step=False', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        SingleStyledText('random_step=False')
+                      SingleStyledText(', ')
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        SingleStyledText('device='cpu'')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.adversarial_accuracy:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Compute the adversarial accuracy...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.adversarial_accuracy:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Compute the adversarial accuracy...')
+                SingleStyledText('Compute the adversarial accuracy...')
+            Paragraph('Deprecated, moved to using foolb...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.adversarial_accuracy:3 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Deprecated, moved to using foolb...')
+                SingleStyledText('Deprecated, moved to using foolb...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.fgsm_:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('utils.fgsm_ ( model, x, target, ...', id='utils.fgsm_')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.fgsm_:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('utils.fgsm_ ( model, x, target, ...')
+                MixedStyledText('utils.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.fgsm_:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('utils.')
+                MixedStyledText('fgsm_', style='main object name')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.fgsm_:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('fgsm_')
+                MixedStyledText(' ( model, x, target, eps=0.5, ta...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.fgsm_:None <desc_parameterlist>
+                  MixedStyledText(' ( model, x, target, eps=0.5, ta...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('model, x, target, eps=0.5, targe...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('model', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('model')   None:None <inline>
+                          SingleStyledText('model')
+                      SingleStyledText(', ')
+                      MixedStyledText('x', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('x')   None:None <inline>
+                          SingleStyledText('x')
+                      SingleStyledText(', ')
+                      MixedStyledText('target', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('target')   None:None <inline>
+                          SingleStyledText('target')
+                      SingleStyledText(', ')
+                      MixedStyledText('eps=0.5', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('eps')   None:None <inline>
+                          SingleStyledText('eps')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.5')   None:None <inline>
+                          SingleStyledText('0.5')
+                      SingleStyledText(', ')
+                      MixedStyledText('targeted=True', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('targeted')   None:None <inline>
+                          SingleStyledText('targeted')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('True')   None:None <inline>
+                          SingleStyledText('True')
+                      SingleStyledText(', ')
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('clip_min=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('clip_min')   None:None <inline>
+                          SingleStyledText('clip_min')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                      SingleStyledText(', ')
+                      MixedStyledText('clip_max=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('clip_max')   None:None <inline>
+                          SingleStyledText('clip_max')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                      SingleStyledText(', ')
+                      MixedStyledText('**kwargs', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('**')   None:None <inline>
+                          SingleStyledText('**')
+                        MixedStyledText('kwargs')   None:None <inline>
+                          SingleStyledText('kwargs')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.fgsm_:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Internal process for all FGSM an...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.fgsm_:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Internal process for all FGSM an...')
+                SingleStyledText('Internal process for all FGSM an...')
+            Paragraph('Returns the adversarial examples...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.fgsm_:3 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Returns the adversarial examples...')
+                SingleStyledText('Returns the adversarial examples...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_information:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('utils.gradient_information ( mod...', id='utils.gradient_information')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_information:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('utils.gradient_information ( mod...')
+                MixedStyledText('utils.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_information:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('utils.')
+                MixedStyledText('gradient_information', style='main object name')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_information:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('gradient_information')
+                MixedStyledText(' ( model, data, target, step=0.0...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_information:None <desc_parameterlist>
+                  MixedStyledText(' ( model, data, target, step=0.0...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('model, data, target, step=0.01, ...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('model', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('model')   None:None <inline>
+                          SingleStyledText('model')
+                      SingleStyledText(', ')
+                      MixedStyledText('data', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('data')   None:None <inline>
+                          SingleStyledText('data')
+                      SingleStyledText(', ')
+                      MixedStyledText('target', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('target')   None:None <inline>
+                          SingleStyledText('target')
+                      SingleStyledText(', ')
+                      MixedStyledText('step=0.01', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('step')   None:None <inline>
+                          SingleStyledText('step')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.01')   None:None <inline>
+                          SingleStyledText('0.01')
+                      SingleStyledText(', ')
+                      MixedStyledText('eps=0.5', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('eps')   None:None <inline>
+                          SingleStyledText('eps')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('0.5')   None:None <inline>
+                          SingleStyledText('0.5')
+                      SingleStyledText(', ')
+                      MixedStyledText('iters=20', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('iters')   None:None <inline>
+                          SingleStyledText('iters')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('20')   None:None <inline>
+                          SingleStyledText('20')
+                      SingleStyledText(', ')
+                      MixedStyledText('targeted=False', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('targeted')   None:None <inline>
+                          SingleStyledText('targeted')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('False')   None:None <inline>
+                          SingleStyledText('False')
+                      SingleStyledText(', ')
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('clip_min=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('clip_min')   None:None <inline>
+                          SingleStyledText('clip_min')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                      SingleStyledText(', ')
+                      MixedStyledText('clip_max=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('clip_max')   None:None <inline>
+                          SingleStyledText('clip_max')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_information:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Computes the cosine information ...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_information:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Computes the cosine information ...')
+                SingleStyledText('Computes the cosine information ...')
+            Paragraph('For non gradient masked models, ...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_information:3 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('For non gradient masked models, ...')
+                SingleStyledText('For non gradient masked models, ...')
+            Paragraph('TODO: Incorrect implementation!!...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_information:6 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('TODO: Incorrect implementation!!...')
+                SingleStyledText('TODO: Incorrect implementation!!...')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_norm:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('utils.gradient_norm ( model, dat...', id='utils.gradient_norm')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_norm:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('utils.gradient_norm ( model, dat...')
+                MixedStyledText('utils.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_norm:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('utils.')
+                MixedStyledText('gradient_norm', style='main object name')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_norm:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('gradient_norm')
+                MixedStyledText(' ( model, data_loader, device='c...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_norm:None <desc_parameterlist>
+                  MixedStyledText(' ( model, data_loader, device='c...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('model, data_loader, device='cpu'', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('model', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('model')   None:None <inline>
+                          SingleStyledText('model')
+                      SingleStyledText(', ')
+                      MixedStyledText('data_loader', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('data_loader')   None:None <inline>
+                          SingleStyledText('data_loader')
+                      SingleStyledText(', ')
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_norm:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Computes the gradient norm w.r.t...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_norm:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Computes the gradient norm w.r.t...')
+                SingleStyledText('Computes the gradient norm w.r.t...')
+            Paragraph('TODO: Move to metrics.')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.gradient_norm:3 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('TODO: Move to metrics.')
+                SingleStyledText('TODO: Move to metrics.')
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.pgd_:None <desc>
+             > (0,0,1,0,2) object description
+          StaticGroupedFlowables(style='signatures')
+               > (0,0,2,0,3) object signatures
+            Paragraph('utils.pgd_ ( model, x, target, s...', id='utils.pgd_')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.pgd_:1 <desc_signature>
+                 > (0,0,2,0,5) object signature
+                   (0,0,0,0,2) body
+              MixedStyledText('utils.pgd_ ( model, x, target, s...')
+                MixedStyledText('utils.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.pgd_:None <desc_addname>
+                     > (0,0,3,0,6) additional name part
+                  SingleStyledText('utils.')
+                MixedStyledText('pgd_', style='main object name')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.pgd_:None <desc_name>
+                     > (0,0,3,0,6) object name
+                  SingleStyledText('pgd_')
+                MixedStyledText(' ( model, x, target, step, eps, ...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.pgd_:None <desc_parameterlist>
+                  MixedStyledText(' ( model, x, target, step, eps, ...')
+                    SingleStyledText(' ( ', style='parentheses')
+                         > (0,0,3,0,6) object parentheses
+                    MixedStyledText('model, x, target, step, eps, ite...', style='parameter list')
+                         > (0,0,3,0,6) object parameter list
+                      MixedStyledText('model', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('model')   None:None <inline>
+                          SingleStyledText('model')
+                      SingleStyledText(', ')
+                      MixedStyledText('x', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('x')   None:None <inline>
+                          SingleStyledText('x')
+                      SingleStyledText(', ')
+                      MixedStyledText('target', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('target')   None:None <inline>
+                          SingleStyledText('target')
+                      SingleStyledText(', ')
+                      MixedStyledText('step', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('step')   None:None <inline>
+                          SingleStyledText('step')
+                      SingleStyledText(', ')
+                      MixedStyledText('eps', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('eps')   None:None <inline>
+                          SingleStyledText('eps')
+                      SingleStyledText(', ')
+                      MixedStyledText('iters=7', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('iters')   None:None <inline>
+                          SingleStyledText('iters')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('7')   None:None <inline>
+                          SingleStyledText('7')
+                      SingleStyledText(', ')
+                      MixedStyledText('targeted=True', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('targeted')   None:None <inline>
+                          SingleStyledText('targeted')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('True')   None:None <inline>
+                          SingleStyledText('True')
+                      SingleStyledText(', ')
+                      MixedStyledText('device='cpu'', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('device')   None:None <inline>
+                          SingleStyledText('device')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText(''cpu'')   None:None <inline>
+                          SingleStyledText(''cpu'')
+                      SingleStyledText(', ')
+                      MixedStyledText('clip_min=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('clip_min')   None:None <inline>
+                          SingleStyledText('clip_min')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                      SingleStyledText(', ')
+                      MixedStyledText('clip_max=None', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('clip_max')   None:None <inline>
+                          SingleStyledText('clip_max')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('None')   None:None <inline>
+                          SingleStyledText('None')
+                      SingleStyledText(', ')
+                      MixedStyledText('random_step=True', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('random_step')   None:None <inline>
+                          SingleStyledText('random_step')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('True')   None:None <inline>
+                          SingleStyledText('True')
+                      SingleStyledText(', ')
+                      MixedStyledText('early_stop=False', style='parameter')   None:None <desc_parameter>
+                           > (0,0,3,0,6) object parameter
+                        MixedStyledText('early_stop')   None:None <inline>
+                          SingleStyledText('early_stop')
+                        MixedStyledText('=')   None:None <inline>
+                          SingleStyledText('=')
+                        MixedStyledText('False')   None:None <inline>
+                          SingleStyledText('False')
+                  SingleStyledText(' ) ', style='parentheses')
+                       > (0,0,3,0,6) object parentheses
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.pgd_:None <desc_content>
+               > (0,0,2,0,3) object description content
+            Paragraph('Internal pgd attack used during ...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.pgd_:1 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Internal pgd attack used during ...')
+                SingleStyledText('Internal pgd attack used during ...')
+            Paragraph('Applies iterated steps of the fg...')   D:\Libraries\Documents\false_sense_of_security\utils.py:docstring of utils.pgd_:3 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Applies iterated steps of the fg...')
+                SingleStyledText('Applies iterated steps of the fg...')
+      List(style='bulleted')   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:39 <bullet_list>
+           > (0,0,1,0,2) bulleted list
+        ListItem()
+             x (0,0,1,0,4) bulleted list item
+             > fallback to default style
+          ListItemLabel('•')
+               > (0,0,1,0,6) bulleted list item label
+                 (0,0,0,0,2) list item label
+              MixedStyledText('•')
+                SingleStyledText('')
+                SingleStyledText('•')
+                SingleStyledText('')
+          StaticGroupedFlowables()   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:None <list_item>
+               > (0,0,0,0,3) list item body
+            Paragraph('Index')   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:39 <paragraph>
+                 > (0,0,0,0,5) list item paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Index')
+                AnnotatedText('Index', style='internal link')   None:None <reference>
+                     > (0,0,1,0,1) internal hyperlink
+                  MixedStyledText('Index')
+                    MixedStyledText('Index')   None:None <inline>
+                      SingleStyledText('Index')
+        ListItem()
+             x (0,0,1,0,4) bulleted list item
+             > fallback to default style
+          ListItemLabel('•')
+               > (0,0,1,0,6) bulleted list item label
+                 (0,0,0,0,2) list item label
+              MixedStyledText('•')
+                SingleStyledText('')
+                SingleStyledText('•')
+                SingleStyledText('')
+          StaticGroupedFlowables()   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:None <list_item>
+               > (0,0,0,0,3) list item body
+            Paragraph('Module Index')   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:40 <paragraph>
+                 > (0,0,0,0,5) list item paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Module Index')
+                AnnotatedText('Module Index', style='internal link')   None:None <reference>
+                     > (0,0,1,0,1) internal hyperlink
+                  MixedStyledText('Module Index')
+                    MixedStyledText('Module Index')   None:None <inline>
+                      SingleStyledText('Module Index')
+#### UpExpandingContainer('header')
+  StaticGroupedFlowables()
+    Header('False Sense of Security, Release...')
+         > (0,0,0,0,2) header
+           (0,0,0,0,1) body
+      MixedStyledText('False Sense of Security, Release...')
+        Field('False Sense of Security')
+          SingleStyledText('False Sense of Security')
+        SingleStyledText(', ')
+        Field('Release ')
+          SingleStyledText('Release ')
+#### DownExpandingContainer('footer')
+  StaticGroupedFlowables()
+    Footer('4		Chapter 2.  Documentation for...')
+         > (0,0,0,0,2) footer
+           (0,0,0,0,1) body
+      MixedStyledText('4		Chapter 2.  Documentation for...')
+        Field('4')
+          SingleStyledText('4')
+        Tab('	')
+        Tab('	')
+        StringField('Chapter')
+          SingleStyledText('Chapter')
+        SingleStyledText(' ')
+        Field('2')
+          SingleStyledText('2')
+        SingleStyledText('.  ')
+        Field('Documentation for the Code')
+          SingleStyledText('Documentation for the Code')
+---------------------------------- page 5 ----------------------------------
+#### FootnoteContainer('footnotes')
+  StaticGroupedFlowables()
+#### DownExpandingContainer('floats')
+  StaticGroupedFlowables()
+#### ChainedContainer('column1')
+  (continued) StaticGroupedFlowables()
+    (continued) DocumentTree()
+      (continued) List(style='bulleted')   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:39 <bullet_list>
+           > (0,0,1,0,2) bulleted list
+        ListItem()
+             x (0,0,1,0,4) bulleted list item
+             > fallback to default style
+          ListItemLabel('•')
+               > (0,0,1,0,6) bulleted list item label
+                 (0,0,0,0,2) list item label
+              MixedStyledText('•')
+                SingleStyledText('')
+                SingleStyledText('•')
+                SingleStyledText('')
+          StaticGroupedFlowables()   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:None <list_item>
+               > (0,0,0,0,3) list item body
+            Paragraph('Search Page')   D:\Libraries\Documents\false_sense_of_security\docs\source\index.rst:41 <paragraph>
+                 > (0,0,0,0,5) list item paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('Search Page')
+                AnnotatedText('Search Page', style='internal link')   None:None <reference>
+                     > (0,0,1,0,1) internal hyperlink
+                  MixedStyledText('Search Page')
+                    MixedStyledText('Search Page')   None:None <inline>
+                      SingleStyledText('Search Page')
+#### UpExpandingContainer('header')
+  StaticGroupedFlowables()
+    Header('		False Sense of Security, Relea...')
+         > (0,0,0,0,2) header
+           (0,0,0,0,1) body
+      MixedStyledText('		False Sense of Security, Relea...')
+        Tab('	')
+        Tab('	')
+        Field('False Sense of Security')
+          SingleStyledText('False Sense of Security')
+        SingleStyledText(', ')
+        Field('Release ')
+          SingleStyledText('Release ')
+#### DownExpandingContainer('footer')
+  StaticGroupedFlowables()
+    Footer('​.  ​		5')
+         > (0,0,0,0,2) footer
+           (0,0,0,0,1) body
+      MixedStyledText('​.  ​		5')
+        Field('​')
+          SingleStyledText('​')
+        SingleStyledText('.  ')
+        Field('​')
+          SingleStyledText('​')
+        Tab('	')
+        Tab('	')
+        Field('5')
+          SingleStyledText('5')
+---------------------------------- page 7 ----------------------------------
+#### FootnoteContainer('footnotes')
+  StaticGroupedFlowables()
+#### DownExpandingContainer('floats')
+  StaticGroupedFlowables()
+#### FlowablesContainer('chapter title')
+  Paragraph('Python Module Index', style='front matter section title')
+       > (0,0,1,0,2) front matter section title
+         (0,0,0,0,2) body
+    Field('Python Module Index')
+      SingleStyledText('Python Module Index')
+#### ChainedContainer('column1')
+  StaticGroupedFlowables()
+    StaticGroupedFlowables()
+      IndexSection()
+           > (0,0,0,1,1) chapter
+        IndexLabel('g')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('g')
+        IndexEntry('gradient_masking_tests, 3')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('gradient_masking_tests, 3')
+            SingleStyledText('gradient_masking_tests', style='domain')
+                 > (0,0,1,0,3) domain index entry name
+            SingleStyledText(', ')
+            Reference('3')
+                 > (0,0,0,1,1) linked reference
+              SingleStyledText('3')
+        IndexLabel('n')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('n')
+        IndexEntry('Nets, 3')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('Nets, 3')
+            SingleStyledText('Nets', style='domain')
+                 > (0,0,1,0,3) domain index entry name
+            SingleStyledText(', ')
+            Reference('3')
+                 > (0,0,0,1,1) linked reference
+              SingleStyledText('3')
+        IndexLabel('t')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('t')
+        IndexEntry('train_model, 4')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('train_model, 4')
+            SingleStyledText('train_model', style='domain')
+                 > (0,0,1,0,3) domain index entry name
+            SingleStyledText(', ')
+            Reference('4')
+                 > (0,0,0,1,1) linked reference
+              SingleStyledText('4')
+        IndexEntry('trainers, 4')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('trainers, 4')
+            SingleStyledText('trainers', style='domain')
+                 > (0,0,1,0,3) domain index entry name
+            SingleStyledText(', ')
+            Reference('4')
+                 > (0,0,0,1,1) linked reference
+              SingleStyledText('4')
+        IndexLabel('u')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('u')
+        IndexEntry('utils, 4')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('utils, 4')
+            SingleStyledText('utils', style='domain')
+                 > (0,0,1,0,3) domain index entry name
+            SingleStyledText(', ')
+            Reference('4')
+                 > (0,0,0,1,1) linked reference
+              SingleStyledText('4')
+#### DownExpandingContainer('footer')
+  StaticGroupedFlowables()
+    Footer('		7')
+         > (0,0,0,0,2) footer
+           (0,0,0,0,1) body
+      MixedStyledText('		7')
+        Tab('	')
+        Tab('	')
+        Field('7')
+          SingleStyledText('7')
+---------------------------------- page 8 ----------------------------------
+#### FootnoteContainer('footnotes')
+  StaticGroupedFlowables()
+#### DownExpandingContainer('floats')
+  StaticGroupedFlowables()
+#### ChainedContainer('column1')
+  (continued) StaticGroupedFlowables()
+#### UpExpandingContainer('header')
+  StaticGroupedFlowables()
+    Header('False Sense of Security, Release...')
+         > (0,0,0,0,2) header
+           (0,0,0,0,1) body
+      MixedStyledText('False Sense of Security, Release...')
+        Field('False Sense of Security')
+          SingleStyledText('False Sense of Security')
+        SingleStyledText(', ')
+        Field('Release ')
+          SingleStyledText('Release ')
+#### DownExpandingContainer('footer')
+  StaticGroupedFlowables()
+    Footer('8		Python Module Index')
+         > (0,0,0,0,2) footer
+           (0,0,0,0,1) body
+      MixedStyledText('8		Python Module Index')
+        Field('8')
+          SingleStyledText('8')
+        Tab('	')
+        Tab('	')
+        Field('Python Module Index')
+          SingleStyledText('Python Module Index')
+---------------------------------- page 9 ----------------------------------
+#### FootnoteContainer('footnotes')
+  StaticGroupedFlowables()
+#### DownExpandingContainer('floats')
+  StaticGroupedFlowables()
+#### FlowablesContainer('chapter title')
+  Paragraph('Index', style='front matter section title')
+       > (0,0,1,0,2) front matter section title
+         (0,0,0,0,2) body
+    Field('Index')
+      SingleStyledText('Index')
+#### ChainedContainer('column1')
+  (continued) StaticGroupedFlowables()
+    IndexSection()
+         > (0,0,0,1,1) chapter
+      Index()   index
+           > (0,0,0,0,2) index
+        IndexLabel('A')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('A')
+        IndexEntry('adversarial_accuracy() (in modul...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('adversarial_accuracy() (in modul...')
+            SingleStyledText('adversarial_accuracy() (in modul...')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexLabel('C')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('C')
+        IndexEntry('CIFAR_Net (class in Nets), 3')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('CIFAR_Net (class in Nets), 3')
+            SingleStyledText('CIFAR_Net (class in Nets), ')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('CIFAR_Res_Net (class in Nets), 3')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('CIFAR_Res_Net (class in Nets), 3')
+            SingleStyledText('CIFAR_Res_Net (class in Nets), ')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('CIFAR_Wide_Res_Net (class in Net...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('CIFAR_Wide_Res_Net (class in Net...')
+            SingleStyledText('CIFAR_Wide_Res_Net (class in Net...')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('CurvatureRegularizationTrainer (...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('CurvatureRegularizationTrainer (...')
+            SingleStyledText('CurvatureRegularizationTrainer (...')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexLabel('F')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('F')
+        IndexEntry('fgsm_() (in module utils), 4')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('fgsm_() (in module utils), 4')
+            SingleStyledText('fgsm_() (in module utils), ')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexEntry('FGSMTrainer (class in trainers),...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('FGSMTrainer (class in trainers),...')
+            SingleStyledText('FGSMTrainer (class in trainers),...')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexLabel('G')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('G')
+        IndexEntry('get_accuracy() (in module gradie...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('get_accuracy() (in module gradie...')
+            SingleStyledText('get_accuracy() (in module gradie...')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('gradient_information() (in modul...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('gradient_information() (in modul...')
+            SingleStyledText('gradient_information() (in modul...')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexEntry('Gradient_Masked_MNIST (class in ...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('Gradient_Masked_MNIST (class in ...')
+            SingleStyledText('Gradient_Masked_MNIST (class in ...')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('gradient_masking_tests')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          SingleStyledText('gradient_masking_tests')
+        IndexEntry('module, 3')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('module, 3')
+            SingleStyledText('module, ')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('gradient_norm() (in module utils...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('gradient_norm() (in module utils...')
+            SingleStyledText('gradient_norm() (in module utils...')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexEntry('GradientRegularizationTrainer (c...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('GradientRegularizationTrainer (c...')
+            SingleStyledText('GradientRegularizationTrainer (c...')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexLabel('M')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('M')
+        IndexEntry('MNIST_Net (class in Nets), 3')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('MNIST_Net (class in Nets), 3')
+            SingleStyledText('MNIST_Net (class in Nets), ')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('module')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          SingleStyledText('module')
+        IndexEntry('gradient_masking_tests, 3')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('gradient_masking_tests, 3')
+            SingleStyledText('gradient_masking_tests, ')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('Nets, 3')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('Nets, 3')
+            SingleStyledText('Nets, ')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('train_model, 4')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('train_model, 4')
+            SingleStyledText('train_model, ')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexEntry('trainers, 4')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('trainers, 4')
+            SingleStyledText('trainers, ')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexEntry('utils, 4')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('utils, 4')
+            SingleStyledText('utils, ')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+#### ChainedContainer('column2')
+  (continued) StaticGroupedFlowables()
+    (continued) IndexSection()
+         > (0,0,0,1,1) chapter
+      (continued) Index()   index
+           > (0,0,0,0,2) index
+        IndexLabel('N')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('N')
+        IndexEntry('Nets')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          SingleStyledText('Nets')
+        IndexEntry('module, 3')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('module, 3')
+            SingleStyledText('module, ')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexEntry('Normalization (class in Nets), 3')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('Normalization (class in Nets), 3')
+            SingleStyledText('Normalization (class in Nets), ')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexLabel('P')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('P')
+        IndexEntry('pgd_() (in module utils), 4')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('pgd_() (in module utils), 4')
+            SingleStyledText('pgd_() (in module utils), ')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexEntry('PGD_MNIST (class in Nets), 3')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('PGD_MNIST (class in Nets), 3')
+            SingleStyledText('PGD_MNIST (class in Nets), ')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexLabel('R')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('R')
+        IndexEntry('regularizer() (trainers.Curvatur...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('regularizer() (trainers.Curvatur...')
+            SingleStyledText('regularizer() (trainers.Curvatur...')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexEntry('run_masking_benchmarks() (in mod...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('run_masking_benchmarks() (in mod...')
+            SingleStyledText('run_masking_benchmarks() (in mod...')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexLabel('S')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('S')
+        IndexEntry('spsa_accuracy() (in module gradi...')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('spsa_accuracy() (in module gradi...')
+            SingleStyledText('spsa_accuracy() (in module gradi...')
+            MixedStyledText('3')
+              Reference('3')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('3')
+        IndexLabel('T')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('T')
+        IndexEntry('train_model')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          SingleStyledText('train_model')
+        IndexEntry('module, 4')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('module, 4')
+            SingleStyledText('module, ')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexEntry('Trainer (class in trainers), 4')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('Trainer (class in trainers), 4')
+            SingleStyledText('Trainer (class in trainers), ')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexEntry('trainers')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          SingleStyledText('trainers')
+        IndexEntry('module, 4')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('module, 4')
+            SingleStyledText('module, ')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+        IndexLabel('U')
+             > (0,0,0,0,2) index section label
+               (0,0,0,0,1) body
+          SingleStyledText('U')
+        IndexEntry('utils')
+             > (0,0,0,1,2) level 1 index entry
+               (0,0,0,0,1) body
+          SingleStyledText('utils')
+        IndexEntry('module, 4')
+             > (0,0,0,1,2) level 2 index entry
+               (0,0,0,0,1) body
+          MixedStyledText('module, 4')
+            SingleStyledText('module, ')
+            MixedStyledText('4')
+              Reference('4')
+                   > (0,0,0,1,1) linked reference
+                SingleStyledText('4')
+#### DownExpandingContainer('footer')
+  StaticGroupedFlowables()
+    Footer('		9')
+         > (0,0,0,0,2) footer
+           (0,0,0,0,1) body
+      MixedStyledText('		9')
+        Tab('	')
+        Tab('	')
+        Field('9')
+          SingleStyledText('9')

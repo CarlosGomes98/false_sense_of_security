@@ -1,4 +1,5 @@
 import argparse
+import os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -8,12 +9,23 @@ from torch.autograd import grad
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
-from utils import fgsm_
+from utils import fgsm_, gradient_norm
 
 class Trainer:
-    def __init__(self, device="cpu", log_interval=10):
+    """
+    Base class that trains a given model, given a dataloader using standard SGD.
+
+    All other trainer classes are extended from this one.
+    """
+    def __init__(self, device="cpu", log_interval=10, report_gradient_norm=None):
         self.device = device
         self.log_interval = log_interval
+        self.report_gradient_norm=report_gradient_norm
+        if report_gradient_norm is not None:
+            if os.path.isdir(report_gradient_norm):
+                raise Exception("Folder with gradient norm information already exists. Would overwrite existing log.")
+            os.mkdir(report_gradient_norm)
+                
         
     def train(self, model, train_loader, epochs, test_loader=None, optimizer=None):
         if optimizer is None:
@@ -23,6 +35,10 @@ class Trainer:
             self.train_step(model, train_loader, epoch, optimizer, criterion)
             if test_loader is not None:
                 self.test(model, test_loader, criterion)
+            if self.report_gradient_norm is not None:
+                norm = gradient_norm(model, test_loader, device=self.device)
+                torch.save(norm, os.path.join(self.report_gradient_norm, 'epoch_{}.pt'.format(epoch)))
+                print('Gradient Norm -- Mean: {}, Min: {}, Max: {}'.format(norm.mean(), norm.min(), norm.max()))
     
     def test(self, model, test_loader, criterion):
         model.eval()
@@ -42,6 +58,7 @@ class Trainer:
             test_loss, correct, len(test_loader.dataset),
             100. * correct / len(test_loader.dataset)))
 
+
         
     def train_step(self, model, train_loader, epoch, optimizer, criterion):
         model.train()
@@ -58,21 +75,15 @@ class Trainer:
                     100. * batch_idx / len(train_loader), loss.item()))
                 
 class FGSMTrainer(Trainer):
-    def __init__(self, device="cpu", log_interval=10, clip_min=0, clip_max=1, eps=(8/255)):
-        super(FGSMTrainer, self).__init__(device=device, log_interval=log_interval)
+    """
+    Extends base trainer class to implement training with a single FGSM step.
+    """
+    def __init__(self, device="cpu", log_interval=10, clip_min=0, clip_max=1, eps=(8/255), report_gradient_norm=None):
+        super(FGSMTrainer, self).__init__(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm)
         self.clip_min = clip_min
         self.clip_max = clip_max
         self.eps = eps
         
-    def train(self, model, train_loader, epochs, test_loader=None, optimizer=None):
-        if optimizer is None:
-            optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
-        criterion = nn.CrossEntropyLoss()
-        for epoch in range(1, epochs + 1):
-            self.train_step(model, train_loader, epoch, optimizer, criterion)
-            if test_loader is not None:
-                self.test(model, test_loader, criterion)
-
     def train_step(self, model, train_loader, epoch, optimizer, criterion):
         model.train()
         for batch_idx, (data, target) in enumerate(train_loader):
@@ -91,9 +102,31 @@ class FGSMTrainer(Trainer):
 # FROM https://github.com/F-Salehi/CURE_robustness
 # "Robustness via curvature regularization, and vice versa ", SM. Moosavi-Dezfooli, A. Fawzi, J. Uesato, and P. Frossard, CVPR 2019.
 class GradientRegularizationTrainer(Trainer):
-    def __init__(self, device="cpu", log_interval=10, lambda_=0.1):
-        super(GradientRegularizationTrainer, self).__init__(device=device, log_interval=log_interval)
+    """
+    Extends the base trainer class to implement training with input gradient regularization.
+
+    TODO: Decide on good value for lambda, good annealing schedule.
+    """
+    def __init__(self, device="cpu", log_interval=10, lambda_=0.1, annealing=False, report_gradient_norm=None):
+        super(GradientRegularizationTrainer, self).__init__(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm)
         self.lambda_ = lambda_
+        self.cur_lambda = lambda_
+        self.annealing = annealing
+
+    def train(self, model, train_loader, epochs, test_loader=None, optimizer=None):
+        if optimizer is None:
+            optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+        criterion = nn.CrossEntropyLoss()
+        for epoch in range(1, epochs + 1):
+            self.train_step(model, train_loader, epoch, optimizer, criterion)
+            if test_loader is not None:
+                self.test(model, test_loader, criterion)
+            if self.annealing:
+                    self.cur_lambda = self.lambda_ * ((epochs - epoch) / epochs)
+        if self.report_gradient_norm is not None:
+            norm = gradient_norm(model, test_loader, device=self.device)
+            torch.save(norm, os.path.join(self.report_gradient_norm, 'epoch_{}.pt'.format(epoch)))
+            print('Gradient Norm -- Mean: {}, Min: {}, Max: {}'.format(norm.mean(), norm.min(), norm.max()))
 
     def train_step(self, model, train_loader, epoch, optimizer, criterion):
         model.train()
@@ -102,21 +135,29 @@ class GradientRegularizationTrainer(Trainer):
             data.requires_grad_()
             output = model(data)
             loss = criterion(output, target)
+            ce_loss = loss
             gradient_norm = (grad(outputs=loss, inputs=data, retain_graph=True, only_inputs=True)[0]**2).sum()
-            loss = loss + self.lambda_ * gradient_norm
+            loss = loss + self.cur_lambda * gradient_norm
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             if batch_idx % self.log_interval == 0:
-                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\t CE Loss: {:.6f}, Gradient loss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.item()))
+                    100. * batch_idx / len(train_loader), ce_loss.item(), (self.cur_lambda * gradient_norm).item()))
 
 # FROM https://github.com/F-Salehi/CURE_robustness
 # "Robustness via curvature regularization, and vice versa ", SM. Moosavi-Dezfooli, A. Fawzi, J. Uesato, and P. Frossard, CVPR 2019.
 class CurvatureRegularizationTrainer(Trainer):
-    def __init__(self, device="cpu", log_interval=10, lambda_=4):
-        super(CurvatureRegularizationTrainer, self).__init__(device=device, log_interval=log_interval)
+    """
+    Extends the base trainer to train with curvature regularization
+    FROM https://github.com/F-Salehi/CURE_robustness
+    "Robustness via curvature regularization, and vice versa ", SM. Moosavi-Dezfooli, A. Fawzi, J. Uesato, and P. Frossard, CVPR 2019.
+
+    TODO: Currently not working.
+    """
+    def __init__(self, device="cpu", log_interval=10, lambda_=4, report_gradient_norm=None):
+        super(CurvatureRegularizationTrainer, self).__init__(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm)
         self.lambda_ = lambda_
 
     def _find_z(self, model, criterion, inputs, targets, h):
