@@ -11,11 +11,11 @@ import matplotlib.pyplot as plt
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM
 from advertorch.attacks import LinfSPSAAttack
-from trainers import Trainer, FGSMTrainer
+from .trainers import Trainer, FGSMTrainer
 from robustbench.model_zoo.models import Carmon2019UnlabeledNet
-from utils import adversarial_accuracy, fgsm_
+from .utils import adversarial_accuracy, fgsm_
 import eagerpy as ep
-from Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
+from .Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
 def run_masking_benchmarks(model, test_dataset, epsilon=0.06, device="cpu", batch_size=32):
     """

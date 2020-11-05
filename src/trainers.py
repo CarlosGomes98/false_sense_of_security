@@ -9,7 +9,7 @@ from torch.autograd import grad
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
-from utils import fgsm_, gradient_norm
+from .utils import fgsm_, gradient_norm
 
 class Trainer:
     """
@@ -36,7 +36,7 @@ class Trainer:
             if test_loader is not None:
                 self.test(model, test_loader, criterion)
             if self.report_gradient_norm is not None:
-                norm = gradient_norm(model, test_loader, device=self.device)
+                norm = gradient_norm(model, train_loader, device=self.device, subset_size=5000)
                 torch.save(norm, os.path.join(self.report_gradient_norm, 'epoch_{}.pt'.format(epoch)))
                 print('Gradient Norm -- Mean: {}, Min: {}, Max: {}'.format(norm.mean(), norm.min(), norm.max()))
     
@@ -124,7 +124,7 @@ class GradientRegularizationTrainer(Trainer):
             if self.annealing:
                     self.cur_lambda = self.lambda_ * ((epochs - epoch) / epochs)
         if self.report_gradient_norm is not None:
-            norm = gradient_norm(model, test_loader, device=self.device)
+            norm = gradient_norm(model, train_loader, device=self.device, subset_size=5000)
             torch.save(norm, os.path.join(self.report_gradient_norm, 'epoch_{}.pt'.format(epoch)))
             print('Gradient Norm -- Mean: {}, Min: {}, Max: {}'.format(norm.mean(), norm.min(), norm.max()))
 

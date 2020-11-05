@@ -106,14 +106,18 @@ def gradient_information(model, data, target, step=0.01, eps=0.5, iters=20, targ
     grad_information[adv_examples_index] = cos(grad, diff_vector)
     return grad_information
 
-def gradient_norm(model, data_loader, device='cpu'):
+def gradient_norm(model, data_loader, device='cpu', subset_size=10000):
     """
     Computes the gradient norm w.r.t. the loss at the given points.
 
     TODO: Move to metrics.
     """
+    count = 0
     grad_norms = []
     for (data, target) in data_loader:
+        if count > subset_size:
+            break
+        count += data.shape[0]
         input_ = data.clone().detach_().to(device)
         input_.requires_grad_()
         target = target.to(device)
