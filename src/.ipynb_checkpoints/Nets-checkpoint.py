@@ -6,16 +6,69 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
-from utils import fgsm_, pgd_
+from src.utils import fgsm_, pgd_
 from robustbench.model_zoo.models import Carmon2019UnlabeledNet
+from robustbench.model_zoo.resnet import ResNet, BasicBlock
+
+# Most models taken from robustbench model zoo, to ensure comparability with literature
+class Normalization(nn.Module):
+    """
+    Torch layer that handles normalization of data.
+
+    This normalization class ensures the attacks do not need to know about 
+    the preprocessing steps done on the data, and therefore step size can
+    remain unchaged.
+    """
+
+    def __init__(self, device, mean, std):
+        super(Normalization, self).__init__()
+        self.mean = torch.FloatTensor([mean]).view((1, 1, 1, 1)).to(device)
+        self.sigma = torch.FloatTensor([std]).view((1, 1, 1, 1)).to(device)
+
+    def forward(self, x):
+        return (x - self.mean) / self.sigma
+
+# ResNet 18
+class CIFAR_Res_Net(ResNet):
+    """
+    ResNet 18 from robustbench zoo extended with a normalization layer at the beggining.
+    """
+    def __init__(self, device):
+        super(CIFAR_Res_Net, self).__init__(BasicBlock, [2, 2, 2, 2])
+        self.norm = Normalization(device, 0.5, 0.5)
+
+        self.to(device)
+    
+    def forward(self, x):
+        x = self.norm(x)
+        return super().forward(x)
+class CIFAR_Wide_Res_Net(Carmon2019UnlabeledNet):
+    """
+    WideResNet-28-10 from robustbench zoo(Carmon2019UnlabeledNet) extended with a normalization layer at the beggining.
+    """
+    def __init__(self, device):
+        super(CIFAR_Wide_Res_Net, self).__init__()
+        self.norm = Normalization(device, 0.5, 0.5)
+
+        self.to(device)
+    
+    def forward(self, x):
+        x = self.norm(x)
+        return super().forward(x)
 
 class CIFAR_Net(nn.Module):
+    """
+    Very simple Conv Net for CIFAR-10.
+    """
     def __init__(self, device="cpu"):
         super(CIFAR_Net, self).__init__()
+        self.norm = Normalization(device, 0.5, 0.5)
         self.conv1 = nn.Conv2d(3, 32, 5)
+        self.conv1_1 = nn.Conv2d(32, 32, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(32, 64, 5)
-        self.fc1 = nn.Linear(64 * 5 * 5, 512)
+        self.conv2_1 = nn.Conv2d(64, 64, 5)
+        self.fc1 = nn.Linear(64 * 2 * 2, 512)
         self.fc2 = nn.Linear(512, 128)
         self.fc3 = nn.Linear(128, 10)
         
@@ -23,9 +76,12 @@ class CIFAR_Net(nn.Module):
         self.to(device)
 
     def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 64 * 5 * 5)
+        x = self.norm(x)
+        x = F.relu(self.conv1(x))
+        x = self.pool(F.relu(self.conv1_1(x)))
+        x = F.relu(self.conv2(x))
+        x = self.pool(F.relu(self.conv2_1(x)))
+        x = x.reshape(-1, 64 * 2 * 2)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)

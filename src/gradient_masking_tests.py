@@ -11,11 +11,11 @@ import matplotlib.pyplot as plt
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM
 from advertorch.attacks import LinfSPSAAttack
-from .trainers import Trainer, FGSMTrainer
+from src.trainers import Trainer, FGSMTrainer
 from robustbench.model_zoo.models import Carmon2019UnlabeledNet
-from .utils import adversarial_accuracy, fgsm_
+from src.utils import adversarial_accuracy, fgsm_
 import eagerpy as ep
-from .Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
+from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
 def run_masking_benchmarks(model, test_dataset, epsilon=0.06, device="cpu", batch_size=32):
     """
@@ -88,3 +88,52 @@ def spsa_accuracy(model, test_dataset, eps=0.03, iters=1, nb_sample=128, batch_s
     return correct / len(subset_loader.dataset)
 
 
+def gradient_norm(model, data_loader, device='cpu', subset_size=10000):
+    """
+    Computes the gradient norm w.r.t. the loss at the given points.
+
+    TODO: Move to metrics.
+    """
+    count = 0
+    grad_norms = []
+    for (data, target) in data_loader:
+        if count > subset_size:
+            break
+        count += data.shape[0]
+        input_ = data.clone().detach_().to(device)
+        input_.requires_grad_()
+        target = target.to(device)
+        model.zero_grad()
+        logits = model(input_)
+        loss = nn.CrossEntropyLoss()(logits, target)
+        loss.backward()
+
+        grad = input_.grad.reshape(input_.shape[0], -1)
+        grad_norm = torch.norm(grad, p=2, dim=1)
+        grad_norms.append(grad_norm)
+    grad_norm = torch.cat(grad_norms)
+    return grad_norm
+
+
+def fgsm_pgd_cos_dif(model, test_dataset, epsilon=0.03, subset_size=10000, device="cpu", batch_size=32, n_steps_pgd=20):
+    fmodel = PyTorchModel(model, bounds=(0, 1))
+    cos_dif = []
+    distance = []
+    successes_fgsm = []
+    successes_pgd = []
+    subset = torch.utils.data.Subset(test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist())
+    subset_loader = torch.utils.data.DataLoader(subset, batch_size=batch_size,
+                                 shuffle=False, num_workers=2)
+    for images, labels in tqdm.tqdm(subset_loader):
+        images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
+        _, advs_fgsm, success_fgsm = FGSM()(fmodel, images, labels, epsilons=epsilon)
+        _, advs_pgd, success_pgd = LinfPGD(steps=n_steps_pgd, rel_stepsize=1/8)(fmodel, images, labels, epsilons=epsilon)
+        advs_fgsm = advs_fgsm.reshape(advs_fgsm.shape[0], -1)
+        advs_pgd = advs_pgd.reshape(advs_pgd.shape[0], -1)
+        cos = nn.CosineSimilarity(dim=1, eps=1e-12)
+        cos_dif.append(cos(advs_fgsm, advs_pgd))
+        dist = torch.norm(advs_fgsm - advs_pgd, dim=1)
+        distance.append(dist)
+        successes_fgsm.append(success_fgsm)
+        successes_pgd.append(success_pgd)
+    return torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd)

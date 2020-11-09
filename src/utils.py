@@ -106,32 +106,6 @@ def gradient_information(model, data, target, step=0.01, eps=0.5, iters=20, targ
     grad_information[adv_examples_index] = cos(grad, diff_vector)
     return grad_information
 
-def gradient_norm(model, data_loader, device='cpu', subset_size=10000):
-    """
-    Computes the gradient norm w.r.t. the loss at the given points.
-
-    TODO: Move to metrics.
-    """
-    count = 0
-    grad_norms = []
-    for (data, target) in data_loader:
-        if count > subset_size:
-            break
-        count += data.shape[0]
-        input_ = data.clone().detach_().to(device)
-        input_.requires_grad_()
-        target = target.to(device)
-        model.zero_grad()
-        logits = model(input_)
-        loss = nn.CrossEntropyLoss()(logits, target)
-        loss.backward()
-
-        grad = input_.grad.reshape(input_.shape[0], -1)
-        grad_norm = torch.norm(grad, p=2, dim=1)
-        grad_norms.append(grad_norm)
-    grad_norm = torch.cat(grad_norms)
-    return grad_norm
-
 def adversarial_accuracy(model, dataset_loader, attack=pgd_, iters=20, eps=0.5, step=0.1, random_step=False, device="cpu"):
     """
     Compute the adversarial accuracy of a model.
