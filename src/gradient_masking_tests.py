@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM
 from advertorch.attacks import LinfSPSAAttack
-from src.trainers import Trainer, FGSMTrainer
 from robustbench.model_zoo.models import Carmon2019UnlabeledNet
 from src.utils import adversarial_accuracy, fgsm_
 import eagerpy as ep

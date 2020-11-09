@@ -9,7 +9,8 @@ from torch.autograd import grad
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
-from src.utils import fgsm_, gradient_norm
+from src.utils import fgsm_
+from src.gradient_masking_tests import gradient_norm
 
 class Trainer:
     """
