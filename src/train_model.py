@@ -9,13 +9,17 @@ from torch.optim.lr_scheduler import StepLR
 import matplotlib.pyplot as plt
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM
-from trainers import Trainer, FGSMTrainer, CurvatureRegularizationTrainer, GradientRegularizationTrainer
-from Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
+from src.trainers import Trainer, FGSMTrainer, CurvatureRegularizationTrainer, GradientRegularizationTrainer, StepllTrainer
+from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
 # Main file used to instantiate and train models
 
 NAME_TO_MODEL = {'wide_res_net': CIFAR_Wide_Res_Net, 'res_net': CIFAR_Res_Net, 'simple': CIFAR_Net}
 
+'''
+Train a given model architecture with a given robustness strategy
+Can also save the norm of gradients w.r.t. input at each iteration
+'''
 def train_model(model_name, strategy, output_path, epochs, eps=None, report_gradient_norm=False):
     # setup
     device = torch.device("cuda")
@@ -52,6 +56,11 @@ def train_model(model_name, strategy, output_path, epochs, eps=None, report_grad
             raise Exception("Need an epsilon to preform fgsm training")
         trainer = FGSMTrainer(device=device, log_interval=log_interval, clip_min=0, clip_max=1, eps=eps, report_gradient_norm=report_gradient_norm)
         trainer.train(model, train_loader, epochs, test_loader=test_loader, optimizer=optimizer)
+    elif strategy == 'step_ll':
+        if eps is None:
+            raise Exception("Need an epsilon to preform step-ll training")
+        trainer = StepllTrainer(device=device, log_interval=log_interval, clip_min=0, clip_max=1, eps=eps, report_gradient_norm=report_gradient_norm)
+        trainer.train(model, train_loader, epochs, test_loader=test_loader, optimizer=optimizer)
     elif strategy == 'gradient_regularization':
         trainer = GradientRegularizationTrainer(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm)
         trainer.train(model, train_loader, epochs, test_loader=test_loader, optimizer=optimizer)
@@ -64,7 +73,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Train a model with a given strategy.')
     # TODO: maybe generalize to other datasets
     parser.add_argument('--model', type=str, choices=['simple', 'wide_res_net', 'res_net'], default='res_net', help='name of the model')
-    parser.add_argument('--strategy', type=str, choices=['normal', 'fgsm', 'curvature_regularization', 'gradient_regularization'], default='normal', help='training strategy')
+    parser.add_argument('--strategy', type=str, choices=['normal', 'fgsm', 'step_ll', 'curvature_regularization', 'gradient_regularization'], default='normal', help='training strategy')
     parser.add_argument('--eps', type=float, help='eps size for fgsm')
     parser.add_argument('--epochs', type=int, default=10, help='epochs to train for')
     parser.add_argument('--output_path', type=str, default='models\output.model', help='name of the model')

@@ -32,6 +32,29 @@ def fgsm_(model, x, target, eps=0.5, targeted=True, device='cpu', clip_min=None,
         out.clamp_(min=clip_min, max=clip_max)
     return out
 
+def step_ll_(model, x, target, eps=0.5, device='cpu', clip_min=None, clip_max=None, **kwargs):
+    """
+    Implementation of the Step_LL attack, minimizing the loss for the least likely class
+    """    
+    # create a copy of the input, remove all previous associations to the compute graph...
+    input_ = x.clone().detach_().to(device)
+    # ... and make sure we are differentiating toward that variable
+    input_.requires_grad_()
+
+    # run the model and obtain the los
+    model.zero_grad()
+    logits = model(input_)
+    least_likely = torch.argmin(logits, dim=1)
+    loss = nn.CrossEntropyLoss()(logits, least_likely)
+    loss.backward()
+    #perfrom either targeted or untargeted attack
+    out = input_ - eps * input_.grad.sign()
+    
+    #if desired clip the ouput back to the image domain
+    if (clip_min is not None) or (clip_max is not None):
+        out.clamp_(min=clip_min, max=clip_max)
+    return out
+
 def pgd_(model, x, target, step, eps, iters=7, targeted=True, device='cpu', clip_min=None, clip_max=None, random_step=True, early_stop=False):
     """
     Internal pgd attack used during training.
