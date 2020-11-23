@@ -114,7 +114,7 @@ def gradient_norm(model, data_loader, device='cpu', subset_size=10000):
     return grad_norm
 
 
-def fgsm_pgd_cos_dif(model, test_dataset, epsilon=0.03, subset_size=1000, device="cpu", batch_size=32, n_steps_pgd=7, return_adjusted_fgsm = True):
+def fgsm_pgd_cos_dif(model, test_dataset, epsilon=0.03, subset_size=1000, device="cpu", batch_size=32, n_steps_pgd=7, return_adjusted_fgsm=True):
     '''
     Method that evaluates how informative the gradients of the network are. Preforms pgd and fgsm and compares the solutions.
     Returns the cosine difference and euclidian distance between the solutions.
@@ -150,9 +150,9 @@ def fgsm_pgd_cos_dif(model, test_dataset, epsilon=0.03, subset_size=1000, device
         successes_fgsm.append(success_fgsm)
         successes_pgd.append(success_pgd)
         
-        if return_adjusted_fgsm:
-            return torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd), torch.cat(successes_adjusted_fgsm)
-        return torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd)
+    if return_adjusted_fgsm:
+        return torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd), torch.cat(successes_adjusted_fgsm)
+    return torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd)
 
 '''
 Method that preforms an fgsm attack at a range of epsilons
