@@ -55,6 +55,22 @@ def step_ll_(model, x, target, eps=0.5, device='cpu', clip_min=None, clip_max=No
         out.clamp_(min=clip_min, max=clip_max)
     return out
 
+def random_step_(model, x, eps=0.5, device='cpu', clip_min=None, clip_max=None, **kwargs):
+    """
+    Returns examples generated from a step in a random direction.
+    """    
+    # create a copy of the input, remove all previous associations to the compute graph...
+    input_ = x.clone().detach_().to(device)
+    rand_step = (torch.rand(x.shape) > 0.5).float().to(device)
+    rand_step[rand_step == 0] = -1
+    out = input_ + eps * rand_step
+
+    
+    #if desired clip the ouput back to the image domain
+    if (clip_min is not None) or (clip_max is not None):
+        out.clamp_(min=clip_min, max=clip_max)
+    return out
+
 def pgd_(model, x, target, step, eps, iters=7, targeted=True, device='cpu', clip_min=None, clip_max=None, random_step=True, early_stop=False):
     """
     Internal pgd attack used during training.
