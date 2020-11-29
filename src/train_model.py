@@ -20,7 +20,7 @@ NAME_TO_MODEL = {'wide_res_net': CIFAR_Wide_Res_Net, 'res_net': CIFAR_Res_Net, '
 Train a given model architecture with a given robustness strategy
 Can also save the norm of gradients w.r.t. input at each iteration
 '''
-def train_model(model_name, strategy, output_path, epochs, eps=None, report_gradient_norm=False):
+def train_model(model_name, strategy, output_path, epochs, eps=None, report_gradient_norm=False, lambda_=None):
     # setup
     device = torch.device("cuda")
     batch_size = 128
@@ -62,7 +62,9 @@ def train_model(model_name, strategy, output_path, epochs, eps=None, report_grad
         trainer = StepllTrainer(device=device, log_interval=log_interval, clip_min=0, clip_max=1, eps=eps, report_gradient_norm=report_gradient_norm)
         trainer.train(model, train_loader, epochs, test_loader=test_loader, optimizer=optimizer)
     elif strategy == 'gradient_regularization':
-        trainer = GradientRegularizationTrainer(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm)
+        if lambda_ is None:
+            raise Exception("Need a lambda to preform gradient regularization training")
+        trainer = GradientRegularizationTrainer(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm, lambda_=lambda_)
         trainer.train(model, train_loader, epochs, test_loader=test_loader, optimizer=optimizer)
     elif strategy == 'curvature_regularization':
         trainer = CurvatureRegularizationTrainer(device=device, log_interval=log_interval, lambda_=4, report_gradient_norm=report_gradient_norm)
@@ -75,12 +77,14 @@ if __name__ == "__main__":
     parser.add_argument('--model', type=str, choices=['simple', 'wide_res_net', 'res_net'], default='res_net', help='name of the model')
     parser.add_argument('--strategy', type=str, choices=['normal', 'fgsm', 'step_ll', 'curvature_regularization', 'gradient_regularization'], default='normal', help='training strategy')
     parser.add_argument('--eps', type=float, help='eps size for fgsm')
+    parser.add_argument('--lambda_', type=float, help='lambda for training with gradient regularization')
     parser.add_argument('--epochs', type=int, default=10, help='epochs to train for')
     parser.add_argument('--output_path', type=str, default='models\output.model', help='name of the model')
     parser.add_argument('--report_gradient_norm', action='store_true', help='Will save gradient norms to directory at output path')
+
 
     
 
     args = parser.parse_args()
 
-    train_model(args.model, args.strategy, args.output_path, args.epochs, eps=args.eps, report_gradient_norm=args.report_gradient_norm)
+    train_model(args.model, args.strategy, args.output_path, args.epochs, eps=args.eps, report_gradient_norm=args.report_gradient_norm, lambda_=args.lambda_)

@@ -124,13 +124,13 @@ class StepllTrainer(Trainer):
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item()))
-# FROM https://github.com/F-Salehi/CURE_robustness
-# "Robustness via curvature regularization, and vice versa ", SM. Moosavi-Dezfooli, A. Fawzi, J. Uesato, and P. Frossard, CVPR 2019.
+
+
 class GradientRegularizationTrainer(Trainer):
     """
     Extends the base trainer class to implement training with input gradient regularization.
 
-    TODO: Decide on good value for lambda, good annealing schedule.
+    TODO: Decide on good value for lambda, good annealing schedule?
     """
     def __init__(self, device="cpu", log_interval=10, lambda_=0.1, annealing=False, report_gradient_norm=None):
         super(GradientRegularizationTrainer, self).__init__(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm)

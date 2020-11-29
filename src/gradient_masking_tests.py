@@ -1,5 +1,5 @@
 import argparse
-import tqdm
+from tqdm.notebook import tqdm
 import numpy as np
 import torch
 import torch.nn as nn
@@ -16,45 +16,55 @@ from src.utils import adversarial_accuracy, fgsm_, random_step_
 import eagerpy as ep
 from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
-def run_masking_benchmarks(model, test_dataset, epsilon=0.06, device="cpu", batch_size=32):
+def run_masking_benchmarks(model, test_dataset, epsilon=0.06, device="cpu", batch_size=32, epsilon_step=20):
     """
     This method runs through a checklist of potential indicators of gradient masking, as exposed in 
     "Obfuscated Gradients Give a False Sense of Security:
     Circumventing Defenses to Adversarial Examples"
     https://arxiv.org/pdf/1802.00420.pdf
     """
+    epsilons = [epsilon * i/100 for i in range(10, 200, epsilon_step)]
+    pbar = tqdm(total=6, desc="Description")
+    
+    pbar.set_description("Computing Accuracy")
     acc = get_accuracy(model, test_dataset, epsilon=epsilon, device=device, batch_size=batch_size)*100
-    fgsm_acc_small = get_accuracy(model, test_dataset, epsilon=epsilon/10, device=device, batch_size=batch_size, attack=FGSM())*100
-    fgsm_acc_med = get_accuracy(model, test_dataset, epsilon=epsilon/2, device=device, batch_size=batch_size, attack=FGSM())*100
-    fgsm_acc = get_accuracy(model, test_dataset, epsilon=epsilon, device=device, batch_size=batch_size, attack=FGSM())*100
+    pbar.update(1)
+    
+    pbar.set_description("Computing FGSM Accuracy")
+    fgsm_acc = np.array([get_accuracy(model, test_dataset, epsilon=ep, device=device, batch_size=batch_size, attack=FGSM())*100 for ep in epsilons])
+    pbar.update(1)
+    
+    pbar.set_description("Computing PGD Accuracy")
     pgd_acc = get_accuracy(model, test_dataset, epsilon=epsilon, device=device, batch_size=batch_size, attack=LinfPGD(steps=7, rel_stepsize=1/4))*100
+    pgd_acc_small = get_accuracy(model, test_dataset, epsilon=epsilon/2, device=device, batch_size=batch_size, attack=LinfPGD(steps=7, rel_stepsize=1/4))*100
     pgd_unbounded = get_accuracy(model, test_dataset, epsilon=1, device=device, batch_size=batch_size, attack=LinfPGD(steps=7, rel_stepsize=1/4))*100
+    pbar.update(1)
+    
+    pbar.set_description("Computing SPSA Accuracy")
     spsa_acc = spsa_accuracy(model, test_dataset, eps=epsilon, iters=10, nb_sample=128, batch_size=8, device=device)*100
-    random_acc_small = get_random_accuracy(model, test_dataset, epsilon=epsilon/10, device=device, batch_size=batch_size)*100
-    random_acc_med = get_random_accuracy(model, test_dataset, epsilon=epsilon/2, device=device, batch_size=batch_size)*100
-    random_acc = get_random_accuracy(model, test_dataset, epsilon=epsilon, device=device, batch_size=batch_size)*100
+    spsa_acc_small = spsa_accuracy(model, test_dataset, eps=epsilon/2, iters=10, nb_sample=128, batch_size=8, device=device)*100
+    pbar.update(1)
     
+    pbar.set_description("Computing Random Attack Accuracy")
+    random_acc = np.array([get_random_accuracy(model, test_dataset, epsilon=ep, device=device, batch_size=batch_size)*100 for ep in epsilons])
+    pbar.update(1)
     print("Model accuracy: {}%".format(acc))
-    print("FGSM attack model accuracy -- eps = {}: {}%, eps = {}: {}%, eps = {}: {}%".format(epsilon/10, fgsm_acc_small, epsilon/2, fgsm_acc_med, epsilon, fgsm_acc))
-    if not (fgsm_acc < fgsm_acc_med and fgsm_acc_med < fgsm_acc_small):
-        print("Gradient Masking Warning: Increasing epsilon did not improve the attack!!")
     
-
-    print("PGD accuracy: {}%".format(pgd_acc))
-    if (pgd_acc > fgsm_acc):
-        print("Gradient Masking Warning: PGD attack was not stronger than FGSM attack!!")
-    
+    pbar.set_description("Plotting")
+    print("PGD accuracy - eps = {}: {}%".format(epsilon, pgd_acc))
+    print("PGD accuracy - eps = {}: {}%".format(epsilon/2, pgd_acc))
     print("Unbounded PGD model accuracy: {}%".format(pgd_unbounded))
 
-    print("SPSA accuracy: {}%".format(spsa_acc))
-
-    if spsa_acc < fgsm_acc:
-        print("Gradient Masking Warning: Black Box attack was stronger than FGSM attack!!")
+    print("SPSA accuracy - eps = {}: {}%".format(epsilon, spsa_acc))
+    print("SPSA accuracy - eps = {}: {}%".format(epsilon/2, spsa_acc_small))
     
-    if spsa_acc < pgd_acc:
-        print("Gradient Masking Warning: Black Box attack was stronger than PGD attack!!")
-    
-    print("Random attack model accuracy -- eps = {}: {}%, eps = {}: {}%, eps = {}: {}%".format(epsilon/10, random_acc_small, epsilon/2, random_acc_med, epsilon, random_acc))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8,10))
+    ax1.plot(epsilons, fgsm_acc)
+    ax1.set_title("FGSM Accuracy")
+    ax2.plot(epsilons, random_acc)
+    ax2.set_title("Random Attack Accuracy") 
+    pbar.update(1)
+    pbar.close()
 
 def get_accuracy(model, test_dataset, attack=None, epsilon=0.03, subset_size=10000, device="cpu", batch_size=32):
     """
@@ -65,7 +75,7 @@ def get_accuracy(model, test_dataset, attack=None, epsilon=0.03, subset_size=100
     subset = torch.utils.data.Subset(test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist())
     subset_loader = torch.utils.data.DataLoader(subset, batch_size=batch_size,
                                  shuffle=False, num_workers=2)
-    for images, labels in tqdm.tqdm(subset_loader):
+    for images, labels in subset_loader:
         images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
         if attack is None:
             correct += accuracy(fmodel, images, labels) * images.shape[0]
@@ -82,7 +92,7 @@ def get_random_accuracy(model, test_dataset, epsilon=0.03, device="cpu", batch_s
     subset = torch.utils.data.Subset(test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist())
     subset_loader = torch.utils.data.DataLoader(subset, batch_size=batch_size,
                                  shuffle=False, num_workers=2)
-    for images, labels in tqdm.tqdm(subset_loader):
+    for images, labels in subset_loader:
         images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
         adv = random_step_(model, images, eps=epsilon, device=device, clip_min=0, clip_max=1)
         preds = model(adv).argmax(-1)
@@ -99,7 +109,7 @@ def spsa_accuracy(model, test_dataset, eps=0.03, iters=1, nb_sample=128, batch_s
     subset_loader = torch.utils.data.DataLoader(subset, batch_size=batch_size,
                                  shuffle=False, num_workers=2)
     correct = 0
-    for images, labels in tqdm.tqdm(subset_loader):
+    for images, labels in subset_loader:
         images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
         adv = attack.perturb(images, labels)
         preds = model(adv).argmax(-1)
@@ -152,24 +162,26 @@ def fgsm_pgd_cos_dif(model, test_dataset, epsilon=0.03, subset_size=1000, device
     subset = torch.utils.data.Subset(test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist())
     subset_loader = torch.utils.data.DataLoader(subset, batch_size=batch_size,
                                  shuffle=False, num_workers=2)
-    for images, labels in tqdm.tqdm(subset_loader):
+    for images, labels in tqdm(subset_loader):
         images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
         _, advs_fgsm, success_fgsm = FGSM()(fmodel, images, labels, epsilons=epsilon)
         _, advs_pgd, success_pgd = LinfPGD(steps=n_steps_pgd, rel_stepsize=1/4)(fmodel, images, labels, epsilons=epsilon)
+        fgsm_perturbation = advs_fgsm - images
+        pgd_perturbation = advs_pgd - images
         if return_adjusted_fgsm:
-            adjusted_fgsm = (((advs_fgsm - images) / torch.linalg.norm((advs_fgsm - images).reshape(advs_fgsm.shape[0], -1), dim=1).reshape(advs_fgsm.shape[0], 1, 1, 1))
-            * torch.linalg.norm((advs_pgd - images).reshape(advs_pgd.shape[0], -1), dim=1).reshape(advs_fgsm.shape[0], 1, 1, 1)) + images
+            adjusted_fgsm = ((fgsm_perturbation / torch.linalg.norm(fgsm_perturbation.reshape(advs_fgsm.shape[0], -1), dim=1).reshape(advs_fgsm.shape[0], 1, 1, 1))
+            * torch.linalg.norm(pgd_perturbation.reshape(advs_pgd.shape[0], -1), dim=1).reshape(advs_fgsm.shape[0], 1, 1, 1)) + images
             _, _, success_adjusted_fgsm = FGSM()(fmodel, adjusted_fgsm, labels, epsilons=0) # this is a hack to get the successes. Can be done more efficiently
             successes_adjusted_fgsm.append(success_adjusted_fgsm)
-        advs_fgsm = advs_fgsm.reshape(advs_fgsm.shape[0], -1)
-        advs_pgd = advs_pgd.reshape(advs_pgd.shape[0], -1)
-        cos = nn.CosineSimilarity(dim=1, eps=1e-12)
-        cos_dif.append(cos(advs_fgsm, advs_pgd))
-        dist = torch.linalg.norm(advs_fgsm - advs_pgd, dim=1, ord=2)
+        fgsm_perturbation = fgsm_perturbation.reshape(fgsm_perturbation.shape[0], -1)
+        pgd_perturbation = pgd_perturbation.reshape(pgd_perturbation.shape[0], -1)
+        cos = nn.CosineSimilarity(dim=1, eps=1e-18)
+        cos_dif.append(cos(fgsm_perturbation, pgd_perturbation))
+        dist = torch.linalg.norm(fgsm_perturbation - pgd_perturbation, dim=1, ord=2)
         distance.append(dist)
         successes_fgsm.append(success_fgsm)
         successes_pgd.append(success_pgd)
-        
+     
     if return_adjusted_fgsm:
         return torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd), torch.cat(successes_adjusted_fgsm)
     return torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd)
