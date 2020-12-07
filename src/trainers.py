@@ -12,6 +12,7 @@ from torch.optim.lr_scheduler import StepLR
 from src.utils import fgsm_, step_ll_
 from src.gradient_masking_tests import gradient_norm
 
+lr = 0.001
 class Trainer:
     """
     Base class that trains a given model, given a dataloader using standard SGD.
@@ -30,7 +31,7 @@ class Trainer:
         
     def train(self, model, train_loader, epochs, test_loader=None, optimizer=None):
         if optimizer is None:
-            optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+            optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
         criterion = nn.CrossEntropyLoss()
         for epoch in range(1, epochs + 1):
             self.train_step(model, train_loader, epoch, optimizer, criterion)
@@ -130,7 +131,6 @@ class GradientRegularizationTrainer(Trainer):
     """
     Extends the base trainer class to implement training with input gradient regularization.
 
-    TODO: Decide on good value for lambda, good annealing schedule?
     """
     def __init__(self, device="cpu", log_interval=10, lambda_=0.1, annealing=False, report_gradient_norm=None):
         super(GradientRegularizationTrainer, self).__init__(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm)
@@ -140,7 +140,7 @@ class GradientRegularizationTrainer(Trainer):
 
     def train(self, model, train_loader, epochs, test_loader=None, optimizer=None):
         if optimizer is None:
-            optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+            optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
         criterion = nn.CrossEntropyLoss()
         for epoch in range(1, epochs + 1):
             self.train_step(model, train_loader, epoch, optimizer, criterion)
@@ -161,7 +161,13 @@ class GradientRegularizationTrainer(Trainer):
             output = model(data)
             loss = criterion(output, target)
             ce_loss = loss
-            gradient_norm = (grad(outputs=loss, inputs=data, retain_graph=True, only_inputs=True)[0]**2).sum()
+            for i in range(output.shape[1]):
+                model.zero_grad()
+                if i == 0:
+                    norm = grad(outputs=output[0, i], inputs=data, retain_graph=True, only_inputs=True)[0]
+                else:
+                    norm = torch.cat([norm, grad(outputs=output[0, i], inputs=data, retain_graph=True, only_inputs=True)[0]])
+            gradient_norm = torch.norm(norm)
             loss = loss + self.cur_lambda * gradient_norm
             optimizer.zero_grad()
             loss.backward()
@@ -223,7 +229,7 @@ class CurvatureRegularizationTrainer(Trainer):
     
     def train(self, model, train_loader, epochs, test_loader=None, optimizer=None, h=[0.1, 0.4, 0.8, 1.8, 3]):
         if optimizer is None:
-            optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+            optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
         criterion = nn.CrossEntropyLoss()
         for epoch in range(1, epochs + 1):
             self.train_step(model, train_loader, epoch, optimizer, criterion, h=h)

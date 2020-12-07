@@ -9,7 +9,7 @@ from torch.autograd import grad
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
-from src.utils import fgsm_
+from src.utils import fgsm_, step_ll_
 from src.gradient_masking_tests import gradient_norm
 
 class Trainer:
@@ -100,13 +100,36 @@ class FGSMTrainer(Trainer):
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item()))
 
-# FROM https://github.com/F-Salehi/CURE_robustness
-# "Robustness via curvature regularization, and vice versa ", SM. Moosavi-Dezfooli, A. Fawzi, J. Uesato, and P. Frossard, CVPR 2019.
+class StepllTrainer(Trainer):
+    """
+    Extends base trainer class to implement training with a single FGSM step.
+    """
+    def __init__(self, device="cpu", log_interval=10, clip_min=0, clip_max=1, eps=(8/255), report_gradient_norm=None):
+        super(StepllTrainer, self).__init__(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm)
+        self.clip_min = clip_min
+        self.clip_max = clip_max
+        self.eps = eps
+        
+    def train_step(self, model, train_loader, epoch, optimizer, criterion):
+        model.train()
+        for batch_idx, (data, target) in enumerate(train_loader):
+            data, target = data.to(self.device), target.to(self.device)
+            adv_data = step_ll_(model, data, target, eps=self.eps, device=self.device, clip_min=self.clip_min, clip_max=self.clip_max)
+            optimizer.zero_grad()
+            output = model(adv_data)
+            loss = criterion(output, target)
+            loss.backward()
+            optimizer.step()
+            if batch_idx % self.log_interval == 0:
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                    epoch, batch_idx * len(data), len(train_loader.dataset),
+                    100. * batch_idx / len(train_loader), loss.item()))
+
+
 class GradientRegularizationTrainer(Trainer):
     """
     Extends the base trainer class to implement training with input gradient regularization.
 
-    TODO: Decide on good value for lambda, good annealing schedule.
     """
     def __init__(self, device="cpu", log_interval=10, lambda_=0.1, annealing=False, report_gradient_norm=None):
         super(GradientRegularizationTrainer, self).__init__(device=device, log_interval=log_interval, report_gradient_norm=report_gradient_norm)
@@ -137,7 +160,13 @@ class GradientRegularizationTrainer(Trainer):
             output = model(data)
             loss = criterion(output, target)
             ce_loss = loss
-            gradient_norm = (grad(outputs=loss, inputs=data, retain_graph=True, only_inputs=True)[0]**2).sum()
+            for i in range(output.shape[1]):
+                model.zero_grad()
+                if i == 0:
+                    norm = grad(outputs=output[0, i], inputs=data, retain_graph=True, only_inputs=True)[0]
+                else:
+                    norm = torch.cat([norm, grad(outputs=output[0, i], inputs=data, retain_graph=True, only_inputs=True)[0]])
+            gradient_norm = torch.norm(norm)
             loss = loss + self.cur_lambda * gradient_norm
             optimizer.zero_grad()
             loss.backward()

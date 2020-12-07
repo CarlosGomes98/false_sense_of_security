@@ -58,11 +58,12 @@ def run_masking_benchmarks(model, test_dataset, epsilon=0.06, device="cpu", batc
     print("SPSA accuracy - eps = {}: {}%".format(epsilon, spsa_acc))
     print("SPSA accuracy - eps = {}: {}%".format(epsilon/2, spsa_acc_small))
     
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8,10))
-    ax1.plot(epsilons, fgsm_acc)
-    ax1.set_title("FGSM Accuracy")
-    ax2.plot(epsilons, random_acc)
-    ax2.set_title("Random Attack Accuracy") 
+    fig = plt.figure(figsize=(12,8))
+    plt.plot(epsilons, fgsm_acc, label='FGSM Accuracy')
+    plt.plot(epsilons, random_acc, label= 'Random Attack Accuracy')
+    plt.xlabel('Epsilon')
+    plt.ylabel('Accuracy (%)')
+    plt.legend()
     pbar.update(1)
     pbar.close()
 
@@ -143,8 +144,47 @@ def gradient_norm(model, data_loader, device='cpu', subset_size=10000):
     grad_norm = torch.cat(grad_norms)
     return grad_norm
 
+def gradient_information(model, dataset, iters=50, device='cpu', subset_size=1000):
+    """
+    Computes the cosine information between the gradient of point at the decision boundary w.r.t. the different in logits and the vector (point at decision boundary - original input point).
 
-def fgsm_pgd_cos_dif(model, test_dataset, epsilon=0.03, subset_size=1000, device="cpu", batch_size=32, n_steps_pgd=7, return_adjusted_fgsm=True):
+    For non gradient masked models, this point should be the closest one to the input that is at the decision boundary.
+    Thus, we would expect these vectors to be +- collinear.
+    """
+    fmodel = PyTorchModel(model, bounds=(0, 1))
+    attack = LinfDeepFoolAttack(overshoot=0.002, steps=iters)
+    subset = torch.utils.data.Subset(dataset, np.random.randint(0, len(dataset), size=subset_size).tolist())
+    subset_loader = torch.utils.data.DataLoader(subset, batch_size=128,
+                            shuffle=False, num_workers=2)
+    grad_information_full = []
+    for data, target in subset_loader:
+        data = data.to(device)
+        target = target.to(device)
+        _, adv, success = attack(fmodel, data, target, epsilons=8)
+        # only keep those for which an adversarial example was found
+        new_labels = model(adv).argmax(axis=-1)
+        adv_examples_index = new_labels != target
+        # print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
+        if adv_examples_index.sum() == 0:
+            return None
+        
+        grad_information = torch.Tensor(adv.shape[0]).to(device)
+        grad_information[~adv_examples_index] = float('nan')
+        
+        adv = adv[adv_examples_index].detach().clone()
+        adv.requires_grad = True
+        model.zero_grad()
+        logits = model(adv)
+        loss = torch.sum(logits[:, new_labels] - logits[:, target])
+        loss.backward()
+        grad = adv.grad.reshape(adv.shape[0], -1)
+        diff_vector = (adv - data[adv_examples_index]).reshape(adv.shape[0], -1)
+        cos = nn.CosineSimilarity(dim=1, eps=1e-18)
+        grad_information[adv_examples_index] = cos(grad, diff_vector)
+        grad_information_full.append(grad_information)
+    return torch.cat(grad_information_full).mean()
+
+def fgsm_pgd_cos_dif(model, test_dataset, epsilons=[0.03], subset_size=1000, device="cpu", batch_size=32, n_steps_pgd=7, return_adjusted_fgsm=True):
     '''
     Method that evaluates how informative the gradients of the network are. Preforms pgd and fgsm and compares the solutions.
     Returns the cosine difference and euclidian distance between the solutions.
@@ -153,38 +193,47 @@ def fgsm_pgd_cos_dif(model, test_dataset, epsilon=0.03, subset_size=1000, device
     was often very close to 1, yet the norm was quite different.
     '''
     fmodel = PyTorchModel(model, bounds=(0, 1))
-    cos_dif = []
-    distance = []
-    successes_fgsm = []
-    successes_pgd = []
-    if return_adjusted_fgsm:
-        successes_adjusted_fgsm = []
-    subset = torch.utils.data.Subset(test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist())
-    subset_loader = torch.utils.data.DataLoader(subset, batch_size=batch_size,
-                                 shuffle=False, num_workers=2)
-    for images, labels in tqdm(subset_loader):
-        images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
-        _, advs_fgsm, success_fgsm = FGSM()(fmodel, images, labels, epsilons=epsilon)
-        _, advs_pgd, success_pgd = LinfPGD(steps=n_steps_pgd, rel_stepsize=1/4)(fmodel, images, labels, epsilons=epsilon)
-        fgsm_perturbation = advs_fgsm - images
-        pgd_perturbation = advs_pgd - images
+    for epsilon in epsilons:
+        cos_dif = []
+        distance = []
+        successes_fgsm = []
+        successes_pgd = []
         if return_adjusted_fgsm:
-            adjusted_fgsm = ((fgsm_perturbation / torch.linalg.norm(fgsm_perturbation.reshape(advs_fgsm.shape[0], -1), dim=1).reshape(advs_fgsm.shape[0], 1, 1, 1))
-            * torch.linalg.norm(pgd_perturbation.reshape(advs_pgd.shape[0], -1), dim=1).reshape(advs_fgsm.shape[0], 1, 1, 1)) + images
-            _, _, success_adjusted_fgsm = FGSM()(fmodel, adjusted_fgsm, labels, epsilons=0) # this is a hack to get the successes. Can be done more efficiently
-            successes_adjusted_fgsm.append(success_adjusted_fgsm)
-        fgsm_perturbation = fgsm_perturbation.reshape(fgsm_perturbation.shape[0], -1)
-        pgd_perturbation = pgd_perturbation.reshape(pgd_perturbation.shape[0], -1)
-        cos = nn.CosineSimilarity(dim=1, eps=1e-18)
-        cos_dif.append(cos(fgsm_perturbation, pgd_perturbation))
-        dist = torch.linalg.norm(fgsm_perturbation - pgd_perturbation, dim=1, ord=2)
-        distance.append(dist)
-        successes_fgsm.append(success_fgsm)
-        successes_pgd.append(success_pgd)
+            successes_adjusted_fgsm = []
+        subset = torch.utils.data.Subset(test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist())
+        subset_loader = torch.utils.data.DataLoader(subset, batch_size=batch_size,
+                                    shuffle=False, num_workers=2)
+        for images, labels in tqdm(subset_loader):
+            images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
+            _, advs_fgsm, success_fgsm = FGSM()(fmodel, images, labels, epsilons=epsilon)
+            _, advs_pgd, success_pgd = LinfPGD(steps=n_steps_pgd, rel_stepsize=1/4)(fmodel, images, labels, epsilons=epsilon)
+            fgsm_perturbation = advs_fgsm - images
+            pgd_perturbation = advs_pgd - images
+            if return_adjusted_fgsm:
+                adjusted_fgsm = ((fgsm_perturbation / torch.linalg.norm(fgsm_perturbation.reshape(advs_fgsm.shape[0], -1), dim=1).reshape(advs_fgsm.shape[0], 1, 1, 1))
+                * torch.linalg.norm(pgd_perturbation.reshape(advs_pgd.shape[0], -1), dim=1).reshape(advs_fgsm.shape[0], 1, 1, 1)) + images
+                _, _, success_adjusted_fgsm = FGSM()(fmodel, adjusted_fgsm, labels, epsilons=0) # this is a hack to get the successes. Can be done more efficiently
+                successes_adjusted_fgsm.append(success_adjusted_fgsm)
+            fgsm_perturbation = fgsm_perturbation.reshape(fgsm_perturbation.shape[0], -1)
+            pgd_perturbation = pgd_perturbation.reshape(pgd_perturbation.shape[0], -1)
+            cos = nn.CosineSimilarity(dim=1, eps=1e-18)
+            cos_dif.append(cos(fgsm_perturbation, pgd_perturbation))
+            dist = torch.linalg.norm(fgsm_perturbation - pgd_perturbation, dim=1, ord=2)
+            distance.append(dist)
+            successes_fgsm.append(success_fgsm)
+            successes_pgd.append(success_pgd)
+        
+        print("Epsilon = {}:".format(epsilon))
+        cos_dif, distance, successes_fgsm, successes_pgd = torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd)
+        print("Mean Cosine Difference: {}, Mean Cosine Difference when FGSM does not succeed but PGD does: {}, Mean l2 Distance: {}".format(cos_dif[success_fgsm].mean(), cos_dif[(~success_fgsm & success_pgd)].mean(), dist.mean()))
+        if return_adjusted_fgsm:
+            success_adjusted_fgsm = torch.cat(successes_adjusted_fgsm)
+            print("FGSM success: {}, PGD Success: {}, Rescaled FGSM success: {}".format(success_fgsm.sum()/subset_size, success_pgd.sum()/subset_size, success_adjusted_fgsm.sum()/subset_size))
+        else:
+            print("FGSM success: {}, PGD Success: {}, Rescaled FGSM success: {}".format(success_fgsm.sum()/subset_size, success_pgd.sum()/subset_size, success_adjusted_fgsm.sum()/subset_size))
+        
      
-    if return_adjusted_fgsm:
-        return torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd), torch.cat(successes_adjusted_fgsm)
-    return torch.cat(cos_dif), torch.cat(distance), torch.cat(successes_fgsm), torch.cat(successes_pgd)
+    
 
 '''
 Method that preforms an fgsm attack at a range of epsilons

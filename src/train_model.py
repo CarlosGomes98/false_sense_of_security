@@ -20,7 +20,7 @@ NAME_TO_MODEL = {'wide_res_net': CIFAR_Wide_Res_Net, 'res_net': CIFAR_Res_Net, '
 Train a given model architecture with a given robustness strategy
 Can also save the norm of gradients w.r.t. input at each iteration
 '''
-def train_model(model_name, strategy, output_path, epochs, eps=None, report_gradient_norm=False, lambda_=None):
+def train_model(model_name, strategy, output_path, epochs, eps=None, report_gradient_norm=False, lambda_=None, model_path=None):
     # setup
     device = torch.device("cuda")
     batch_size = 128
@@ -46,6 +46,8 @@ def train_model(model_name, strategy, output_path, epochs, eps=None, report_grad
         report_gradient_norm = None
 
     model = NAME_TO_MODEL[model_name](device)
+    if model_path is not None:
+        model.load_state_dict(torch.load(model_path))
     optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
     if strategy == 'normal':
@@ -81,10 +83,11 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, default=10, help='epochs to train for')
     parser.add_argument('--output_path', type=str, default='models\output.model', help='name of the model')
     parser.add_argument('--report_gradient_norm', action='store_true', help='Will save gradient norms to directory at output path')
+    parser.add_argument('--model_path', type=str, default=None, help='Allows a model to be provided, which will be trained on')
 
 
     
 
     args = parser.parse_args()
 
-    train_model(args.model, args.strategy, args.output_path, args.epochs, eps=args.eps, report_gradient_norm=args.report_gradient_norm, lambda_=args.lambda_)
+    train_model(args.model, args.strategy, args.output_path, args.epochs, eps=args.eps, report_gradient_norm=args.report_gradient_norm, lambda_=args.lambda_, model_path=args.model_path)

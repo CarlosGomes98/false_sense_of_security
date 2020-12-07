@@ -1,9 +1,12 @@
 # some of the code from RAI
 # This file contains utility functions used throughout the project.
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from foolbox import PyTorchModel, accuracy, samples
+from foolbox.attacks import LinfPGD, FGSM, LinfDeepFoolAttack
 
 def fgsm_(model, x, target, eps=0.5, targeted=True, device='cpu', clip_min=None, clip_max=None, **kwargs):
     """
@@ -108,42 +111,6 @@ def pgd_(model, x, target, step, eps, iters=7, targeted=True, device='cpu', clip
             if done.all():
                 break
     return x
-
-def gradient_information(model, data, target, step=0.01, eps=0.5, iters=20, targeted=False, device='cpu', clip_min=None, clip_max=None):
-    """
-    Computes the cosine information between the gradient of point at the decision boundary w.r.t. the loss and the vector (point at decision boundary - original input point).
-
-    For non gradient masked models, this point should be the closest one to the input that is at the decision boundary.
-    Thus, we would expect these vectors to be +- collinear.
-
-    TODO: Incorrect implementation!!!!!! Do not use PGD, use something like deepfool. And do not use loss function for decision boundary, but rather difference in logits.
-    TODO: Move to metrics
-    """
-    
-    adv = pgd_(model, data, target, step, eps, iters=iters, targeted=targeted, device=device, clip_min=clip_min, clip_max=clip_max, random_step=False, early_stop=True).to(device)
-    # only keep those for which an adversarial example was found
-    new_labels = model(adv).argmax(axis=-1)
-    adv_examples_index = new_labels != target
-    print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
-    if adv_examples_index.sum() == 0:
-        return None
-    
-    grad_information = torch.Tensor(adv.shape[0]).to(device)
-    grad_information[~adv_examples_index] = float('nan')
-    
-    adv = adv[adv_examples_index].detach().clone()
-    adv.requires_grad = True
-
-    model.zero_grad()
-    logits = model(adv)
-    loss = nn.CrossEntropyLoss()(logits, target[adv_examples_index])
-    loss.backward()
-
-    grad = adv.grad.reshape(adv.shape[0], -1)
-    diff_vector = (adv - data[adv_examples_index]).reshape(adv.shape[0], -1)
-    cos = nn.CosineSimilarity(dim=1, eps=1e-12)
-    grad_information[adv_examples_index] = cos(grad, diff_vector)
-    return grad_information
 
 def adversarial_accuracy(model, dataset_loader, attack=pgd_, iters=20, eps=0.5, step=0.1, random_step=False, device="cpu"):
     """
