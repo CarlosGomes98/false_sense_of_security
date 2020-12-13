@@ -101,15 +101,14 @@ def random_step_(model,
 def pgd_(model,
          x,
          target,
-         step,
-         eps,
+         eps=0.03,
+         step=1/4,
          iters=7,
          targeted=True,
          device='cpu',
          clip_min=None,
          clip_max=None,
-         random_step=True,
-         early_stop=False):
+         random_step=True):
     """
     Internal pgd attack used during training.
 
@@ -123,42 +122,22 @@ def pgd_(model,
         offset = torch.rand_like(x)
         offset = (offset * 2 * eps - eps)
         x = x + offset
-    done = torch.BoolTensor(x.shape[0]).to(device)
-    done[:] = False
     for i in range(iters):
-        if early_stop:
-            x_to_change = x.clone()[~done]
-            x_to_change = fgsm_(model,
-                                x_to_change,
-                                target[~done],
-                                eps=step,
-                                targeted=targeted,
-                                device=device,
-                                clip_min=None,
-                                clip_max=None)
-            x[~done] = x_to_change
-        else:
-            x = fgsm_(model,
-                      x,
-                      target,
-                      eps=step,
-                      targeted=targeted,
-                      device=device,
-                      clip_min=None,
-                      clip_max=None)
+        x = fgsm_(model,
+                  x,
+                  target,
+                  eps=eps*step,
+                  targeted=targeted,
+                  device=device,
+                  clip_min=None,
+                  clip_max=None)
         # project
         x = torch.where(x < projection_min, projection_min, x)
         x = torch.where(x > projection_max, projection_max, x)
         if (clip_min is not None) or (clip_max is not None):
             x.clamp_(min=clip_min, max=clip_max)
-
-        # check for adv examples
-        if early_stop:
-            with torch.no_grad():
-                new_labels = model(x).argmax(axis=-1)
-                done = new_labels != target
-            if done.all():
-                break
+        model.zero_grad()
+            
     return x
 
 
@@ -167,7 +146,7 @@ def adversarial_accuracy(model,
                          attack=pgd_,
                          iters=20,
                          eps=0.5,
-                         step=0.1,
+                         step=1/8,
                          random_step=False,
                          device="cpu"):
     """
@@ -181,8 +160,8 @@ def adversarial_accuracy(model,
         adv = attack(model,
                      data,
                      target,
-                     step=step,
                      eps=eps,
+                     step=step,
                      iters=iters,
                      targeted=False,
                      device=device,

@@ -9,7 +9,7 @@ from torch.optim.lr_scheduler import StepLR
 import matplotlib.pyplot as plt
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM
-from src.trainers import Trainer, FGSMTrainer, CurvatureRegularizationTrainer, GradientRegularizationTrainer, StepllTrainer
+from src.trainers import Trainer, FGSMTrainer, CurvatureRegularizationTrainer, GradientRegularizationTrainer, StepllTrainer, PGDTrainer
 from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
 # Main file used to instantiate and train models
@@ -63,7 +63,7 @@ def train_model(model_name,
     else:
         report_gradient_norm = None
 
-    model = NAME_TO_MODEL[model_name](device)
+    model = NAME_TO_MODEL[model_name]().to(device)
     if model_path is not None:
         model.load_state_dict(torch.load(model_path))
     optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
@@ -81,6 +81,20 @@ def train_model(model_name,
         if eps is None:
             raise Exception("Need an epsilon to preform fgsm training")
         trainer = FGSMTrainer(device=device,
+                              log_interval=log_interval,
+                              clip_min=0,
+                              clip_max=1,
+                              eps=eps,
+                              report_gradient_norm=report_gradient_norm)
+        trainer.train(model,
+                      train_loader,
+                      epochs,
+                      test_loader=test_loader,
+                      optimizer=optimizer)
+    elif strategy == 'pgd':
+        if eps is None:
+            raise Exception("Need an epsilon to preform pgd training")
+        trainer = PGDTrainer(device=device,
                               log_interval=log_interval,
                               clip_min=0,
                               clip_max=1,
@@ -148,7 +162,8 @@ if __name__ == "__main__":
                         choices=[
                             'normal', 'fgsm', 'step_ll',
                             'curvature_regularization',
-                            'gradient_regularization'
+                            'gradient_regularization',
+                            'pgd'
                         ],
                         default='normal',
                         help='training strategy')

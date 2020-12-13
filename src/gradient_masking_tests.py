@@ -104,8 +104,10 @@ def run_masking_benchmarks(model,
     print("Model accuracy: {}%".format(acc))
 
     pbar.set_description("Plotting")
+    print("FGSM accuracy - eps = {}: {}%".format(epsilon, fgsm_acc[9]))
+    print("FGSM accuracy - eps = {}: {}%".format(epsilon / 2, fgsm_acc[4]))
     print("PGD accuracy - eps = {}: {}%".format(epsilon, pgd_acc))
-    print("PGD accuracy - eps = {}: {}%".format(epsilon / 2, pgd_acc))
+    print("PGD accuracy - eps = {}: {}%".format(epsilon / 2, pgd_acc_small))
     print("Unbounded PGD model accuracy: {}%".format(pgd_unbounded))
 
     print("SPSA accuracy - eps = {}: {}%".format(epsilon, spsa_acc))
@@ -131,7 +133,8 @@ def get_accuracy(model,
     """
     Reports the accuracy of the model, potentially under some attack (e.g. FGSM, PGD, ...)
     """
-    fmodel = PyTorchModel(model, bounds=(0, 1))
+    
+    fmodel = PyTorchModel(model, bounds=(0, 1), device=device)
     correct = 0
     subset = torch.utils.data.Subset(
         test_dataset,
@@ -141,7 +144,7 @@ def get_accuracy(model,
                                                 shuffle=False,
                                                 num_workers=2)
     for images, labels in subset_loader:
-        images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
+        images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
         if attack is None:
             correct += accuracy(fmodel, images, labels) * images.shape[0]
         else:
@@ -168,7 +171,7 @@ def get_random_accuracy(model,
                                                 shuffle=False,
                                                 num_workers=2)
     for images, labels in subset_loader:
-        images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
+        images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
         adv = random_step_(model,
                            images,
                            eps=epsilon,
@@ -206,7 +209,7 @@ def spsa_accuracy(model,
                                                 num_workers=2)
     correct = 0
     for images, labels in subset_loader:
-        images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
+        images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
         adv = attack.perturb(images, labels)
         preds = model(adv).argmax(-1)
         correct += (preds == labels).sum().item()
@@ -276,7 +279,7 @@ def linearization_error(model,
                     y_prime = model(x.repeat(batch_size, 1, 1, 1) +
                               perturbation)[:, data[1]]
                     approx = y.repeat(batch_size) + torch.sum(perturbation * g)
-                    errors.append(torch.abs(y_prime - approx) / y_prime)
+                    errors.append(torch.abs((approx - y_prime) / y_prime))
             mean_errors.append(torch.cat(errors).mean())
 
         epsilon_errors.append(torch.stack(mean_errors).mean())
@@ -309,28 +312,29 @@ def gradient_information(model,
     for data, target in subset_loader:
         data = data.to(device)
         target = target.to(device)
+        original_labels = model(data).argmax(axis=-1)
         _, adv, success = attack(fmodel, data, target, epsilons=8)
         # only keep those for which an adversarial example was found
         new_labels = model(adv).argmax(axis=-1)
-        adv_examples_index = new_labels != target
+        adv_examples_index = (new_labels != original_labels) & (original_labels == target)
         # print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
         if adv_examples_index.sum() == 0:
             return None
 
         grad_information = torch.Tensor(adv.shape[0]).to(device)
-        grad_information[~adv_examples_index] = float('nan')
+        grad_information = grad_information[adv_examples_index]
 
         adv = adv[adv_examples_index].detach().clone()
         adv.requires_grad = True
         model.zero_grad()
         logits = model(adv)
-        loss = torch.sum(logits[:, new_labels] - logits[:, target])
+        loss = torch.sum(logits[:, new_labels] - logits[:, original_labels])
         loss.backward()
         grad = adv.grad.reshape(adv.shape[0], -1)
         diff_vector = (adv - data[adv_examples_index]).reshape(
             adv.shape[0], -1)
         cos = nn.CosineSimilarity(dim=1, eps=1e-18)
-        grad_information[adv_examples_index] = cos(grad, diff_vector)
+        grad_information = cos(grad, diff_vector)
         grad_information_full.append(grad_information)
     return torch.cat(grad_information_full).mean()
 
