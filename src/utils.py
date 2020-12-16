@@ -2,6 +2,7 @@
 # This file contains utility functions used throughout the project.
 import torch
 import numpy as np
+import matplotlib.pyplot as plt
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -177,5 +178,44 @@ def adversarial_accuracy(model,
     return (correct / len(dataset_loader.dataset) * 100)
 
 
+def plot_along_grad(perturbations, model, datapoint, target, batch_size, device='cpu'):
+    losses = []
+    datapoint = datapoint.unsqueeze(0)
+    datapoint.requires_grad_()
+    target = torch.LongTensor([target]).to(device)
+    output = model(datapoint)
+    ce = torch.nn.CrossEntropyLoss(reduction='none')
+    loss = ce(output, target)
+    direction = torch.autograd.grad(loss, datapoint, only_inputs=True)[0].sign()
+    with torch.no_grad():
+        for batch in range(0, perturbations.shape[0], batch_size):
+            cur_batch_size = min(batch_size, perturbations.shape[0] - batch)
+            cur_target = target.repeat(cur_batch_size)
+            data = datapoint.repeat(cur_batch_size, 1, 1, 1) + direction*perturbations[batch:batch+cur_batch_size].reshape(-1, 1, 1, 1)
+            output = model(data)
+            loss = ce(output, cur_target)
+            losses.append(loss)
+    losses = torch.cat(losses).detach().cpu()
+    plt.ylim(0, 30)
+    plt.plot(perturbations, losses, alpha=0.05, color='blue')
+    plt.xlabel("Epsilon")
+    plt.ylabel("Loss")
+    return losses
+    
+def plot_along_grad_n(model, dataset, batch_size, n, device='cpu'):
+    perturbations = torch.arange(0, 0.16, 0.002).to(device)
+    datapoint_indexes = torch.randint(0, len(dataset), (n,))
+    losses_total = []
+    for index in datapoint_indexes:
+        losses_total.append(plot_along_grad(perturbations, model, dataset[index][0], dataset[index][1], batch_size))
+    losses_total = torch.stack(losses_total)
+    losses_mean = losses_total.mean(axis=0)
+    losses_std = losses_total.std(axis=0)
+    plt.ylim(0, 30)
+    plt.plot(perturbations, losses_mean, alpha=1, color='red')
+    plt.fill_between(perturbations, losses_mean-losses_std, losses_mean+losses_std, color='red', alpha=0.3)
+    plt.xlabel("Epsilon")
+    plt.ylabel("Loss")
+    
 if __name__ == "__main__":
     pass

@@ -112,7 +112,7 @@ def run_masking_benchmarks(model,
 
     print("SPSA accuracy - eps = {}: {}%".format(epsilon, spsa_acc))
     print("SPSA accuracy - eps = {}: {}%".format(epsilon / 2, spsa_acc_small))
-
+    plt.y_lim(0, 100)
     fig = plt.figure(figsize=(12, 8))
     plt.plot(epsilons, fgsm_acc, label='FGSM Accuracy')
     plt.plot(epsilons, random_acc, label='Random Attack Accuracy')
@@ -429,7 +429,7 @@ def fgsm_pgd_cos_dif(model,
                 format(successes_fgsm.sum() / subset_size,
                        successes_pgd.sum() / subset_size))
 
-
+        
 def multi_scale_fgsm(fmodel, images, labels, epsilon=0.03):
     '''
     Method that preforms an fgsm attack at a range of epsilons
