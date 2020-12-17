@@ -13,7 +13,7 @@ from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM, LinfDeepFoolAttack
 from advertorch.attacks import LinfSPSAAttack
 from robustbench.model_zoo.models import Carmon2019UnlabeledNet
-from src.utils import adversarial_accuracy, fgsm_, random_step_
+from src.utils import adversarial_accuracy, fgsm_, random_step_, pgd_
 import eagerpy as ep
 from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
@@ -440,3 +440,36 @@ def multi_scale_fgsm(fmodel, images, labels, epsilon=0.03):
                                         labels,
                                         epsilons=scales)
     return success_fgsm
+
+def pgd_colinearity(model, dataloader, epsilon, device='cpu'):
+    '''
+    Compute a measure of the colinearity of pgd steps.
+    Sum of cos_similarity between the first step of pgd and every other step
+    average over dataset
+    '''
+    cos = nn.CosineSimilarity(dim=1, eps=1e-18)
+    cos_similarity_scores = []
+    for images, labels in dataloader:
+        images = images.to(device)
+        labels = labels.type(torch.LongTensor).to(device)
+        
+        _, steps = pgd_(model,
+                         images,
+                         labels,
+                         eps=epsilon,
+                         step=1/4,
+                         iters=20, 
+                         targeted=False,
+                         device=device,
+                         clip_min=0,
+                         clip_max=1,
+                         random_step=False,
+                         report_steps=True)
+        
+        steps = [step.reshape(step.shape[0], -1) for step in steps]
+        score = torch.zeros(images.shape[0])
+        for i in range(1, len(steps)):
+            score += cos(steps[0], steps[i])
+        cos_similarity_scores.append(score)
+        cur+=1
+    return torch.cat(cos_similarity_scores)

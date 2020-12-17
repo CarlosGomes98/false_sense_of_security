@@ -109,7 +109,8 @@ def pgd_(model,
          device='cpu',
          clip_min=None,
          clip_max=None,
-         random_step=True):
+         random_step=True,
+         report_steps=False):
     """
     Internal pgd attack used during training.
 
@@ -117,14 +118,15 @@ def pgd_(model,
     """
     projection_min = x - eps
     projection_max = x + eps
-
+    steps = []
     # generate a random point in the +-eps box around x
     if random_step:
         offset = torch.rand_like(x)
         offset = (offset * 2 * eps - eps)
         x = x + offset
+        
     for i in range(iters):
-        x = fgsm_(model,
+        new_x = fgsm_(model,
                   x,
                   target,
                   eps=eps*step,
@@ -133,13 +135,17 @@ def pgd_(model,
                   clip_min=None,
                   clip_max=None)
         # project
-        x = torch.where(x < projection_min, projection_min, x)
-        x = torch.where(x > projection_max, projection_max, x)
+        new_x = torch.where(new_x < projection_min, projection_min, new_x)
+        new_x = torch.where(new_x > projection_max, projection_max, new_x)
         if (clip_min is not None) or (clip_max is not None):
-            x.clamp_(min=clip_min, max=clip_max)
+            new_x.clamp_(min=clip_min, max=clip_max)
         model.zero_grad()
-            
-    return x
+        steps.append(new_x - x)
+        x = new_x
+    if not report_steps:
+        return x
+    else:
+        return x, steps
 
 
 def adversarial_accuracy(model,
@@ -178,7 +184,7 @@ def adversarial_accuracy(model,
     return (correct / len(dataset_loader.dataset) * 100)
 
 
-def plot_along_grad(perturbations, model, datapoint, target, batch_size, device='cpu'):
+def plot_along_grad(perturbations, model, datapoint, target, batch_size, device='cpu', axis=None):
     losses = []
     datapoint = datapoint.unsqueeze(0)
     datapoint.requires_grad_()
@@ -187,31 +193,43 @@ def plot_along_grad(perturbations, model, datapoint, target, batch_size, device=
     ce = torch.nn.CrossEntropyLoss(reduction='none')
     loss = ce(output, target)
     direction = torch.autograd.grad(loss, datapoint, only_inputs=True)[0].sign()
-    for batch in range(0, perturbations.shape[0], batch_size):
-        cur_batch_size = min(batch_size, perturbations.shape[0] - batch)
-        cur_target = target.repeat(cur_batch_size)
-        data = datapoint.repeat(cur_batch_size, 1, 1, 1) + direction*perturbations[batch:batch+cur_batch_size].reshape(-1, 1, 1, 1)
-        output = model(data)
-        loss = ce(output, cur_target)
-        losses.append(loss)
-    plt.ylim(0, 30)
-    plt.plot(perturbations, torch.cat(losses).detach().cpu().numpy(), alpha=0.1, color='blue')
-    plt.xlabel("Epsilon")
-    plt.ylabel("Loss")
+    with torch.no_grad():
+        for batch in range(0, perturbations.shape[0], batch_size):
+            cur_batch_size = min(batch_size, perturbations.shape[0] - batch)
+            cur_target = target.repeat(cur_batch_size)
+            data = datapoint.repeat(cur_batch_size, 1, 1, 1) + direction*perturbations[batch:batch+cur_batch_size].reshape(-1, 1, 1, 1)
+            output = model(data)
+            loss = ce(output, cur_target)
+            losses.append(loss)
+    losses = torch.cat(losses).detach().cpu()
+    if axis is None:
+        plt.ylim(0, 30)
+        plt.plot(perturbations, losses, alpha=0.05, color='blue')
+        plt.xlabel("Epsilon")
+        plt.ylabel("Loss")
+    else:
+        axis.set_ylim(0, 30)
+        axis.plot(perturbations, losses, alpha=0.05, color='blue')
+        axis.set_xlabel("Epsilon")
+        axis.set_ylabel("Loss")
     return losses
     
-def plot_along_grad_n(model, dataset, batch_size, n, device='cpu'):
+def plot_along_grad_n(model, datasets, batch_size, n, device='cpu'):
     perturbations = torch.arange(0, 0.16, 0.002).to(device)
-    datapoint_indexes = torch.randint(0, len(dataset), (n,))
-    losses_n = []
-    for index in datapoint_indexes:
-        losses_n.append(plot_along_grad(perturbations, model, dataset[index][0], dataset[index][1], batch_size))
-    
-    losses_mean = torch.stack(losses_n).mean(axis=0)
-    plt.ylim(0, 30)
-    plt.plot(losses_mean, torch.cat(losses).detach().cpu().numpy(), alpha=1, color='red')
-    plt.xlabel("Epsilon")
-    plt.ylabel("Loss")
-    
+    fig, ax = plt.subplots(1, len(datasets), figsize=(12, 5))
+    for axis, dataset in zip(ax, datasets):
+        datapoint_indexes = torch.randint(0, len(dataset), (n,))
+        losses_total = []
+        for index in datapoint_indexes:
+            losses_total.append(plot_along_grad(perturbations, model, dataset[index][0], dataset[index][1], batch_size, axis=axis))
+        losses_total = torch.stack(losses_total)
+        losses_mean = losses_total.mean(axis=0)
+        losses_std = losses_total.std(axis=0)
+        axis.set_ylim(0, 30)
+        axis.plot(perturbations, losses_mean, alpha=1, color='red')
+        axis.fill_between(perturbations, losses_mean-losses_std, losses_mean+losses_std, color='red', alpha=0.3)
+        axis.set_xlabel("Epsilon")
+        axis.set_ylabel("Loss")
+    plt.show()
 if __name__ == "__main__":
     pass
