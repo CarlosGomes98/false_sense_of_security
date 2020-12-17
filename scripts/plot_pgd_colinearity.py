@@ -56,7 +56,7 @@ cure[1].load_state_dict(torch.load("../models/RN18_CURE.pth", map_location=devic
 
 models = [model, fgsm_model, fgsm_model_small, pgd_model, pgd_model_small, step_ll_model, step_ll_model_small, grad_reg_model, cure]
 model_names = ['normal', 'fgsm', 'fgsm small', 'pgd', 'pgd small', 'step_ll', 'step_ll small', 'grad reg', 'cure']
-data = pd.DataFrame(data = torch.stack([pgd_colinearity(m, train_loader, 0.03, device='cpu') for m in models[:3]], dim=1).detach().cpu().numpy(), columns=model_names[:3])
+data = pd.DataFrame(data = torch.stack([pgd_colinearity(m, train_loader, 0.03, device='cpu') for m in models], dim=1).detach().cpu().numpy(), columns=model_names)
 ax=sns.barplot(data=data)
 ax.set(ylabel='PGD Colinearity score')
 fig = ax.get_figure()
