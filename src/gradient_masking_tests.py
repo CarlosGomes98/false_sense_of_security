@@ -441,15 +441,23 @@ def multi_scale_fgsm(fmodel, images, labels, epsilon=0.03):
                                         epsilons=scales)
     return success_fgsm
 
-def pgd_colinearity(model, dataloader, epsilon, device='cpu'):
+def pgd_colinearity(model, dataset, epsilon, device='cpu', subset_size=5000, batch_size=32, random_step=False):
     '''
     Compute a measure of the colinearity of pgd steps.
     Sum of cos_similarity between the first step of pgd and every other step
     average over dataset
     '''
+    subset = torch.utils.data.Subset(dataset,
+                                    np.random.randint(0, len(dataset), size=subset_size).tolist()
+                                    )
+
+    subset_loader = torch.utils.data.DataLoader(subset,
+                                                batch_size=batch_size,
+                                                shuffle=False,
+                                                num_workers=2)
     cos = nn.CosineSimilarity(dim=1, eps=1e-18)
     cos_similarity_scores = []
-    for images, labels in dataloader:
+    for images, labels in subset_loader:
         images = images.to(device)
         labels = labels.type(torch.LongTensor).to(device)
         
@@ -463,13 +471,13 @@ def pgd_colinearity(model, dataloader, epsilon, device='cpu'):
                          device=device,
                          clip_min=0,
                          clip_max=1,
-                         random_step=False,
+                         random_step=random_step,
                          report_steps=True)
         
         steps = [step.reshape(step.shape[0], -1) for step in steps]
-        score = torch.zeros(images.shape[0])
-        for i in range(1, len(steps)):
-            score += cos(steps[0], steps[i])
-        cos_similarity_scores.append(score)
-        cur+=1
+        score = torch.zeros(images.shape[0]).to(device)
+        with torch.no_grad():
+            for i in range(1, len(steps)):
+                score += cos(steps[0], steps[i])
+            cos_similarity_scores.append(score)
     return torch.cat(cos_similarity_scores)
