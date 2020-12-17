@@ -12,18 +12,13 @@ import matplotlib.pyplot as plt
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM, LinfDeepFoolAttack
 from advertorch.attacks import LinfSPSAAttack
-from robustbench.model_zoo.models import Carmon2019UnlabeledNet
 from src.utils import adversarial_accuracy, fgsm_, random_step_, pgd_
-import eagerpy as ep
 from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
 
-def run_masking_benchmarks(model,
-                           test_dataset,
-                           epsilon=0.06,
-                           device="cpu",
-                           batch_size=32,
-                           epsilon_step=20):
+def run_masking_benchmarks(
+    model, test_dataset, epsilon=0.06, device="cpu", batch_size=32, epsilon_step=20
+):
     """
     This method runs through a checklist of potential indicators of gradient masking, as exposed in 
     "Obfuscated Gradients Give a False Sense of Security:
@@ -34,72 +29,104 @@ def run_masking_benchmarks(model,
     pbar = tqdm(total=6, desc="Description")
 
     pbar.set_description("Computing Accuracy")
-    acc = get_accuracy(model,
-                       test_dataset,
-                       epsilon=epsilon,
-                       device=device,
-                       batch_size=batch_size) * 100
+    acc = (
+        get_accuracy(
+            model, test_dataset, epsilon=epsilon, device=device, batch_size=batch_size
+        )
+        * 100
+    )
     pbar.update(1)
 
     pbar.set_description("Computing FGSM Accuracy")
-    fgsm_acc = np.array([
-        get_accuracy(model,
-                     test_dataset,
-                     epsilon=ep,
-                     device=device,
-                     batch_size=batch_size,
-                     attack=FGSM()) * 100 for ep in epsilons
-    ])
+    fgsm_acc = np.array(
+        [
+            get_accuracy(
+                model,
+                test_dataset,
+                epsilon=ep,
+                device=device,
+                batch_size=batch_size,
+                attack=FGSM(),
+            )
+            * 100
+            for ep in epsilons
+        ]
+    )
     pbar.update(1)
 
     pbar.set_description("Computing PGD Accuracy")
-    pgd_acc = get_accuracy(model,
-                           test_dataset,
-                           epsilon=epsilon,
-                           device=device,
-                           batch_size=batch_size,
-                           attack=LinfPGD(steps=7, rel_stepsize=1 / 4)) * 100
-    pgd_acc_small = get_accuracy(model,
-                                 test_dataset,
-                                 epsilon=epsilon / 2,
-                                 device=device,
-                                 batch_size=batch_size,
-                                 attack=LinfPGD(steps=7,
-                                                rel_stepsize=1 / 4)) * 100
-    pgd_unbounded = get_accuracy(model,
-                                 test_dataset,
-                                 epsilon=1,
-                                 device=device,
-                                 batch_size=batch_size,
-                                 attack=LinfPGD(steps=7,
-                                                rel_stepsize=1 / 4)) * 100
+    pgd_acc = (
+        get_accuracy(
+            model,
+            test_dataset,
+            epsilon=epsilon,
+            device=device,
+            batch_size=batch_size,
+            attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
+        )
+        * 100
+    )
+    pgd_acc_small = (
+        get_accuracy(
+            model,
+            test_dataset,
+            epsilon=epsilon / 2,
+            device=device,
+            batch_size=batch_size,
+            attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
+        )
+        * 100
+    )
+    pgd_unbounded = (
+        get_accuracy(
+            model,
+            test_dataset,
+            epsilon=1,
+            device=device,
+            batch_size=batch_size,
+            attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
+        )
+        * 100
+    )
     pbar.update(1)
 
     pbar.set_description("Computing SPSA Accuracy")
-    spsa_acc = spsa_accuracy(model,
-                             test_dataset,
-                             eps=epsilon,
-                             iters=10,
-                             nb_sample=128,
-                             batch_size=8,
-                             device=device) * 100
-    spsa_acc_small = spsa_accuracy(model,
-                                   test_dataset,
-                                   eps=epsilon / 2,
-                                   iters=10,
-                                   nb_sample=128,
-                                   batch_size=8,
-                                   device=device) * 100
+    spsa_acc = (
+        spsa_accuracy(
+            model,
+            test_dataset,
+            eps=epsilon,
+            iters=10,
+            nb_sample=128,
+            batch_size=8,
+            device=device,
+        )
+        * 100
+    )
+    spsa_acc_small = (
+        spsa_accuracy(
+            model,
+            test_dataset,
+            eps=epsilon / 2,
+            iters=10,
+            nb_sample=128,
+            batch_size=8,
+            device=device,
+        )
+        * 100
+    )
     pbar.update(1)
 
     pbar.set_description("Computing Random Attack Accuracy")
-    random_acc = np.array([
-        get_random_accuracy(model,
-                            test_dataset,
-                            epsilon=ep,
-                            device=device,
-                            batch_size=batch_size) * 100 for ep in epsilons
-    ])
+    random_acc = np.array(
+        [
+            get_random_accuracy(
+                model, test_dataset, epsilon=ep, device=device, batch_size=batch_size
+            )
+            * 100
+            for ep in epsilons
+        ]
+    )
     pbar.update(1)
     print("Model accuracy: {}%".format(acc))
 
@@ -112,37 +139,38 @@ def run_masking_benchmarks(model,
 
     print("SPSA accuracy - eps = {}: {}%".format(epsilon, spsa_acc))
     print("SPSA accuracy - eps = {}: {}%".format(epsilon / 2, spsa_acc_small))
-    plt.y_lim(0, 100)
+    plt.ylim(0, 100)
     fig = plt.figure(figsize=(12, 8))
-    plt.plot(epsilons, fgsm_acc, label='FGSM Accuracy')
-    plt.plot(epsilons, random_acc, label='Random Attack Accuracy')
-    plt.xlabel('Epsilon')
-    plt.ylabel('Accuracy (%)')
+    plt.plot(epsilons, fgsm_acc, label="FGSM Accuracy")
+    plt.plot(epsilons, random_acc, label="Random Attack Accuracy")
+    plt.xlabel("Epsilon")
+    plt.ylabel("Accuracy (%)")
     plt.legend()
     pbar.update(1)
     pbar.close()
 
 
-def get_accuracy(model,
-                 test_dataset,
-                 attack=None,
-                 epsilon=0.03,
-                 subset_size=10000,
-                 device="cpu",
-                 batch_size=32):
+def get_accuracy(
+    model,
+    test_dataset,
+    attack=None,
+    epsilon=0.03,
+    subset_size=10000,
+    device="cpu",
+    batch_size=32,
+):
     """
     Reports the accuracy of the model, potentially under some attack (e.g. FGSM, PGD, ...)
     """
-    
+
     fmodel = PyTorchModel(model, bounds=(0, 1), device=device)
     correct = 0
     subset = torch.utils.data.Subset(
-        test_dataset,
-        np.random.randint(0, len(test_dataset), size=subset_size).tolist())
-    subset_loader = torch.utils.data.DataLoader(subset,
-                                                batch_size=batch_size,
-                                                shuffle=False,
-                                                num_workers=2)
+        test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist()
+    )
+    subset_loader = torch.utils.data.DataLoader(
+        subset, batch_size=batch_size, shuffle=False, num_workers=2
+    )
     for images, labels in subset_loader:
         images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
         if attack is None:
@@ -153,60 +181,56 @@ def get_accuracy(model,
     return correct / subset_size
 
 
-def get_random_accuracy(model,
-                        test_dataset,
-                        epsilon=0.03,
-                        device="cpu",
-                        batch_size=128,
-                        subset_size=10000):
-    '''
+def get_random_accuracy(
+    model, test_dataset, epsilon=0.03, device="cpu", batch_size=128, subset_size=10000
+):
+    """
     Calculate the accuracy of the model when subjected to a random attack.
-    '''
+    """
     correct = 0
     subset = torch.utils.data.Subset(
-        test_dataset,
-        np.random.randint(0, len(test_dataset), size=subset_size).tolist())
-    subset_loader = torch.utils.data.DataLoader(subset,
-                                                batch_size=batch_size,
-                                                shuffle=False,
-                                                num_workers=2)
+        test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist()
+    )
+    subset_loader = torch.utils.data.DataLoader(
+        subset, batch_size=batch_size, shuffle=False, num_workers=2
+    )
     for images, labels in subset_loader:
         images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
-        adv = random_step_(model,
-                           images,
-                           eps=epsilon,
-                           device=device,
-                           clip_min=0,
-                           clip_max=1)
+        adv = random_step_(
+            model, images, eps=epsilon, device=device, clip_min=0, clip_max=1
+        )
         preds = model(adv).argmax(-1)
         correct += (preds == labels).sum().item()
     return correct / len(subset_loader.dataset)
 
 
-def spsa_accuracy(model,
-                  test_dataset,
-                  eps=0.03,
-                  iters=1,
-                  nb_sample=128,
-                  batch_size=8,
-                  device="cpu",
-                  subset_size=100):
+def spsa_accuracy(
+    model,
+    test_dataset,
+    eps=0.03,
+    iters=1,
+    nb_sample=128,
+    batch_size=8,
+    device="cpu",
+    subset_size=100,
+):
     """
     Reports the accuracy of the model under the SPSA attack. This method is quite expensive, so a small subset_size is reccomended,
     particularly for deeper networks.
     """
-    attack = LinfSPSAAttack(model,
-                            eps,
-                            nb_iter=iters,
-                            nb_sample=nb_sample,
-                            loss_fn=nn.CrossEntropyLoss(reduction='none'))
+    attack = LinfSPSAAttack(
+        model,
+        eps,
+        nb_iter=iters,
+        nb_sample=nb_sample,
+        loss_fn=nn.CrossEntropyLoss(reduction="none"),
+    )
     subset = torch.utils.data.Subset(
-        test_dataset,
-        np.random.randint(0, len(test_dataset), size=subset_size).tolist())
-    subset_loader = torch.utils.data.DataLoader(subset,
-                                                batch_size=batch_size,
-                                                shuffle=False,
-                                                num_workers=2)
+        test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist()
+    )
+    subset_loader = torch.utils.data.DataLoader(
+        subset, batch_size=batch_size, shuffle=False, num_workers=2
+    )
     correct = 0
     for images, labels in subset_loader:
         images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
@@ -216,7 +240,7 @@ def spsa_accuracy(model,
     return correct / len(subset_loader.dataset)
 
 
-def gradient_norm(model, data_loader, device='cpu', subset_size=10000):
+def gradient_norm(model, data_loader, device="cpu", subset_size=10000):
     """
     Computes the gradient norm w.r.t. the loss at the given points.
     """
@@ -241,13 +265,15 @@ def gradient_norm(model, data_loader, device='cpu', subset_size=10000):
     return grad_norm
 
 
-def linearization_error(model,
-                        dataset,
-                        subset=100,
-                        batch_size=128,
-                        n_perturbations=128 * 10,
-                        epsilons=[0.03],
-                        device='cpu'):
+def linearization_error(
+    model,
+    dataset,
+    subset=100,
+    batch_size=128,
+    n_perturbations=128 * 10,
+    epsilons=[0.03],
+    device="cpu",
+):
     """
     Estimates the 'linearizability' of a model by computing the linearization error over a series of randomly sampled points
     at set l-inf distances
@@ -262,22 +288,24 @@ def linearization_error(model,
                 break
 
             model.zero_grad()
-            x = data[0].reshape((1, ) + data[0].shape).to(device)
+            x = data[0].reshape((1,) + data[0].shape).to(device)
             x.requires_grad_()
             y = model(x)[0, data[1]]
             g = torch.autograd.grad(y, x)[0]
             errors = []
             with torch.no_grad():
                 for _ in range(math.ceil(n_perturbations / batch_size)):
-                    perturbation = (torch.rand(
-                        (batch_size, 3, 32, 32)) > 0.5).float().to(device)
+                    perturbation = (
+                        (torch.rand((batch_size, 3, 32, 32)) > 0.5).float().to(device)
+                    )
                     perturbation[perturbation == 0] = -1
                     perturbation *= epsilon
                     #                     perturbation = torch.rand((batch_size, 3, 32, 32)).to(device)
                     #                     perturbation = perturbation * epsilon * 2
                     #                     perturbation = perturbation - epsilon
-                    y_prime = model(x.repeat(batch_size, 1, 1, 1) +
-                              perturbation)[:, data[1]]
+                    y_prime = model(x.repeat(batch_size, 1, 1, 1) + perturbation)[
+                        :, data[1]
+                    ]
                     approx = y.repeat(batch_size) + torch.sum(perturbation * g)
                     errors.append(torch.abs((approx - y_prime) / y_prime))
             mean_errors.append(torch.cat(errors).mean())
@@ -288,11 +316,7 @@ def linearization_error(model,
         print("Epsilon {}: {} error".format(epsilon, error))
 
 
-def gradient_information(model,
-                         dataset,
-                         iters=50,
-                         device='cpu',
-                         subset_size=1000):
+def gradient_information(model, dataset, iters=50, device="cpu", subset_size=1000):
     """
     Computes the cosine information between the gradient of point at the decision boundary w.r.t. the different in logits and the vector (point at decision boundary - original input point).
 
@@ -302,12 +326,11 @@ def gradient_information(model,
     fmodel = PyTorchModel(model, bounds=(0, 1))
     attack = LinfDeepFoolAttack(overshoot=0.002, steps=iters)
     subset = torch.utils.data.Subset(
-        dataset,
-        np.random.randint(0, len(dataset), size=subset_size).tolist())
-    subset_loader = torch.utils.data.DataLoader(subset,
-                                                batch_size=128,
-                                                shuffle=False,
-                                                num_workers=2)
+        dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
+    )
+    subset_loader = torch.utils.data.DataLoader(
+        subset, batch_size=128, shuffle=False, num_workers=2
+    )
     grad_information_full = []
     for data, target in subset_loader:
         data = data.to(device)
@@ -316,7 +339,9 @@ def gradient_information(model,
         _, adv, success = attack(fmodel, data, target, epsilons=8)
         # only keep those for which an adversarial example was found
         new_labels = model(adv).argmax(axis=-1)
-        adv_examples_index = (new_labels != original_labels) & (original_labels == target)
+        adv_examples_index = (new_labels != original_labels) & (
+            original_labels == target
+        )
         # print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
         if adv_examples_index.sum() == 0:
             return None
@@ -331,29 +356,30 @@ def gradient_information(model,
         loss = torch.sum(logits[:, new_labels] - logits[:, original_labels])
         loss.backward()
         grad = adv.grad.reshape(adv.shape[0], -1)
-        diff_vector = (adv - data[adv_examples_index]).reshape(
-            adv.shape[0], -1)
+        diff_vector = (adv - data[adv_examples_index]).reshape(adv.shape[0], -1)
         cos = nn.CosineSimilarity(dim=1, eps=1e-18)
         grad_information = cos(grad, diff_vector)
         grad_information_full.append(grad_information)
     return torch.cat(grad_information_full).mean()
 
 
-def fgsm_pgd_cos_dif(model,
-                     test_dataset,
-                     epsilons=[0.03],
-                     subset_size=1000,
-                     device="cpu",
-                     batch_size=32,
-                     n_steps_pgd=7,
-                     return_adjusted_fgsm=True):
-    '''
+def fgsm_pgd_cos_dif(
+    model,
+    test_dataset,
+    epsilons=[0.03],
+    subset_size=1000,
+    device="cpu",
+    batch_size=32,
+    n_steps_pgd=7,
+    return_adjusted_fgsm=True,
+):
+    """
     Method that evaluates how informative the gradients of the network are. Preforms pgd and fgsm and compares the solutions.
     Returns the cosine difference and euclidian distance between the solutions.
     Furthermore, the method computes and returns the success of the adjusted fgsm attack. It takes the output of the fgsm attack
     and rescales it to have the same norm as the pgd solution. This was implemented as it was noticed that the cosine similarity
     was often very close to 1, yet the norm was quite different.
-    '''
+    """
     fmodel = PyTorchModel(model, bounds=(0, 1))
     for epsilon in epsilons:
         cos_dif = []
@@ -364,81 +390,86 @@ def fgsm_pgd_cos_dif(model,
             successes_adjusted_fgsm = []
         subset = torch.utils.data.Subset(
             test_dataset,
-            np.random.randint(0, len(test_dataset), size=subset_size).tolist())
-        subset_loader = torch.utils.data.DataLoader(subset,
-                                                    batch_size=batch_size,
-                                                    shuffle=False,
-                                                    num_workers=2)
+            np.random.randint(0, len(test_dataset), size=subset_size).tolist(),
+        )
+        subset_loader = torch.utils.data.DataLoader(
+            subset, batch_size=batch_size, shuffle=False, num_workers=2
+        )
         for images, labels in tqdm(subset_loader):
-            images, labels = images.to(device), labels.type(
-                torch.cuda.LongTensor)
-            _, advs_fgsm, success_fgsm = FGSM()(fmodel,
-                                                images,
-                                                labels,
-                                                epsilons=epsilon)
-            _, advs_pgd, success_pgd = LinfPGD(steps=n_steps_pgd,
-                                               rel_stepsize=1 / 4)(
-                                                   fmodel,
-                                                   images,
-                                                   labels,
-                                                   epsilons=epsilon)
+            images, labels = images.to(device), labels.type(torch.cuda.LongTensor)
+            _, advs_fgsm, success_fgsm = FGSM()(
+                fmodel, images, labels, epsilons=epsilon
+            )
+            _, advs_pgd, success_pgd = LinfPGD(steps=n_steps_pgd, rel_stepsize=1 / 4)(
+                fmodel, images, labels, epsilons=epsilon
+            )
             fgsm_perturbation = advs_fgsm - images
             pgd_perturbation = advs_pgd - images
             if return_adjusted_fgsm:
-                adjusted_fgsm = ((fgsm_perturbation / torch.linalg.norm(
-                    fgsm_perturbation.reshape(advs_fgsm.shape[0], -1), dim=1
-                ).reshape(advs_fgsm.shape[0], 1, 1, 1)) * torch.linalg.norm(
-                    pgd_perturbation.reshape(advs_pgd.shape[0], -1),
-                    dim=1).reshape(advs_fgsm.shape[0], 1, 1, 1)) + images
+                adjusted_fgsm = (
+                    (
+                        fgsm_perturbation
+                        / torch.linalg.norm(
+                            fgsm_perturbation.reshape(advs_fgsm.shape[0], -1), dim=1
+                        ).reshape(advs_fgsm.shape[0], 1, 1, 1)
+                    )
+                    * torch.linalg.norm(
+                        pgd_perturbation.reshape(advs_pgd.shape[0], -1), dim=1
+                    ).reshape(advs_fgsm.shape[0], 1, 1, 1)
+                ) + images
                 _, _, success_adjusted_fgsm = FGSM()(
                     fmodel, adjusted_fgsm, labels, epsilons=0
                 )  # this is a hack to get the successes. Can be done more efficiently
                 successes_adjusted_fgsm.append(success_adjusted_fgsm)
             fgsm_perturbation = fgsm_perturbation.reshape(
-                fgsm_perturbation.shape[0], -1)
-            pgd_perturbation = pgd_perturbation.reshape(
-                pgd_perturbation.shape[0], -1)
+                fgsm_perturbation.shape[0], -1
+            )
+            pgd_perturbation = pgd_perturbation.reshape(pgd_perturbation.shape[0], -1)
             cos = nn.CosineSimilarity(dim=1, eps=1e-18)
             cos_dif.append(cos(fgsm_perturbation, pgd_perturbation))
-            dist = torch.linalg.norm(fgsm_perturbation - pgd_perturbation,
-                                     dim=1,
-                                     ord=2)
+            dist = torch.linalg.norm(fgsm_perturbation - pgd_perturbation, dim=1, ord=2)
             distance.append(dist)
             successes_fgsm.append(success_fgsm)
             successes_pgd.append(success_pgd)
 
         print("Epsilon = {}:".format(epsilon))
-        cos_dif, distance, successes_fgsm, successes_pgd = torch.cat(
-            cos_dif), torch.cat(distance), torch.cat(
-                successes_fgsm), torch.cat(successes_pgd)
+        cos_dif, distance, successes_fgsm, successes_pgd = (
+            torch.cat(cos_dif),
+            torch.cat(distance),
+            torch.cat(successes_fgsm),
+            torch.cat(successes_pgd),
+        )
         print(
-            "Mean Cosine Difference: {}, Mean Cosine Difference when FGSM does not succeed but PGD does: {}, Mean l2 Distance: {}"
-            .format(cos_dif[successes_fgsm].mean(),
-                    cos_dif[(~successes_fgsm & successes_pgd)].mean(),
-                    dist.mean()))
+            "Mean Cosine Difference: {}, Mean Cosine Difference when FGSM does not succeed but PGD does: {}, Mean l2 Distance: {}".format(
+                cos_dif[successes_fgsm].mean(),
+                cos_dif[(~successes_fgsm & successes_pgd)].mean(),
+                dist.mean(),
+            )
+        )
         if return_adjusted_fgsm:
             successes_adjusted_fgsm = torch.cat(successes_adjusted_fgsm)
             print(
-                "FGSM success: {}, PGD Success: {}, Rescaled FGSM success: {}".
-                format(successes_fgsm.sum() / subset_size,
-                       successes_pgd.sum() / subset_size,
-                       successes_adjusted_fgsm.sum() / subset_size))
+                "FGSM success: {}, PGD Success: {}, Rescaled FGSM success: {}".format(
+                    successes_fgsm.sum() / subset_size,
+                    successes_pgd.sum() / subset_size,
+                    successes_adjusted_fgsm.sum() / subset_size,
+                )
+            )
         else:
             print(
-                "FGSM success: {}, PGD Success: {}".
-                format(successes_fgsm.sum() / subset_size,
-                       successes_pgd.sum() / subset_size))
+                "FGSM success: {}, PGD Success: {}".format(
+                    successes_fgsm.sum() / subset_size,
+                    successes_pgd.sum() / subset_size,
+                )
+            )
 
-        
+
 def multi_scale_fgsm(fmodel, images, labels, epsilon=0.03):
-    '''
+    """
     Method that preforms an fgsm attack at a range of epsilons
-    '''
+    """
     scales = [epsilon * i / 100 for i in range(1, 101)]
-    _, advs_fgsm, success_fgsm = FGSM()(fmodel,
-                                        images,
-                                        labels,
-                                        epsilons=scales)
+    _, advs_fgsm, success_fgsm = FGSM()(fmodel, images, labels, epsilons=scales)
     return success_fgsm
 
 def pgd_colinearity(model, dataset, epsilon, device='cpu', subset_size=5000, batch_size=32, random_step=False):

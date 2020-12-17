@@ -231,5 +231,17 @@ def plot_along_grad_n(model, datasets, batch_size, n, device='cpu'):
         axis.set_xlabel("Epsilon")
         axis.set_ylabel("Loss")
     plt.show()
+    
+def compare_models_on_measure(measure_function, models, labels, data_loader, device='cpu', height=2):
+    measures = [measure_function(model, data_loader, device=device).detach().cpu().numpy() for model in models]
+    width = math.ceil(len(models)/height)
+    fig, ax = plt.subplots(height, width, figsize=(15, 15))
+    for index, measure in enumerate(measures):
+        axis = ax[index//width, index%width]
+        axis.hist(measure, bins=100)
+        axis.set_title(labels[index])
+        axis.text(0.5, -0.13, "Max: {:.6f}, Min: {:.6f}, \nMean: {:.6f}, Median: {:.6f}".format(measure.max().item(), measure.min().item(), measure.mean().item(), np.median(measure).item()),
+                                            size=12, ha="center", transform=axis.transAxes)
+    plt.show()
 if __name__ == "__main__":
     pass
