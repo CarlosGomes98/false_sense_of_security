@@ -100,6 +100,7 @@ def run_masking_benchmarks(
             nb_sample=128,
             batch_size=8,
             device=device,
+            subset_size=500
         )
         * 100
     )
@@ -112,6 +113,7 @@ def run_masking_benchmarks(
             nb_sample=128,
             batch_size=8,
             device=device,
+            subset_size=500
         )
         * 100
     )
@@ -139,13 +141,12 @@ def run_masking_benchmarks(
 
     print("SPSA accuracy - eps = {}: {}%".format(epsilon, spsa_acc))
     print("SPSA accuracy - eps = {}: {}%".format(epsilon / 2, spsa_acc_small))
-    plt.ylim(0, 100)
-    fig = plt.figure(figsize=(12, 8))
-    plt.plot(epsilons, fgsm_acc, label="FGSM Accuracy")
-    plt.plot(epsilons, random_acc, label="Random Attack Accuracy")
-    plt.xlabel("Epsilon")
-    plt.ylabel("Accuracy (%)")
-    plt.legend()
+    ax, fig = plt.subplots(figsize=(12, 8))
+    ax.plot(epsilons, fgsm_acc, label="FGSM Accuracy")
+    ax.plot(epsilons, random_acc, label="Random Attack Accuracy")
+    ax.set(xlabel="Epsilon", ylabel="Accuracy (%)")
+    ax.set_ylim(0, 100)
+    ax.legend()
     pbar.update(1)
     pbar.close()
 
