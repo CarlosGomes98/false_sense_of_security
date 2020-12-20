@@ -64,6 +64,15 @@ for data_item, model_name in zip(data, model_names):
 
 data = pd.concat(data)
 data.to_csv("pgd_colinearity.csv")
+
+data = [pd.DataFrame(pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=True, subset_size=5000, sequential=False).detach().cpu().numpy()) for m in models]
+for data_item, model_name in zip(data, model_names):
+   data_item['sum'] = data_item.sum(axis=1)
+   data_item['mean'] = data_item['sum'] / (data_item.shape[1] - 1)
+   data_item['model'] = model_name
+
+data = pd.concat(data)
+data.to_csv("pgd_colinearity_non_sequential.csv")
 # data = pd.DataFrame(data=torch.stack([pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=True).detach().cpu() for m in models], dim=1).numpy(), columns=model_names)
 # fig, ax = plt.subplots(figsize=(15, 12))
 # sns.barplot(ax=ax, data=data)
