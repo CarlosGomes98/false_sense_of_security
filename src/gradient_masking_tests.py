@@ -141,7 +141,7 @@ def run_masking_benchmarks(
 
     print("SPSA accuracy - eps = {}: {}%".format(epsilon, spsa_acc))
     print("SPSA accuracy - eps = {}: {}%".format(epsilon / 2, spsa_acc_small))
-    ax, fig = plt.subplots(figsize=(12, 8))
+    fig, ax = plt.subplots(figsize=(12, 8))
     ax.plot(epsilons, fgsm_acc, label="FGSM Accuracy")
     ax.plot(epsilons, random_acc, label="Random Attack Accuracy")
     ax.set(xlabel="Epsilon", ylabel="Accuracy (%)")
@@ -325,7 +325,7 @@ def gradient_information(model, dataset, iters=50, device="cpu", subset_size=100
     Thus, we would expect these vectors to be +- collinear.
     """
     fmodel = PyTorchModel(model, bounds=(0, 1))
-    attack = LinfDeepFoolAttack(overshoot=0.002, steps=iters)
+    attack = LinfDeepFoolAttack(steps=iters)
     subset = torch.utils.data.Subset(
         dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
     )
@@ -340,9 +340,8 @@ def gradient_information(model, dataset, iters=50, device="cpu", subset_size=100
         _, adv, success = attack(fmodel, data, target, epsilons=8)
         # only keep those for which an adversarial example was found
         new_labels = model(adv).argmax(axis=-1)
-        adv_examples_index = (new_labels != original_labels) & (
-            original_labels == target
-        )
+        # unsure if here I should only keep examples which are originally classified correctly
+        adv_examples_index = new_labels != original_labels
         # print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
         if adv_examples_index.sum() == 0:
             return None
