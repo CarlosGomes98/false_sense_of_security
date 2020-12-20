@@ -234,7 +234,7 @@ class MNIST_Net(nn.Module):
             if self.oracle is not None:
                 with torch.no_grad():
                     target = self.oracle(data).argmax(axis=1).type(
-                        torch.cuda.LongTensor)
+                        torch.LongTensor).to(device)
             optimizer.zero_grad()
             output = self(data)
             loss = criterion(output, target)

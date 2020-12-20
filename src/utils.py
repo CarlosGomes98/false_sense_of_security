@@ -1,6 +1,7 @@
 # some of the code from RAI
 # This file contains utility functions used throughout the project.
 import torch
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 import torch.nn as nn
@@ -97,7 +98,7 @@ def pgd_(
     x,
     target,
     eps=0.03,
-    step=1 / 4,
+    step=1/4,
     iters=7,
     targeted=True,
     device="cpu",
@@ -113,7 +114,9 @@ def pgd_(
     """
     projection_min = x - eps
     projection_max = x + eps
-    steps = []
+    if report_steps:
+        steps = []
+        # arrived = torch.ones()
     # generate a random point in the +-eps box around x
     if random_step:
         offset = torch.rand_like(x)
@@ -188,6 +191,7 @@ def adversarial_accuracy(
     return correct / len(dataset_loader.dataset) * 100
 
 
+# should i take loss w.r.t. target or to currently predicted class? seyed suggested currently predicted i think. im not sure
 def plot_along_grad(
     perturbations, model, datapoint, target, batch_size, device="cpu", axis=None
 ):
@@ -260,22 +264,22 @@ def plot_along_grad_n(model, datasets, batch_size, n, device="cpu"):
 
 
 def compare_models_on_measure(
-    measure_function, models, labels, data_loader, device="cpu", height=2
+    measure_function, models, labels, data_loader, device="cpu", height=2, bins=100, **kwargs
 ):
     measures = [
-        measure_function(model, data_loader, device=device).detach().cpu().numpy()
+        measure_function(model, data_loader, device=device, **kwargs).detach().cpu().numpy()
         for model in models
     ]
     width = math.ceil(len(models) / height)
     fig, ax = plt.subplots(height, width, figsize=(15, 15))
     for index, measure in enumerate(measures):
         axis = ax[index // width, index % width]
-        axis.hist(measure, bins=100)
+        axis.hist(measure, bins=bins)
         axis.set_title(labels[index])
         axis.text(
             0.5,
             -0.13,
-            "Max: {:.6f}, Min: {:.6f}, \nMean: {:.6f}, Median: {:.6f}".format(
+            "Max: {:.3f}, Min: {:.3f}, Mean: {:.3f}, Median: {:.3f}".format(
                 measure.max().item(),
                 measure.min().item(),
                 measure.mean().item(),
