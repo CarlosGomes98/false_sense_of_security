@@ -56,7 +56,7 @@ cure[1].load_state_dict(torch.load("./models/RN18_CURE.pth", map_location=device
 
 models = [model, fgsm_model, fgsm_model_small, pgd_model, pgd_model_small, step_ll_model, step_ll_model_small, grad_reg_model, cure]
 model_names = ['normal', 'fgsm', 'fgsm small', 'pgd', 'pgd small', 'step_ll', 'step_ll small', 'grad reg', 'cure']
-data = [pd.DataFrame(pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=True, subset_size=10, sequential=True).detach().cpu().numpy()) for m in models]
+data = [pd.DataFrame(pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=True, subset_size=5000, sequential=True).detach().cpu().numpy()) for m in models]
 for data_item, model_name in zip(data, model_names):
    data_item['sum'] = data_item.sum(axis=1)
    data_item['mean'] = data_item['sum'] / (data_item.shape[1] - 1)
