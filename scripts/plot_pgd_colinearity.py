@@ -15,7 +15,7 @@ from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net, CUREResNet18
 from src.gradient_masking_tests import run_masking_benchmarks, get_accuracy, pgd_colinearity
 
 # setup
-device = torch.device("cpu")
+device = torch.device("cuda")
 batch_size = 32
 # remove the normalize
 transform = transform = transforms.Compose(
