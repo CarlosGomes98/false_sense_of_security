@@ -491,11 +491,11 @@ def pgd_colinearity(model, dataset, epsilon, device='cpu', subset_size=5000, bat
         labels = labels.type(torch.LongTensor).to(device)
         
         with torch.no_grad():
-           original_labels = model(images).argmax(-1).type(torch.LongTensor).to(device)
+           predicted = model(images).argmax(-1).type(torch.LongTensor).to(device)
         
         _, steps = pgd_(model,
                          images,
-                         labels,
+                         predicted,
                          eps=epsilon,
                          step=1/16,
                          iters=20,

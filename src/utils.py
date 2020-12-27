@@ -193,66 +193,88 @@ def adversarial_accuracy(
 
 # should i take loss w.r.t. target or to currently predicted class? seyed suggested currently predicted i think. im not sure
 def plot_along_grad(
-    perturbations, model, datapoint, target, batch_size, device="cpu", axis=None
+    perturbations, model, datapoint, target, batch_size, device="cpu", axis=None, draw=True
 ):
     losses = []
     datapoint = datapoint.unsqueeze(0)
+    datapoint = datapoint.to(device)
     datapoint.requires_grad_()
     target = torch.LongTensor([target]).to(device)
     output = model(datapoint)
+    predicted_class = output.argmax(-1).type(torch.LongTensor).to(device)
     ce = torch.nn.CrossEntropyLoss(reduction="none")
-    loss = ce(output, target)
+    loss = ce(output, predicted_class)
     direction = torch.autograd.grad(loss, datapoint, only_inputs=True)[0].sign()
+    diff_class = []
     with torch.no_grad():
         for batch in range(0, perturbations.shape[0], batch_size):
             cur_batch_size = min(batch_size, perturbations.shape[0] - batch)
-            cur_target = target.repeat(cur_batch_size)
+            cur_target = predicted_class.repeat(cur_batch_size)
             data = datapoint.repeat(
                 cur_batch_size, 1, 1, 1
             ) + direction * perturbations[batch : batch + cur_batch_size].reshape(
                 -1, 1, 1, 1
             )
             output = model(data)
+            diff_class.append(output.argmax(-1) != predicted_class)
             loss = ce(output, cur_target)
             losses.append(loss)
     losses = torch.cat(losses).detach().cpu()
-    if axis is None:
-        plt.ylim(0, 30)
-        plt.plot(perturbations, losses, alpha=0.05, color="blue")
-        plt.xlabel("Epsilon")
-        plt.ylabel("Loss")
-    else:
-        axis.set_ylim(0, 30)
-        axis.plot(perturbations, losses, alpha=0.05, color="blue")
-        axis.set_xlabel("Epsilon")
-        axis.set_ylabel("Loss")
-    return losses
+    diff_class = torch.cat(diff_class).detach().cpu()
+    first_diff_class = find_first_true(diff_class)
 
+    if draw:
+        if axis is None:
+            plt.ylim(0, 30)
+            plt.plot(perturbations.detach().cpu().numpy(), losses, alpha=0.05, color="blue")
+            plt.xlabel("Epsilon")
+            plt.ylabel("Loss")
+        else:
+            axis.set_ylim(0, 30)
+            axis.plot(perturbations.detach().cpu().numpy(), losses, alpha=0.05, color="blue")
+            axis.set_xlabel("Epsilon")
+            axis.set_ylabel("Loss")
+    return losses, first_diff_class
 
-def plot_along_grad_n(model, datasets, batch_size, n, device="cpu"):
+def find_first_true(vector):
+    for i in range(vector.shape[0]):
+        if vector[i].item():
+            return i
+    
+    return -1
+def plot_along_grad_n(model, datasets, batch_size, n, device="cpu", draw=100):
     perturbations = torch.arange(0, 0.16, 0.002).to(device)
     fig, ax = plt.subplots(1, len(datasets), figsize=(12, 5))
     for axis, dataset in zip(ax, datasets):
         datapoint_indexes = torch.randint(0, len(dataset), (n,))
         losses_total = []
-        for index in datapoint_indexes:
-            losses_total.append(
-                plot_along_grad(
-                    perturbations,
-                    model,
-                    dataset[index][0],
-                    dataset[index][1],
-                    batch_size,
-                    axis=axis,
-                )
+        boundaries_total = []
+        no_boundary_crossed = 0
+        for count, index in enumerate(datapoint_indexes):
+            loss, boundary = plot_along_grad(
+                perturbations,
+                model,
+                dataset[index][0],
+                dataset[index][1],
+                batch_size,
+                axis=axis,
+                device=device,
+                draw=count<draw
             )
+            losses_total.append(loss)
+            if boundary == -1:
+                no_boundary_crossed += 1
+            else:
+                boundaries_total.append(perturbations[boundary].detach().cpu().item())
+
+        boundaries_total = np.array(boundaries_total)
         losses_total = torch.stack(losses_total)
-        losses_mean = losses_total.mean(axis=0)
-        losses_std = losses_total.std(axis=0)
+        losses_mean = losses_total.mean(axis=0).detach().cpu().numpy()
+        losses_std = losses_total.std(axis=0).detach().cpu().numpy()
         axis.set_ylim(0, 30)
-        axis.plot(perturbations, losses_mean, alpha=1, color="red")
+        axis.plot(perturbations.detach().cpu().numpy(), losses_mean, alpha=1, color="red")
         axis.fill_between(
-            perturbations,
+            perturbations.detach().cpu().numpy(),
             losses_mean - losses_std,
             losses_mean + losses_std,
             color="red",
@@ -260,6 +282,13 @@ def plot_along_grad_n(model, datasets, batch_size, n, device="cpu"):
         )
         axis.set_xlabel("Epsilon")
         axis.set_ylabel("Loss")
+
+        boundaries_mean = boundaries_total.mean()
+        boundaries_std = boundaries_total.std()
+        axis.axvline(boundaries_mean, alpha=1, color='green')
+        axis.axvline(boundaries_mean + boundaries_std, alpha=0.5, color='green')
+        axis.axvline(boundaries_mean - boundaries_std, alpha=0.5, color='green')
+        print(no_boundary_crossed)
     plt.show()
 
 

@@ -41,6 +41,8 @@ fgsm_model = CIFAR_Res_Net().eval().to(device)
 fgsm_model.load_state_dict(torch.load("./models/fgsm_e16_20e.model", map_location=device))
 fgsm_model_small = CIFAR_Res_Net().eval().to(device)
 fgsm_model_small.load_state_dict(torch.load("./models/fgsm_e8_20e.model", map_location=device))
+fgsm_model_small_2 = CIFAR_Res_Net().eval().to(device)
+fgsm_model_small_2.load_state_dict(torch.load("./models/fgsm_e8_20e_2.model", map_location=device))
 step_ll_model = CIFAR_Res_Net().eval().to(device)
 step_ll_model.load_state_dict(torch.load("./models/step_ll_e16_20e.model", map_location=device))
 step_ll_model_small = CIFAR_Res_Net().eval().to(device)
@@ -51,11 +53,13 @@ pgd_model_small = CIFAR_Res_Net().eval().to(device)
 pgd_model_small.load_state_dict(torch.load("./models/pgd_e8_20e.model", map_location=device))
 grad_reg_model = CIFAR_Res_Net().eval().to(device)
 grad_reg_model.load_state_dict(torch.load("./models/grad_reg_ld01_20e.model", map_location=device))
+grad_reg_model_2 = CIFAR_Res_Net().eval().to(device)
+grad_reg_model_2.load_state_dict(torch.load("./models/grad_reg_ld02_20e.model", map_location=device))
 cure = CUREResNet18().to(device).eval()
 cure[1].load_state_dict(torch.load("./models/RN18_CURE.pth", map_location=device)['net'])
 
-models = [model, fgsm_model, fgsm_model_small, pgd_model, pgd_model_small, step_ll_model, step_ll_model_small, grad_reg_model, cure]
-model_names = ['normal', 'fgsm', 'fgsm small', 'pgd', 'pgd small', 'step_ll', 'step_ll small', 'grad reg', 'cure']
+models = [model, fgsm_model, fgsm_model_small, fgsm_model_small_2, pgd_model, pgd_model_small, step_ll_model, step_ll_model_small, grad_reg_model, grad_reg_model_2, cure]
+model_names = ['normal', 'fgsm', 'fgsm small grad mask', 'fgsm small no grad mask', 'pgd', 'pgd small', 'step_ll', 'step_ll small', 'grad reg ld 0.1', 'grad reg ld 0.2', 'cure']
 data = [pd.DataFrame(pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=True, subset_size=5000, sequential=True).detach().cpu().numpy()) for m in models]
 for data_item, model_name in zip(data, model_names):
    data_item['sum'] = data_item.sum(axis=1)
