@@ -338,10 +338,10 @@ def gradient_information(model, dataset, iters=50, device="cpu", subset_size=100
         data = data.to(device)
         target = target.to(device)
         with torch.no_grad():
-            original_labels = model(data).argmax(axis=-1)
+            original_labels = model(data).argmax(-1)
         _, adv, success = attack(fmodel, data, target, epsilons=8)
         # only keep those for which an adversarial example was found
-        new_labels = model(adv).argmax(axis=-1)
+        new_labels = model(adv).argmax(-1)
         # unsure if here I should only keep examples which are originally classified correctly
         adv_examples_index = new_labels != original_labels
         # print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
@@ -491,7 +491,7 @@ def pgd_colinearity(model, dataset, epsilon, device='cpu', subset_size=5000, bat
         labels = labels.type(torch.LongTensor).to(device)
         
         with torch.no_grad():
-           original_labels = model(images).argmax(axis=-1).type(torch.LongTensor).to(device)
+           original_labels = model(images).argmax(-1).type(torch.LongTensor).to(device)
         
         _, steps = pgd_(model,
                          images,
