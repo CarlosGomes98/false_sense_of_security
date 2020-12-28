@@ -106,6 +106,7 @@ def pgd_(
     clip_max=None,
     random_step=True,
     report_steps=False,
+    project=True
 ):
     """
     Internal pgd attack used during training.
@@ -135,8 +136,9 @@ def pgd_(
             clip_max=None,
         )
         # project
-        new_x = torch.where(new_x < projection_min, projection_min, new_x)
-        new_x = torch.where(new_x > projection_max, projection_max, new_x)
+        if project:
+            new_x = torch.where(new_x < projection_min, projection_min, new_x)
+            new_x = torch.where(new_x > projection_max, projection_max, new_x)
         if (clip_min is not None) or (clip_max is not None):
             new_x.clamp_(min=clip_min, max=clip_max)
         model.zero_grad()
@@ -293,7 +295,7 @@ def plot_along_grad_n(model, datasets, batch_size, n, device="cpu", draw=100):
 
 
 def compare_models_on_measure(
-    measure_function, models, labels, data_loader, device="cpu", height=2, bins=100, **kwargs
+    measure_function, models, labels, data_loader, device="cpu", height=2, bins=100, lim=None, **kwargs
 ):
     measures = [
         measure_function(model, data_loader, device=device, **kwargs).detach().cpu().numpy()
@@ -305,12 +307,13 @@ def compare_models_on_measure(
         axis = ax[index // width, index % width]
         axis.hist(measure, bins=bins)
         axis.set_title(labels[index])
+        if lim is not None:
+            axis.set_xlim(lim[0], lim[1])
         axis.text(
             0.5,
             -0.13,
-            "Max: {:.3f}, Min: {:.3f}, Mean: {:.3f}, Median: {:.3f}".format(
+            "Max: {:.3f}, Mean: {:.3f}, Median: {:.3f}".format(
                 measure.max().item(),
-                measure.min().item(),
                 measure.mean().item(),
                 np.median(measure).item(),
             ),

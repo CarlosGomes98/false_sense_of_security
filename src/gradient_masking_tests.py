@@ -241,16 +241,20 @@ def spsa_accuracy(
     return correct / len(subset_loader.dataset)
 
 
-def gradient_norm(model, data_loader, device="cpu", subset_size=10000):
+def gradient_norm(model, dataset, device="cpu", subset_size=10000):
     """
     Computes the gradient norm w.r.t. the loss at the given points.
     """
-    count = 0
+    
+    subset = torch.utils.data.Subset(
+        dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
+    )
+    subset_loader = torch.utils.data.DataLoader(
+        subset, batch_size=128, shuffle=False, num_workers=2
+    )
+
     grad_norms = []
-    for (data, target) in data_loader:
-        if count > subset_size:
-            break
-        count += data.shape[0]
+    for (data, target) in subset_loader:
         input_ = data.clone().detach_().to(device)
         input_.requires_grad_()
         target = target.to(device)
@@ -284,12 +288,11 @@ def linearization_error(
     Specifically, we calculate the linearization error for the logit of the target class
     """
     epsilon_errors = {}
+    datapoint_indexes = torch.randint(0, len(dataset), (subset,))
     for epsilon in epsilons:
         mean_errors = []
-        for counter, data in enumerate(dataset):
-            if counter > subset:
-                break
-
+        for index in datapoint_indexes:
+            data = dataset[index]
             model.zero_grad()
             x = data[0].reshape((1,) + data[0].shape).to(device)
             x.requires_grad_()
@@ -310,52 +313,54 @@ def linearization_error(
                         :, data[1]
                     ]
                     approx = y.repeat(batch_size) + torch.sum(perturbation * g)
-                    errors.append(torch.abs((approx - y_prime) / y_prime))
+                    errors.append(torch.abs((approx - y_prime) / torch.abs(y_prime)))
             mean_errors.append(torch.cat(errors).mean().item())
 
         epsilon_errors[str(epsilon)] = mean_errors
 
     return epsilon_errors
 
-def gradient_information(model, dataset, iters=50, device="cpu", subset_size=1000):
+def gradient_information(model, dataset, iters=50, device="cpu", subset_size=1000, batch_size=128):
     """
     Computes the cosine information between the gradient of point at the decision boundary w.r.t. the different in logits and the vector (point at decision boundary - original input point).
 
     For non gradient masked models, this point should be the closest one to the input that is at the decision boundary.
     Thus, we would expect these vectors to be +- collinear.
     """
-
     fmodel = PyTorchModel(model, bounds=(0, 1))
     attack = LinfDeepFoolAttack(steps=iters)
     subset = torch.utils.data.Subset(
         dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
     )
     subset_loader = torch.utils.data.DataLoader(
-        subset, batch_size=128, shuffle=False, num_workers=2
+        subset, batch_size=batch_size, shuffle=False, num_workers=2
     )
     grad_information_full = []
     for data, target in subset_loader:
         data = data.to(device)
         target = target.to(device)
         with torch.no_grad():
-            original_labels = model(data).argmax(-1)
-        _, adv, success = attack(fmodel, data, target, epsilons=8)
+            predicted = model(data).argmax(-1)
+        # unsure if here i should use predicted or ground truth labels
+        _, adv, success = attack(fmodel, data, predicted, epsilons=8)
         # only keep those for which an adversarial example was found
         new_labels = model(adv).argmax(-1)
         # unsure if here I should only keep examples which are originally classified correctly
-        adv_examples_index = new_labels != original_labels
-        # print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
+        adv_examples_index = new_labels != predicted
+        print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
         if adv_examples_index.sum() == 0:
-            return None
+            continue
 
         grad_information = torch.Tensor(adv.shape[0]).to(device)
         grad_information = grad_information[adv_examples_index]
 
         adv = adv[adv_examples_index].detach().clone()
+        new_labels = new_labels[adv_examples_index]
+        predicted = predicted[adv_examples_index]
         adv.requires_grad = True
         model.zero_grad()
         logits = model(adv)
-        loss = torch.sum(logits[:, new_labels] - logits[:, original_labels])
+        loss = torch.sum(logits.gather(1, new_labels.view(-1, 1)) - logits.gather(1, predicted.view(-1, 1)))
         loss.backward()
         grad = adv.grad.reshape(adv.shape[0], -1)
         diff_vector = (adv - data[adv_examples_index]).reshape(adv.shape[0], -1)
@@ -504,7 +509,8 @@ def pgd_colinearity(model, dataset, epsilon, device='cpu', subset_size=5000, bat
                          clip_min=0,
                          clip_max=1,
                          random_step=random_step,
-                         report_steps=True)
+                         report_steps=True,
+                         project=False)
         
         steps = [step.reshape(step.shape[0], -1) for step in steps]
         similarities = torch.zeros(images.shape[0], len(steps) - 1).to(device)
