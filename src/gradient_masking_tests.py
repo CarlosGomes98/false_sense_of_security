@@ -81,7 +81,7 @@ def run_masking_benchmarks(
         get_accuracy(
             model,
             test_dataset,
-            epsilon=1,
+            epsilon=0.5,
             device=device,
             batch_size=batch_size,
             attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
@@ -278,6 +278,7 @@ def linearization_error(
     n_perturbations=128 * 10,
     epsilons=[0.03],
     device="cpu",
+    loss=False
 ):
     """
     Estimates the 'linearizability' of a model by computing the linearization error over a series of randomly sampled points
@@ -289,38 +290,58 @@ def linearization_error(
     """
     epsilon_errors = {}
     datapoint_indexes = torch.randint(0, len(dataset), (subset,))
+    ce = nn.CrossEntropyLoss(reduction='none')
     for epsilon in epsilons:
         mean_errors = []
+        no_datapoints_skipped = 0
         for index in datapoint_indexes:
+            perturbations_skipped = 0
             data = dataset[index]
             model.zero_grad()
             x = data[0].reshape((1,) + data[0].shape).to(device)
             x.requires_grad_()
-            y = model(x)[0, data[1]]
+            logits = model(x)
+            target = torch.LongTensor([data[1]]).repeat(batch_size).to(device)
+            if loss:
+                y = ce(logits, torch.LongTensor([data[1]]).to(device))
+            else:
+                y = logits[0, data[1]]
             g = torch.autograd.grad(y, x)[0]
             errors = []
             with torch.no_grad():
+                # if n_perturbations is not divisible by batch size, just do one more batch (overshoot)
                 for _ in range(math.ceil(n_perturbations / batch_size)):
-                    perturbation = (
-                        (torch.rand((batch_size, 3, 32, 32)) > 0.5).float().to(device)
-                    )
+                    perturbation = (torch.rand((batch_size, 3, 32, 32)) > 0.5).float().to(device)
+                    
                     perturbation[perturbation == 0] = -1
                     perturbation *= epsilon
                     #                     perturbation = torch.rand((batch_size, 3, 32, 32)).to(device)
                     #                     perturbation = perturbation * epsilon * 2
                     #                     perturbation = perturbation - epsilon
-                    y_prime = model(x.repeat(batch_size, 1, 1, 1) + perturbation)[
-                        :, data[1]
-                    ]
-                    approx = y.repeat(batch_size) + torch.sum(perturbation * g)
+                    logits_prime = model(x.repeat(batch_size, 1, 1, 1) + perturbation)
+                    if loss:
+                        y_prime = ce(logits_prime, target).reshape(-1, 1)
+                    else:
+                        y_prime = logits_prime[:, data[1]]
+                    
+                    # since we are dividing by y_prime, it cannot be 0. Remove perturbations where that is the case
+                    mask = y_prime != 0
+                    perturbations_skipped += (~mask).sum().item()
+                    y_prime = y_prime[mask]
+                    approx = y.repeat(y_prime.shape[0]) + torch.sum(perturbation * g)
                     errors.append(torch.abs((approx - y_prime) / torch.abs(y_prime)))
-            mean_errors.append(torch.cat(errors).mean().item())
+            # if all the perturbations result in a y_prime of 0, skip the datapoint completely
+            if (perturbations_skipped == n_perturbations):
+                no_datapoints_skipped += 1
+                mean_errors.append(np.NaN)
+            else:
+                mean_errors.append(torch.cat(errors).mean().item())
 
         epsilon_errors[str(epsilon)] = mean_errors
-
+        # print(no_datapoints_skipped)
     return epsilon_errors
 
-def gradient_information(model, dataset, iters=50, device="cpu", subset_size=1000, batch_size=128):
+def gradient_information(model, dataset, iters=5, device="cpu", subset_size=1000, batch_size=128):
     """
     Computes the cosine information between the gradient of point at the decision boundary w.r.t. the different in logits and the vector (point at decision boundary - original input point).
 
@@ -342,9 +363,10 @@ def gradient_information(model, dataset, iters=50, device="cpu", subset_size=100
         with torch.no_grad():
             predicted = model(data).argmax(-1)
         # unsure if here i should use predicted or ground truth labels
-        _, adv, success = attack(fmodel, data, predicted, epsilons=8)
+        _, adv, success = attack(fmodel, data, predicted, epsilons=10)
         # only keep those for which an adversarial example was found
-        new_labels = model(adv).argmax(-1)
+        with torch.no_grad():
+            new_labels = model(adv).argmax(-1)
         # unsure if here I should only keep examples which are originally classified correctly
         adv_examples_index = new_labels != predicted
         print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
@@ -360,6 +382,8 @@ def gradient_information(model, dataset, iters=50, device="cpu", subset_size=100
         adv.requires_grad = True
         model.zero_grad()
         logits = model(adv)
+        # print(logits.gather(1, new_labels.view(-1, 1)))
+        # print(logits.gather(1, new_labels.view(-1, 1)) - logits.gather(1, predicted.view(-1, 1)))
         loss = torch.sum(logits.gather(1, new_labels.view(-1, 1)) - logits.gather(1, predicted.view(-1, 1)))
         loss.backward()
         grad = adv.grad.reshape(adv.shape[0], -1)
@@ -503,7 +527,7 @@ def pgd_colinearity(model, dataset, epsilon, device='cpu', subset_size=5000, bat
                          predicted,
                          eps=epsilon,
                          step=1/16,
-                         iters=20,
+                         iters=25,
                          targeted=False,
                          device=device,
                          clip_min=0,
