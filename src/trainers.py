@@ -223,12 +223,12 @@ class StepllTrainer(Trainer):
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item()))
 
-
 class GradientRegularizationTrainer(Trainer):
     """
-    Extends the base trainer class to implement training with input gradient regularization.
+    Extends the base trainer class to implement training with simple input gradient regularization w.r.t. the loss.
 
     """
+
     def __init__(self,
                  device="cpu",
                  log_interval=10,
@@ -278,32 +278,13 @@ class GradientRegularizationTrainer(Trainer):
             output = model(data)
             loss = criterion(output, target)
             ce_loss = loss
+            # simple input regularization
             input_grad = grad(outputs=loss,
                                 inputs=data,
                                 create_graph=True,
                                 only_inputs=True)[0]
-            norm = torch.linalg.norm(input_grad.view(data.shape[0], -1), dim=1)**2
-            print(norm.sum())
-            # print(norm)
-            # for i in range(output.shape[1]):
-            #     model.zero_grad()
-            #     # taken from https://github.com/danieljakubovitz/Jacobian_Regularization/blob/master/MNIST_JacobianRegularization.py
-            #     # but im pretty sure its just straight up wrong
-            #     if i == 0:
-            #         norm = grad(outputs=output[0, i],
-            #                     inputs=data,
-            #                     create_graph=True,
-            #                     only_inputs=True)[0]
-            #         print(norm[1, ...])
-            #     else:
-            #         norm = torch.cat([
-            #             norm,
-            #             grad(outputs=output[0, i],
-            #                  inputs=data,
-            #                  create_graph=True,
-            #                  only_inputs=True)[0]
-            #         ])
-            # gradient_norm = torch.norm(norm)
+            norm = torch.linalg.norm(input_grad.view(data.shape[0], -1), dim=1)
+            
             loss = loss + self.cur_lambda * norm.sum()
             optimizer.zero_grad()
             loss.backward()
@@ -315,7 +296,92 @@ class GradientRegularizationTrainer(Trainer):
                             len(train_loader.dataset),
                             100. * batch_idx / len(train_loader),
                             ce_loss.item(),
-                            (self.cur_lambda * norm.sum()).item()))
+                            (self.cur_lambda * norm.sum().item())))
+
+class JacobianRegularizationTrainer(Trainer):
+    """
+    Extends the base trainer class to implement training with input gradient regularization.
+    From: https://arxiv.org/pdf/1803.08680.pdf
+
+    """
+    def __init__(self,
+                 device="cpu",
+                 log_interval=10,
+                 lambda_=0.1,
+                 annealing=False,
+                 report_gradient_norm=None):
+        super(JacobianRegularizationTrainer,
+              self).__init__(device=device,
+                             log_interval=log_interval,
+                             report_gradient_norm=report_gradient_norm)
+        self.lambda_ = lambda_
+        self.cur_lambda = lambda_
+        self.annealing = annealing
+
+    def train(self,
+              model,
+              train_loader,
+              epochs,
+              test_loader=None,
+              optimizer=None):
+        if optimizer is None:
+            optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
+        criterion = nn.CrossEntropyLoss()
+        for epoch in range(1, epochs + 1):
+            self.train_step(model, train_loader, epoch, optimizer, criterion)
+            if test_loader is not None:
+                self.test(model, test_loader, criterion)
+            if self.annealing:
+                self.cur_lambda = self.lambda_ * ((epochs - epoch) / epochs)
+        if self.report_gradient_norm is not None:
+            norm = gradient_norm(model,
+                                 train_loader,
+                                 device=self.device,
+                                 subset_size=5000)
+            torch.save(
+                norm,
+                os.path.join(self.report_gradient_norm,
+                             'epoch_{}.pt'.format(epoch)))
+            print('Gradient Norm -- Mean: {}, Min: {}, Max: {}'.format(
+                norm.mean(), norm.min(), norm.max()))
+
+    def train_step(self, model, train_loader, epoch, optimizer, criterion):
+        model.train()
+        for batch_idx, (data, target) in enumerate(train_loader):
+            data, target = data.to(self.device), target.to(self.device)
+            data.requires_grad_()
+            output = model(data)
+            loss = criterion(output, target)
+            ce_loss = loss
+            # simple input regularization
+            # input_grad = grad(outputs=loss,
+            #                     inputs=data,
+            #                     create_graph=True,
+            #                     only_inputs=True)[0]
+            # norm = torch.norm(input_grad.view(data.shape[0], -1), dim=1)
+            # print(norm.sum())
+
+            # to get the jacobian, we need to go through each logit class one by one
+            norms = torch.zeros(data.shape[0]).to(self.device)
+            for i in range(10):
+                model.zero_grad()
+                logit = output[:, i]
+                gradient = torch.autograd.grad(outputs=logit, inputs=data, grad_outputs=torch.ones_like(logit), only_inputs=True, create_graph=True)[0]
+                gradient = gradient.view(128, -1)
+                norms += torch.linalg.norm(gradient, dim=1)**2
+            
+            loss = loss + self.cur_lambda * norms.sum().sqrt()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            if batch_idx % self.log_interval == 0:
+                print(
+                    'Train Epoch: {} [{}/{} ({:.0f}%)]\t CE Loss: {:.6f}, Gradient loss: {:.6f}'
+                    .format(epoch, batch_idx * len(data),
+                            len(train_loader.dataset),
+                            100. * batch_idx / len(train_loader),
+                            ce_loss.item(),
+                            (self.cur_lambda * norms.sum().sqrt()).item()))
 
 
 # FROM https://github.com/F-Salehi/CURE_robustness

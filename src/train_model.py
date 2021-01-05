@@ -9,7 +9,7 @@ from torch.optim.lr_scheduler import StepLR
 import matplotlib.pyplot as plt
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM
-from src.trainers import Trainer, FGSMTrainer, CurvatureRegularizationTrainer, GradientRegularizationTrainer, StepllTrainer, PGDTrainer
+from src.trainers import Trainer, FGSMTrainer, JacobianRegularizationTrainer, CurvatureRegularizationTrainer, GradientRegularizationTrainer, StepllTrainer, PGDTrainer
 from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
 # Main file used to instantiate and train models
@@ -134,6 +134,20 @@ def train_model(model_name,
                       epochs,
                       test_loader=test_loader,
                       optimizer=optimizer)
+    elif strategy == 'jacobian_regularization':
+        if lambda_ is None:
+            raise Exception(
+                "Need a lambda to preform gradient regularization training")
+        trainer = JacobianRegularizationTrainer(
+            device=device,
+            log_interval=log_interval,
+            report_gradient_norm=report_gradient_norm,
+            lambda_=lambda_)
+        trainer.train(model,
+                      train_loader,
+                      epochs,
+                      test_loader=test_loader,
+                      optimizer=optimizer)
     elif strategy == 'curvature_regularization':
         trainer = CurvatureRegularizationTrainer(
             device=device,
@@ -164,6 +178,7 @@ if __name__ == "__main__":
                             'normal', 'fgsm', 'step_ll',
                             'curvature_regularization',
                             'gradient_regularization',
+                            'jacobian_regularization',
                             'pgd'
                         ],
                         default='normal',
