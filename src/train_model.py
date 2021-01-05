@@ -32,9 +32,10 @@ def train_model(model_name,
                 eps=None,
                 report_gradient_norm=False,
                 lambda_=None,
-                model_path=None):
+                model_path=None,
+                device="cuda"):
     # setup
-    device = torch.device("cuda")
+    device = torch.device(device)
     batch_size = 128
     test_batch_size = 128
     log_interval = 10
@@ -189,6 +190,12 @@ if __name__ == "__main__":
         type=str,
         default=None,
         help='Allows a model to be provided, which will be trained on')
+    parser.add_argument(
+        '--device',
+        type=str,
+        default="cpu",
+        choices=["cpu", "cuda"],
+        help='Train on cpu or gpu')
 
     args = parser.parse_args()
 
@@ -199,4 +206,5 @@ if __name__ == "__main__":
                 eps=args.eps,
                 report_gradient_norm=args.report_gradient_norm,
                 lambda_=args.lambda_,
-                model_path=args.model_path)
+                model_path=args.model_path,
+                device=args.device)
