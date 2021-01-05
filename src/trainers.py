@@ -278,23 +278,33 @@ class GradientRegularizationTrainer(Trainer):
             output = model(data)
             loss = criterion(output, target)
             ce_loss = loss
-            for i in range(output.shape[1]):
-                model.zero_grad()
-                if i == 0:
-                    norm = grad(outputs=output[0, i],
+            input_grad = grad(outputs=loss,
                                 inputs=data,
                                 create_graph=True,
                                 only_inputs=True)[0]
-                else:
-                    norm = torch.cat([
-                        norm,
-                        grad(outputs=output[0, i],
-                             inputs=data,
-                             create_graph=True,
-                             only_inputs=True)[0]
-                    ])
-            gradient_norm = torch.norm(norm)
-            loss = loss + self.cur_lambda * gradient_norm
+            norm = torch.linalg.norm(input_grad.view(data.shape[0], -1), dim=1)**2
+            print(norm.sum())
+            # print(norm)
+            # for i in range(output.shape[1]):
+            #     model.zero_grad()
+            #     # taken from https://github.com/danieljakubovitz/Jacobian_Regularization/blob/master/MNIST_JacobianRegularization.py
+            #     # but im pretty sure its just straight up wrong
+            #     if i == 0:
+            #         norm = grad(outputs=output[0, i],
+            #                     inputs=data,
+            #                     create_graph=True,
+            #                     only_inputs=True)[0]
+            #         print(norm[1, ...])
+            #     else:
+            #         norm = torch.cat([
+            #             norm,
+            #             grad(outputs=output[0, i],
+            #                  inputs=data,
+            #                  create_graph=True,
+            #                  only_inputs=True)[0]
+            #         ])
+            # gradient_norm = torch.norm(norm)
+            loss = loss + self.cur_lambda * norm.sum()
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -305,7 +315,7 @@ class GradientRegularizationTrainer(Trainer):
                             len(train_loader.dataset),
                             100. * batch_idx / len(train_loader),
                             ce_loss.item(),
-                            (self.cur_lambda * gradient_norm).item()))
+                            (self.cur_lambda * norm.sum()).item()))
 
 
 # FROM https://github.com/F-Salehi/CURE_robustness
