@@ -367,7 +367,7 @@ class JacobianRegularizationTrainer(Trainer):
                 model.zero_grad()
                 logit = output[:, i]
                 gradient = torch.autograd.grad(outputs=logit, inputs=data, grad_outputs=torch.ones_like(logit), only_inputs=True, create_graph=True)[0]
-                gradient = gradient.view(128, -1)
+                gradient = gradient.view(data.shape[0], -1)
                 norms += torch.linalg.norm(gradient, dim=1)**2
             
             loss = loss + self.cur_lambda * norms.sum().sqrt()
