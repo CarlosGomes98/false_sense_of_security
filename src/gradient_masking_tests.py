@@ -341,12 +341,14 @@ def linearization_error(
         # print(no_datapoints_skipped)
     return epsilon_errors
 
-def gradient_information(model, dataset, iters=5, device="cpu", subset_size=1000, batch_size=128):
+def gradient_information(model, dataset, iters=5, device="cpu", subset_size=1000, batch_size=128, grad_colinearity=False):
     """
     Computes the cosine information between the gradient of point at the decision boundary w.r.t. the different in logits and the vector (point at decision boundary - original input point).
 
     For non gradient masked models, this point should be the closest one to the input that is at the decision boundary.
     Thus, we would expect these vectors to be +- collinear.
+
+    Another approach is to take this same gradient at the datapoint, and check collinearity with the gradient at the boundary.
     """
     fmodel = PyTorchModel(model, bounds=(0, 1))
     attack = LinfDeepFoolAttack(steps=iters)
@@ -358,39 +360,50 @@ def gradient_information(model, dataset, iters=5, device="cpu", subset_size=1000
     )
     grad_information_full = []
     for data, target in subset_loader:
-        data = data.to(device)
+        data = data.to(device).requires_grad_()
         target = target.to(device)
-        with torch.no_grad():
-            predicted = model(data).argmax(-1)
-        # unsure if here i should use predicted or ground truth labels
-        _, adv, success = attack(fmodel, data, predicted, epsilons=10)
-        # only keep those for which an adversarial example was found
+        logits = model(data)
+        predicted = logits.argmax(-1)
+        # adv are points that should be close to the boundary
+        _, adv, _ = attack(fmodel, data.detach(), predicted, epsilons=10)
+
+        # only keep those for which an adversarial example was found: new label != originally predicted label
         with torch.no_grad():
             new_labels = model(adv).argmax(-1)
-        # unsure if here I should only keep examples which are originally classified correctly
+        
         adv_examples_index = new_labels != predicted
-        print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
+        # print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
         if adv_examples_index.sum() == 0:
             continue
-
-        grad_information = torch.Tensor(adv.shape[0]).to(device)
-        grad_information = grad_information[adv_examples_index]
-
+        
+        # remove examples that did not make it to the boundary (usually very few)
         adv = adv[adv_examples_index].detach().clone()
         new_labels = new_labels[adv_examples_index]
         predicted = predicted[adv_examples_index]
+        
+        # find the gradient at the boundary
         adv.requires_grad = True
         model.zero_grad()
-        logits = model(adv)
-        # print(logits.gather(1, new_labels.view(-1, 1)))
-        # print(logits.gather(1, new_labels.view(-1, 1)) - logits.gather(1, predicted.view(-1, 1)))
-        loss = torch.sum(logits.gather(1, new_labels.view(-1, 1)) - logits.gather(1, predicted.view(-1, 1)))
+        adv_logits = model(adv)
+        loss = torch.sum(adv_logits.gather(1, new_labels.view(-1, 1)) - adv_logits.gather(1, predicted.view(-1, 1)))
         loss.backward()
         grad = adv.grad.reshape(adv.shape[0], -1)
-        diff_vector = (adv - data[adv_examples_index]).reshape(adv.shape[0], -1)
+        
+        # either take the same gradient at the datapoint or take the perturbation vector as the second term 
+        # for cosine similarity
+        if grad_colinearity:
+            model.zero_grad()
+            filtered_logits = logits[adv_examples_index]
+            loss = torch.sum(filtered_logits.gather(1, new_labels.view(-1, 1)) - filtered_logits.gather(1, predicted.view(-1, 1)))
+            loss.backward()
+            vector = data.grad[adv_examples_index].reshape(grad.shape[0], -1)
+        else:
+            vector = (adv - data[adv_examples_index]).reshape(adv.shape[0], -1)
         cos = nn.CosineSimilarity(dim=1, eps=1e-18)
-        grad_information = cos(grad, diff_vector)
+        grad_information = cos(grad, vector)
         grad_information_full.append(grad_information)
+    if len(grad_information_full) == 0:
+        return None
     return torch.cat(grad_information_full)
 
 

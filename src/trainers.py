@@ -14,7 +14,6 @@ from src.gradient_masking_tests import gradient_norm
 
 lr = 0.001
 
-
 class Trainer:
     """
     Base class that trains a given model, given a dataloader using standard SGD.
