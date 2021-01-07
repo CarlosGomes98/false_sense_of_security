@@ -12,7 +12,7 @@ from advertorch.attacks import LinfSPSAAttack
 from src.trainers import Trainer, FGSMTrainer
 from src.utils import adversarial_accuracy, fgsm_, pgd_, plot_along_grad_n
 from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net, CUREResNet18
-from src.gradient_masking_tests import run_masking_benchmarks, get_accuracy, pgd_colinearity
+from src.gradient_masking_tests import run_masking_benchmarks, get_accuracy, pgd_collinearity
 
 # setup
 device = torch.device("cuda")
@@ -60,44 +60,44 @@ cure[1].load_state_dict(torch.load("./models/RN18_CURE.pth", map_location=device
 
 models = [model, fgsm_model, fgsm_model_small, fgsm_model_small_2, pgd_model, pgd_model_small, step_ll_model, step_ll_model_small, grad_reg_model, grad_reg_model_2, cure]
 model_names = ['normal', 'fgsm', 'fgsm small grad mask', 'fgsm small', 'pgd', 'pgd small', 'step_ll', 'step_ll small', 'grad reg ld 0.1', 'grad reg ld 0.2', 'cure']
-data = [pd.DataFrame(pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=False, subset_size=5000, sequential=True).detach().cpu().numpy()) for m in models]
+data = [pd.DataFrame(pgd_collinearity(m, train_dataset, 0.03, device=device, random_step=False, subset_size=5000, sequential=True).detach().cpu().numpy()) for m in models]
 for data_item, model_name in zip(data, model_names):
    data_item['sum'] = data_item.sum(axis=1)
    data_item['mean'] = data_item['sum'] / (data_item.shape[1] - 1)
    data_item['model'] = model_name
 
 data = pd.concat(data)
-data.to_csv("pgd_colinearity.csv")
+data.to_csv("pgd_collinearity.csv")
 
-data = [pd.DataFrame(pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=True, subset_size=5000, sequential=True).detach().cpu().numpy()) for m in models]
+data = [pd.DataFrame(pgd_collinearity(m, train_dataset, 0.03, device=device, random_step=True, subset_size=5000, sequential=True).detach().cpu().numpy()) for m in models]
 for data_item, model_name in zip(data, model_names):
     data_item['sum'] = data_item.sum(axis=1)
     data_item['mean'] = data_item['sum'] / (data_item.shape[1] - 1)
     data_item['model'] = model_name
 
 data = pd.concat(data)
-data.to_csv("pgd_colinearity_rstep.csv")
+data.to_csv("pgd_collinearity_rstep.csv")
 
-data = [pd.DataFrame(pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=False, subset_size=5000, sequential=False).detach().cpu().numpy()) for m in models]
+data = [pd.DataFrame(pgd_collinearity(m, train_dataset, 0.03, device=device, random_step=False, subset_size=5000, sequential=False).detach().cpu().numpy()) for m in models]
 for data_item, model_name in zip(data, model_names):
     data_item['sum'] = data_item.sum(axis=1)
     data_item['mean'] = data_item['sum'] / (data_item.shape[1] - 1)
     data_item['model'] = model_name
 
 data = pd.concat(data)
-data.to_csv("pgd_colinearity_non_sequential.csv")
+data.to_csv("pgd_collinearity_non_sequential.csv")
 
-data = [pd.DataFrame(pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=True, subset_size=5000, sequential=False).detach().cpu().numpy()) for m in models]
+data = [pd.DataFrame(pgd_collinearity(m, train_dataset, 0.03, device=device, random_step=True, subset_size=5000, sequential=False).detach().cpu().numpy()) for m in models]
 for data_item, model_name in zip(data, model_names):
     data_item['sum'] = data_item.sum(axis=1)
     data_item['mean'] = data_item['sum'] / (data_item.shape[1] - 1)
     data_item['model'] = model_name
 
 data = pd.concat(data)
-data.to_csv("pgd_colinearity_non_sequential_rstep.csv")
-# data = pd.DataFrame(data=torch.stack([pgd_colinearity(m, train_dataset, 0.03, device=device, random_step=True).detach().cpu() for m in models], dim=1).numpy(), columns=model_names)
+data.to_csv("pgd_collinearity_non_sequential_rstep.csv")
+# data = pd.DataFrame(data=torch.stack([pgd_collinearity(m, train_dataset, 0.03, device=device, random_step=True).detach().cpu() for m in models], dim=1).numpy(), columns=model_names)
 # fig, ax = plt.subplots(figsize=(15, 12))
 # sns.barplot(ax=ax, data=data)
-# ax.set(ylabel='PGD Colinearity score', title='PGD Colinearity epsilon 0.03(8/256) test set')
-# fig.savefig("pgd_colinearity_plot_03_random_step_train.png")
+# ax.set(ylabel='PGD collinearity score', title='PGD collinearity epsilon 0.03(8/256) test set')
+# fig.savefig("pgd_collinearity_plot_03_random_step_train.png")
 

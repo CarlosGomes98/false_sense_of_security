@@ -1,6 +1,6 @@
 import argparse
 import math
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 import numpy as np
 import torch
 import torch.nn as nn
@@ -17,7 +17,14 @@ from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
 
 def run_masking_benchmarks(
-    model, test_dataset, epsilon=0.06, device="cpu", batch_size=32, epsilon_step=20
+    model,
+    test_dataset,
+    epsilon=0.06,
+    device="cpu",
+    batch_size=128,
+    return_dict=False,
+    save_fig=None,
+    subset_size=10
 ):
     """
     This method runs through a checklist of potential indicators of gradient masking, as exposed in 
@@ -25,16 +32,21 @@ def run_masking_benchmarks(
     Circumventing Defenses to Adversarial Examples"
     https://arxiv.org/pdf/1802.00420.pdf
     """
-    epsilons = [epsilon * i / 100 for i in range(10, 200, epsilon_step)]
+
+    results = {}
+    epsilons = [epsilon * i / 100 for i in range(10, 200, 10)]
+    results["Epsilons Range"] = epsilons
     pbar = tqdm(total=6, desc="Description")
 
     pbar.set_description("Computing Accuracy")
     acc = (
         get_accuracy(
-            model, test_dataset, epsilon=epsilon, device=device, batch_size=batch_size
+            model, test_dataset, epsilon=epsilon, device=device, batch_size=batch_size, subset_size=subset_size
         )
         * 100
     )
+
+    results["Clean Accuracy"] = acc
     pbar.update(1)
 
     pbar.set_description("Computing FGSM Accuracy")
@@ -47,12 +59,14 @@ def run_masking_benchmarks(
                 device=device,
                 batch_size=batch_size,
                 attack=FGSM(),
+                subset_size=subset_size
             )
             * 100
             for ep in epsilons
         ]
     )
     pbar.update(1)
+    results["FGSM Accuracy - Range"] = fgsm_acc
 
     pbar.set_description("Computing PGD Accuracy")
     pgd_acc = (
@@ -63,9 +77,12 @@ def run_masking_benchmarks(
             device=device,
             batch_size=batch_size,
             attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
+            subset_size=subset_size
         )
         * 100
     )
+    results["PGD Accuracy eps: 0.06"] = pgd_acc
+
     pgd_acc_small = (
         get_accuracy(
             model,
@@ -74,9 +91,12 @@ def run_masking_benchmarks(
             device=device,
             batch_size=batch_size,
             attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
+            subset_size=subset_size
         )
         * 100
     )
+    results["PGD Accuracy eps: 0.03"] = pgd_acc_small
+
     pgd_unbounded = (
         get_accuracy(
             model,
@@ -85,10 +105,12 @@ def run_masking_benchmarks(
             device=device,
             batch_size=batch_size,
             attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
+            subset_size=subset_size
         )
         * 100
     )
     pbar.update(1)
+    results["PGD Accuracy eps: Unbounded"] = pgd_unbounded
 
     pbar.set_description("Computing SPSA Accuracy")
     spsa_acc = (
@@ -100,10 +122,12 @@ def run_masking_benchmarks(
             nb_sample=128,
             batch_size=8,
             device=device,
-            subset_size=500
+            subset_size=2, #500
         )
         * 100
     )
+    results["SPSA Accuracy eps: 0.06"] = spsa_acc
+
     spsa_acc_small = (
         spsa_accuracy(
             model,
@@ -113,28 +137,32 @@ def run_masking_benchmarks(
             nb_sample=128,
             batch_size=8,
             device=device,
-            subset_size=500
+            subset_size=2, #500
         )
         * 100
     )
+    results["SPSA Accuracy eps: 0.03"] = spsa_acc_small
     pbar.update(1)
 
     pbar.set_description("Computing Random Attack Accuracy")
     random_acc = np.array(
         [
             get_random_accuracy(
-                model, test_dataset, epsilon=ep, device=device, batch_size=batch_size
+                model, test_dataset, epsilon=ep, device=device, batch_size=batch_size, subset_size=10
             )
             * 100
             for ep in epsilons
         ]
     )
+    results["Random Accuracy - Range"] = random_acc
     pbar.update(1)
     print("Model accuracy: {}%".format(acc))
 
     pbar.set_description("Plotting")
     print("FGSM accuracy - eps = {}: {}%".format(epsilon, fgsm_acc[9]))
+    results["FGSM Accuracy eps: 0.06"] = fgsm_acc[9]
     print("FGSM accuracy - eps = {}: {}%".format(epsilon / 2, fgsm_acc[4]))
+    results["FGSM Accuracy eps: 0.03"] = fgsm_acc[4]
     print("PGD accuracy - eps = {}: {}%".format(epsilon, pgd_acc))
     print("PGD accuracy - eps = {}: {}%".format(epsilon / 2, pgd_acc_small))
     print("Unbounded PGD model accuracy: {}%".format(pgd_unbounded))
@@ -147,8 +175,13 @@ def run_masking_benchmarks(
     ax.set(xlabel="Epsilon", ylabel="Accuracy (%)")
     ax.set_ylim(0, 100)
     ax.legend()
+    if save_fig is not None:
+        fig.savefig(save_fig, dpi=fig.dpi)
     pbar.update(1)
     pbar.close()
+
+    if return_dict:
+        return results
 
 
 def get_accuracy(
@@ -158,7 +191,7 @@ def get_accuracy(
     epsilon=0.03,
     subset_size=10000,
     device="cpu",
-    batch_size=32,
+    batch_size=128,
 ):
     """
     Reports the accuracy of the model, potentially under some attack (e.g. FGSM, PGD, ...)
@@ -241,16 +274,16 @@ def spsa_accuracy(
     return correct / len(subset_loader.dataset)
 
 
-def gradient_norm(model, dataset, device="cpu", subset_size=10000):
+def gradient_norm(model, dataset, device="cpu", subset_size=5000, return_dict=True, batch_size=128):
     """
     Computes the gradient norm w.r.t. the loss at the given points.
     """
-    
+
     subset = torch.utils.data.Subset(
         dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
     )
     subset_loader = torch.utils.data.DataLoader(
-        subset, batch_size=128, shuffle=False, num_workers=2
+        subset, batch_size=batch_size, shuffle=False, num_workers=2
     )
 
     grad_norms = []
@@ -267,18 +300,22 @@ def gradient_norm(model, dataset, device="cpu", subset_size=10000):
         grad_norm = torch.norm(grad, p=2, dim=1)
         grad_norms.append(grad_norm)
     grad_norm = torch.cat(grad_norms)
+
+    if return_dict:
+        return {"Gradient Norm": grad_norm.detach().cpu().numpy()}
     return grad_norm
 
 
 def linearization_error(
     model,
     dataset,
-    subset=100,
+    subset_size=100,
     batch_size=128,
     n_perturbations=128 * 10,
-    epsilons=[0.03],
+    epsilons=[0.03, 0.06],
     device="cpu",
-    loss=False
+    loss=False,
+    return_dict=False,
 ):
     """
     Estimates the 'linearizability' of a model by computing the linearization error over a series of randomly sampled points
@@ -289,8 +326,8 @@ def linearization_error(
     Specifically, we calculate the linearization error for the logit of the target class
     """
     epsilon_errors = {}
-    datapoint_indexes = torch.randint(0, len(dataset), (subset,))
-    ce = nn.CrossEntropyLoss(reduction='none')
+    datapoint_indexes = torch.randint(0, len(dataset), (subset_size,))
+    ce = nn.CrossEntropyLoss(reduction="none")
     for epsilon in epsilons:
         mean_errors = []
         no_datapoints_skipped = 0
@@ -311,8 +348,10 @@ def linearization_error(
             with torch.no_grad():
                 # if n_perturbations is not divisible by batch size, just do one more batch (overshoot)
                 for _ in range(math.ceil(n_perturbations / batch_size)):
-                    perturbation = (torch.rand((batch_size, 3, 32, 32)) > 0.5).float().to(device)
-                    
+                    perturbation = (
+                        (torch.rand((batch_size, 3, 32, 32)) > 0.5).float().to(device)
+                    )
+
                     perturbation[perturbation == 0] = -1
                     perturbation *= epsilon
                     #                     perturbation = torch.rand((batch_size, 3, 32, 32)).to(device)
@@ -323,7 +362,7 @@ def linearization_error(
                         y_prime = ce(logits_prime, target).reshape(-1, 1)
                     else:
                         y_prime = logits_prime[:, data[1]]
-                    
+
                     # since we are dividing by y_prime, it cannot be 0. Remove perturbations where that is the case
                     mask = y_prime != 0
                     perturbations_skipped += (~mask).sum().item()
@@ -331,17 +370,28 @@ def linearization_error(
                     approx = y.repeat(y_prime.shape[0]) + torch.sum(perturbation * g)
                     errors.append(torch.abs((approx - y_prime) / torch.abs(y_prime)))
             # if all the perturbations result in a y_prime of 0, skip the datapoint completely
-            if (perturbations_skipped == n_perturbations):
+            if perturbations_skipped == n_perturbations:
                 no_datapoints_skipped += 1
                 mean_errors.append(np.NaN)
             else:
                 mean_errors.append(torch.cat(errors).mean().item())
 
-        epsilon_errors[str(epsilon)] = mean_errors
+        epsilon_errors["Linearization Error eps: " + str(epsilon)] = mean_errors
         # print(no_datapoints_skipped)
+
     return epsilon_errors
 
-def gradient_information(model, dataset, iters=5, device="cpu", subset_size=1000, batch_size=128, grad_colinearity=False):
+
+def gradient_information(
+    model,
+    dataset,
+    iters=5,
+    device="cpu",
+    subset_size=1000,
+    batch_size=128,
+    grad_collinearity=False,
+    return_dict=False,
+):
     """
     Computes the cosine information between the gradient of point at the decision boundary w.r.t. the different in logits and the vector (point at decision boundary - original input point).
 
@@ -370,31 +420,37 @@ def gradient_information(model, dataset, iters=5, device="cpu", subset_size=1000
         # only keep those for which an adversarial example was found: new label != originally predicted label
         with torch.no_grad():
             new_labels = model(adv).argmax(-1)
-        
+
         adv_examples_index = new_labels != predicted
         # print("{} adv. examples found from {} data points".format(adv_examples_index.sum().item(), data.shape[0]))
         if adv_examples_index.sum() == 0:
             continue
-        
+
         # remove examples that did not make it to the boundary (usually very few)
         adv = adv[adv_examples_index].detach().clone()
         new_labels = new_labels[adv_examples_index]
         predicted = predicted[adv_examples_index]
-        
+
         # find the gradient at the boundary
         adv.requires_grad = True
         model.zero_grad()
         adv_logits = model(adv)
-        loss = torch.sum(adv_logits.gather(1, new_labels.view(-1, 1)) - adv_logits.gather(1, predicted.view(-1, 1)))
+        loss = torch.sum(
+            adv_logits.gather(1, new_labels.view(-1, 1))
+            - adv_logits.gather(1, predicted.view(-1, 1))
+        )
         loss.backward()
         grad = adv.grad.reshape(adv.shape[0], -1)
-        
-        # either take the same gradient at the datapoint or take the perturbation vector as the second term 
+
+        # either take the same gradient at the datapoint or take the perturbation vector as the second term
         # for cosine similarity
-        if grad_colinearity:
+        if grad_collinearity:
             model.zero_grad()
             filtered_logits = logits[adv_examples_index]
-            loss = torch.sum(filtered_logits.gather(1, new_labels.view(-1, 1)) - filtered_logits.gather(1, predicted.view(-1, 1)))
+            loss = torch.sum(
+                filtered_logits.gather(1, new_labels.view(-1, 1))
+                - filtered_logits.gather(1, predicted.view(-1, 1))
+            )
             loss.backward()
             vector = data.grad[adv_examples_index].reshape(grad.shape[0], -1)
         else:
@@ -404,18 +460,26 @@ def gradient_information(model, dataset, iters=5, device="cpu", subset_size=1000
         grad_information_full.append(grad_information)
     if len(grad_information_full) == 0:
         return None
+    if return_dict:
+        return {
+            "Gradient Information": torch.cat(grad_information_full)
+            .detach()
+            .cpu()
+            .numpy()
+        }
     return torch.cat(grad_information_full)
 
 
 def fgsm_pgd_cos_dif(
     model,
     test_dataset,
-    epsilons=[0.03],
-    subset_size=1000,
+    epsilons=[0.03, 0.06],
+    subset_size=5000,
     device="cpu",
-    batch_size=32,
+    batch_size=128,
     n_steps_pgd=10,
-    return_adjusted_fgsm=True,
+    return_adjusted_fgsm=False,
+    return_dict=False,
 ):
     """
     Method that evaluates how informative the gradients of the network are. Preforms pgd and fgsm and compares the solutions.
@@ -426,7 +490,7 @@ def fgsm_pgd_cos_dif(
     """
     fmodel = PyTorchModel(model, bounds=(0, 1))
     results = {}
-    for epsilon in epsilons:    
+    for epsilon in epsilons:
         cos_dif = []
         distance = []
         successes_fgsm = []
@@ -478,27 +542,29 @@ def fgsm_pgd_cos_dif(
             successes_pgd.append(success_pgd)
         successes_fgsm = torch.cat(successes_fgsm)
         successes_pgd = torch.cat(successes_pgd)
-        results[str(epsilon)] = torch.cat(cos_dif).detach().cpu().numpy()
+        results["FGSM PGD Cosine Similarity eps: " + str(epsilon)] = (
+            torch.cat(cos_dif).detach().cpu().numpy()
+        )
         if return_adjusted_fgsm:
             successes_adjusted_fgsm = torch.cat(successes_adjusted_fgsm)
-            print(
-                "Epsilon {} -- Cos Sim: {}, FGSM success: {}, PGD Success: {}, Rescaled FGSM success: {}".format(
-                    epsilon,
-                    results[str(epsilon)].mean().item(),
-                    successes_fgsm.sum() / subset_size,
-                    successes_pgd.sum() / subset_size,
-                    successes_adjusted_fgsm.sum() / subset_size,
-                )
-            )
-        else:
-            print(
-                "Epsilon {} -- Cos Sim: {}, FGSM success: {}, PGD Success: {}".format(
-                    epsilon,
-                    results[str(epsilon)].mean().item(),
-                    successes_fgsm.sum() / subset_size,
-                    successes_pgd.sum() / subset_size,
-                )
-            )
+        #     print(
+        #         "Epsilon {} -- Cos Sim: {}, FGSM success: {}, PGD Success: {}, Rescaled FGSM success: {}".format(
+        #             epsilon,
+        #             results[str(epsilon)].mean().item(),
+        #             successes_fgsm.sum() / subset_size,
+        #             successes_pgd.sum() / subset_size,
+        #             successes_adjusted_fgsm.sum() / subset_size,
+        #         )
+        #     )
+        # else:
+        #     print(
+        #         "Epsilon {} -- Cos Sim: {}, FGSM success: {}, PGD Success: {}".format(
+        #             epsilon,
+        #             results[str(epsilon)].mean().item(),
+        #             successes_fgsm.sum() / subset_size,
+        #             successes_pgd.sum() / subset_size,
+        #         )
+        #     )
     return results
 
 
@@ -510,45 +576,56 @@ def multi_scale_fgsm(fmodel, images, labels, epsilon=0.03):
     _, advs_fgsm, success_fgsm = FGSM()(fmodel, images, labels, epsilons=scales)
     return success_fgsm
 
+
 # should i take loss w.r.t. target or to currently predicted class? seyed suggested currently predicted i think. im not sure
-def pgd_colinearity(model, dataset, epsilon, device='cpu', subset_size=5000, batch_size=32, random_step=False, sequential=False):
-    '''
-    Compute a measure of the colinearity of pgd steps.
+def pgd_collinearity(
+    model,
+    dataset,
+    epsilon,
+    device="cpu",
+    subset_size=5000,
+    batch_size=128,
+    random_step=False,
+    sequential=False,
+):
+    """
+    Compute a measure of the collinearity of pgd steps.
     Returns a torch tensor of size subset_size x number of pgd steps
     if sequential is true: computes the cosine similarity between subsequent steps
     if false, computes the cosine similarity between every step and the first step
-    '''
-    subset = torch.utils.data.Subset(dataset,
-                                    np.random.randint(0, len(dataset), size=subset_size).tolist()
-                                    )
+    """
+    subset = torch.utils.data.Subset(
+        dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
+    )
 
-    subset_loader = torch.utils.data.DataLoader(subset,
-                                                batch_size=batch_size,
-                                                shuffle=False,
-                                                num_workers=2)
+    subset_loader = torch.utils.data.DataLoader(
+        subset, batch_size=batch_size, shuffle=False, num_workers=2
+    )
     cos = nn.CosineSimilarity(dim=1, eps=1e-18)
     result = []
     for images, labels in subset_loader:
         images = images.to(device)
         labels = labels.type(torch.LongTensor).to(device)
-        
+
         with torch.no_grad():
-           predicted = model(images).argmax(-1).type(torch.LongTensor).to(device)
-        
-        _, steps = pgd_(model,
-                         images,
-                         predicted,
-                         eps=epsilon,
-                         step=1/16,
-                         iters=25,
-                         targeted=False,
-                         device=device,
-                         clip_min=0,
-                         clip_max=1,
-                         random_step=random_step,
-                         report_steps=True,
-                         project=False)
-        
+            predicted = model(images).argmax(-1).type(torch.LongTensor).to(device)
+
+        _, steps = pgd_(
+            model,
+            images,
+            predicted,
+            eps=epsilon,
+            step=1 / 16,
+            iters=25,
+            targeted=False,
+            device=device,
+            clip_min=0,
+            clip_max=1,
+            random_step=random_step,
+            report_steps=True,
+            project=False,
+        )
+
         steps = [step.reshape(step.shape[0], -1) for step in steps]
         similarities = torch.zeros(images.shape[0], len(steps) - 1).to(device)
         with torch.no_grad():
@@ -558,4 +635,6 @@ def pgd_colinearity(model, dataset, epsilon, device='cpu', subset_size=5000, bat
                 else:
                     similarities[:, i] = cos(steps[0], steps[i + 1])
         result.append(similarities)
+    if return_dict:
+        return {"PGD collinearity": torch.cat(result, dim=0).detach().cpu().numpy()}
     return torch.cat(result, dim=0)
