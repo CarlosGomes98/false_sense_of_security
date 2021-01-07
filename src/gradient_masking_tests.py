@@ -118,8 +118,8 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon,
-            iters=10,
-            nb_sample=128,
+            iters=2, #10
+            nb_sample=16, #128
             batch_size=8,
             device=device,
             subset_size=2, #500
@@ -133,8 +133,8 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon / 2,
-            iters=10,
-            nb_sample=128,
+            iters=2,
+            nb_sample=16,
             batch_size=8,
             device=device,
             subset_size=2, #500
@@ -581,12 +581,13 @@ def multi_scale_fgsm(fmodel, images, labels, epsilon=0.03):
 def pgd_collinearity(
     model,
     dataset,
-    epsilon,
+    epsilon=0.03,
     device="cpu",
     subset_size=5000,
     batch_size=128,
     random_step=False,
     sequential=False,
+    return_dict=False
 ):
     """
     Compute a measure of the collinearity of pgd steps.

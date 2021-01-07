@@ -48,7 +48,7 @@ def generate_results(models, metrics, dir, device="cpu"):
             results_dict = {"Model": model_name}
             for metric_name in tqdm(metrics):
                 res = metrics[metric_name](
-                    model, dataset, return_dict=True, subset_size=2, batch_size=batch_size
+                    model, dataset, return_dict=True, subset_size=2, batch_size=batch_size, device=device
                 )
                 for r in res:
                     results_dict[r] = res[r]
@@ -194,4 +194,4 @@ if __name__ == "__main__":
         models = all_models
     else:
         models = {args.model: all_models[args.model]}
-    generate_results(models, metrics, args.dir, device=args.device)
+    generate_results(models, metrics, args.dir, device=device)
