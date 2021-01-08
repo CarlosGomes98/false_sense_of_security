@@ -61,16 +61,16 @@ def generate_results(models, metrics, dir, device="cpu"):
 if __name__ == "__main__":
     model_names = [
         "Normal",
-        "Step ll eps: 0.06",
-        "Step ll eps: 0.03",
+        "Step-ll eps: 0.06",
+        "Step-ll eps: 0.03",
         "FGSM eps: 0.06",
-        "Fgsm eps: 0.03 (catastrophic overfitting)",
+        "FGSM eps: 0.03 (catastrophic overfitting)",
         "FGSM eps: 0.03",
         "PGD eps: 0.06",
         "PGD eps: 0.03",
-        "Jacobian Regularization 0.1",
-        "Jacobian Regularization 0.2",
-        "Jacobian Regularization 0.5",
+        "Jacobian Regularization 0.01",
+        "Jacobian Regularization 0.02",
+        "Jacobian Regularization 0.05",
         "CURE",
     ]
     all_metrics = {
