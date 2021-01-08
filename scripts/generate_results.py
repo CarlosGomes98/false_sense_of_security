@@ -29,7 +29,6 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
     # setup
     device = torch.device(device)
     batch_size = 128
-    # remove the normalize
     transform = transform = transforms.Compose([transforms.ToTensor()])
 
     train_dataset = datasets.CIFAR10(
@@ -47,7 +46,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
             results_dict = {"Model": model_name}
             for metric_name, metric in tqdm(metrics.items()):
                 res = metric(
-                    model, dataset, return_dict=True, batch_size=batch_size, device=device
+                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=2
                 )
                 results_dict[metric_name] = res
             results.append(results_dict)
@@ -58,31 +57,31 @@ def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
     # benchmarks and model name ignored here
     # also flatten out results
 
-    metrics_dataframes = {metric_name: None for metric_name in metrics if metric not in ['Model', 'benchmarks']}
+    metrics_dataframes = {metric_name: None for metric_name in metrics if metric_name != 'Model'}
     aggregated_table = []
     for result in results:
         aggregated = {'Model': result['Model']}
-        for metric_group, metric in result:
+        for metric_group, metric in result.items():
             if metric_group == 'Model':
                 continue
             # dont save numpy arrays to pd dataframe. put in dif file.
             long_form_metric_group = {}
             for name, res in metric.items():
                 if isinstance(res, np.ndarray):
-                    aggregated_table[name] = res.mean()
+                    aggregated[name] = res.mean()
                     long_form_metric_group[name] = res
                 else:
-                    aggregated_table[name] = res
+                    aggregated[name] = res
 
-            if len(long_form_metric_group != 0 and save_raw_data):
+            if len(long_form_metric_group) != 0 and save_raw_data:
                 metric_df = pd.DataFrame(data=long_form_metric_group)
                 metric_df['Model'] = aggregated['Model']
-                if metrics_dataframes[metric] is None:
-                    metrics_dataframes[metric] = metric_df
+                if metrics_dataframes[metric_group] is None:
+                    metrics_dataframes[metric_group] = metric_df
                 else:
-                    metrics_dataframes[metric] = pd.concat([metrics_dataframes[metric], metric_df])
+                    metrics_dataframes[metric_group] = pd.concat([metrics_dataframes[metric_group], metric_df])
         
-        aggregated_table.append[aggregated]
+        aggregated_table.append(aggregated)
     
     aggregated_table = pd.DataFrame(data=aggregated_table)
     aggregated_table.set_index('Model')
@@ -90,7 +89,8 @@ def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
 
     if save_raw_data:
         for metric_name, df in metrics_dataframes.items():
-            df.to_csv(os.path.join(dir, dataset + '_' + metric_name + '.csv'))
+            df.to_csv(os.path.join(dir, dataset_name + '_' + metric_name + '.csv'))
+
 if __name__ == "__main__":
     model_names = [
         "Normal",
