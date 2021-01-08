@@ -36,9 +36,9 @@ class CIFAR_Res_Net(ResNet):
     """
     ResNet 18 from robustbench zoo extended with a normalization layer at the beggining.
     """
-    def __init__(self):
-        super(CIFAR_Res_Net, self).__init__(BasicBlock, [2, 2, 2, 2])
-        self.norm = Normalization([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+    def __init__(self, normalization_mean=[0.5, 0.5, 0.5], normalization_std=[0.5, 0.5, 0.5], layers=[2, 2, 2, 2]):
+        super(CIFAR_Res_Net, self).__init__(BasicBlock, layers)
+        self.norm = Normalization(normalization_mean, normalization_std)
 
 
     def forward(self, x):
