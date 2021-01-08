@@ -376,7 +376,7 @@ def linearization_error(
             else:
                 mean_errors.append(torch.cat(errors).mean().item())
 
-        epsilon_errors["Linearization Error eps: " + str(epsilon)] = mean_errors
+        epsilon_errors["Linearization Error eps: " + str(epsilon)] = np.array(mean_errors)
         # print(no_datapoints_skipped)
 
     return epsilon_errors
