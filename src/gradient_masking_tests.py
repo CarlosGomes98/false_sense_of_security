@@ -637,5 +637,5 @@ def pgd_collinearity(
                     similarities[:, i] = cos(steps[0], steps[i + 1])
         result.append(similarities)
     if return_dict:
-        return {"PGD collinearity": torch.cat(result, dim=0).mean(dim=0).reshape(-1).detach().cpu().numpy()}
+        return {"PGD collinearity": torch.cat(result, dim=0).mean(dim=1).detach().cpu().numpy()}
     return torch.cat(result, dim=0)
