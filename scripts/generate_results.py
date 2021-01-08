@@ -74,6 +74,7 @@ def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
                     aggregated[name] = res
 
             if len(long_form_metric_group) != 0 and save_raw_data:
+                print(long_form_metric_group)
                 metric_df = pd.DataFrame(data=long_form_metric_group)
                 metric_df['Model'] = aggregated['Model']
                 if metrics_dataframes[metric_group] is None:
