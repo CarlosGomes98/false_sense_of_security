@@ -48,14 +48,14 @@ def generate_results(models, metrics, dir, device="cpu"):
             results_dict = {"Model": model_name}
             for metric_name in tqdm(metrics):
                 res = metrics[metric_name](
-                    model, dataset, return_dict=True, subset_size=2, batch_size=batch_size, device=device
+                    model, dataset, return_dict=True, batch_size=batch_size, device=device
                 )
                 for r in res:
                     results_dict[r] = res[r]
             results.append(results_dict)
         results_df = pd.DataFrame(data=results)
         results_df.set_index("Model")
-        results_df.to_csv(os.path.join(dir, dataset_name + "_metrics.csv"))
+        results_df.to_csv(os.path.join(dir, dataset_name + "_metrics.csv"), index=False)
 
 
 if __name__ == "__main__":
@@ -160,14 +160,19 @@ if __name__ == "__main__":
         torch.load("models/step_ll_e8_20e.model", map_location=device)
     )
     # # CIFAR-10  ResNet Model trained through Jacobian regularization ld0.1
-    jac_norm_model = CIFAR_Res_Net().to(device).eval()
-    jac_norm_model.load_state_dict(
-        torch.load("models/grad_reg_ld01_20e.model", map_location=device)
+    jac_regularization_model_001 = CIFAR_Res_Net().to(device).eval()
+    jac_regularization_model_001.load_state_dict(
+        torch.load("models/jac_regularization_ld001_20.model", map_location=device)
     )
     # # CIFAR-10  ResNet Model trained through Jacobian regularization ld0.2
-    jac_norm_model_2 = CIFAR_Res_Net().to(device).eval()
-    jac_norm_model_2.load_state_dict(
-        torch.load("models/grad_reg_ld02_20e.model", map_location=device)
+    jac_regularization_model_002 = CIFAR_Res_Net().to(device).eval()
+    jac_regularization_model_002.load_state_dict(
+        torch.load("models/jac_regularization_ld002_20.model", map_location=device)
+    )
+    # # CIFAR-10  ResNet Model trained through Jacobian regularization ld0.5
+    jac_regularization_model_005 = CIFAR_Res_Net().to(device).eval()
+    jac_regularization_model_005.load_state_dict(
+        torch.load("models/jac_regularization_ld005_20.model", map_location=device)
     )
     ## Pretrained CIFAR-10 RESNET trained using CURE
     cure = CUREResNet18().to(device).eval()
@@ -184,8 +189,9 @@ if __name__ == "__main__":
         fgsm_model_small_2,
         pgd_model_6,
         pgd_model,
-        jac_norm_model,
-        jac_norm_model_2,
+        jac_regularization_model_001,
+        jac_regularization_model_002,
+        jac_regularization_model_005,
         cure,
     ]
 

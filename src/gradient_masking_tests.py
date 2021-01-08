@@ -24,7 +24,7 @@ def run_masking_benchmarks(
     batch_size=128,
     return_dict=False,
     save_fig=None,
-    subset_size=10
+    subset_size=10000
 ):
     """
     This method runs through a checklist of potential indicators of gradient masking, as exposed in 
@@ -118,11 +118,11 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon,
-            iters=2, #10
-            nb_sample=16, #128
+            iters=10, #10
+            nb_sample=128, #128
             batch_size=8,
             device=device,
-            subset_size=2, #500
+            subset_size=500, #500
         )
         * 100
     )
@@ -133,11 +133,11 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon / 2,
-            iters=2,
-            nb_sample=16,
+            iters=10,
+            nb_sample=128,
             batch_size=8,
             device=device,
-            subset_size=2, #500
+            subset_size=500, #500
         )
         * 100
     )
@@ -148,7 +148,7 @@ def run_masking_benchmarks(
     random_acc = np.array(
         [
             get_random_accuracy(
-                model, test_dataset, epsilon=ep, device=device, batch_size=batch_size, subset_size=10
+                model, test_dataset, epsilon=ep, device=device, batch_size=batch_size, subset_size=subset_size
             )
             * 100
             for ep in epsilons
