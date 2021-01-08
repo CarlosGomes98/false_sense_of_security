@@ -35,7 +35,7 @@ def run_masking_benchmarks(
 
     results = {}
     epsilons = [epsilon * i / 100 for i in range(10, 200, 10)]
-    results["Epsilons Range"] = epsilons
+    results["Epsilons Range"] = np.array(epsilons)
     pbar = tqdm(total=6, desc="Description")
 
     pbar.set_description("Computing Accuracy")

@@ -90,6 +90,9 @@ def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
 
     if save_raw_data:
         for metric_name, df in metrics_dataframes.items():
+            print(metric_name, df is None)
+            if df is None: 
+                continue
             df.to_csv(os.path.join(dir, dataset_name + '_' + metric_name + '.csv'))
 
 if __name__ == "__main__":
