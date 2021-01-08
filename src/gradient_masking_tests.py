@@ -118,11 +118,11 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon,
-            iters=10, #10
-            nb_sample=128, #128
+            iters=2, #10
+            nb_sample=16, #128
             batch_size=8,
             device=device,
-            subset_size=500, #500
+            subset_size=10, #500
         )
         * 100
     )
@@ -133,11 +133,11 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon / 2,
-            iters=10,
-            nb_sample=128,
+            iters=2,
+            nb_sample=16,
             batch_size=8,
             device=device,
-            subset_size=500, #500
+            subset_size=10, #500
         )
         * 100
     )

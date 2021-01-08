@@ -25,7 +25,7 @@ from src.gradient_masking_tests import (
 )
 
 
-def generate_results(models, metrics, dir, device="cpu"):
+def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
     # setup
     device = torch.device(device)
     batch_size = 128
@@ -42,22 +42,55 @@ def generate_results(models, metrics, dir, device="cpu"):
     for dataset_name, dataset in tqdm(zip(["Train", "Test"], [train_dataset, test_dataset])):
 
         results = []
-        for model_name in tqdm(models):
-            model = models[model_name]
+        for model_name, model in tqdm(models.items()):
 
             results_dict = {"Model": model_name}
-            for metric_name in tqdm(metrics):
-                res = metrics[metric_name](
+            for metric_name, metric in tqdm(metrics.items()):
+                res = metric(
                     model, dataset, return_dict=True, batch_size=batch_size, device=device
                 )
-                for r in res:
-                    results_dict[r] = res[r]
+                results_dict[metric_name] = res
             results.append(results_dict)
-        results_df = pd.DataFrame(data=results)
-        results_df.set_index("Model")
-        results_df.to_csv(os.path.join(dir, dataset_name + "_metrics.csv"), index=False)
+        save_data_and_overview(results, dir, dataset_name, save_raw_data, list(metrics.keys()))
 
+def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
+    # go through the metrics and save the raw results to a different file, if save_raw_data is True
+    # benchmarks and model name ignored here
+    # also flatten out results
 
+    metrics_dataframes = {metric_name: None for metric_name in metrics if metric not in ['Model', 'benchmarks']}
+    aggregated_table = []
+    for result in results:
+        aggregated = {'Model': result['Model']}
+        for metric_group, metric in result:
+            if metric_group == 'Model':
+                continue
+            # dont save numpy arrays to pd dataframe. put in dif file.
+            long_form_metric_group = {}
+            for name, res in metric.items():
+                if isinstance(res, np.ndarray):
+                    aggregated_table[name] = res.mean()
+                    long_form_metric_group[name] = res
+                else:
+                    aggregated_table[name] = res
+
+            if len(long_form_metric_group != 0 and save_raw_data):
+                metric_df = pd.DataFrame(data=long_form_metric_group)
+                metric_df['Model'] = aggregated['Model']
+                if metrics_dataframes[metric] is None:
+                    metrics_dataframes[metric] = metric_df
+                else:
+                    metrics_dataframes[metric] = pd.concat([metrics_dataframes[metric], metric_df])
+        
+        aggregated_table.append[aggregated]
+    
+    aggregated_table = pd.DataFrame(data=aggregated_table)
+    aggregated_table.set_index('Model')
+    aggregated_table.to_csv(os.path.join(dir, dataset_name + '_aggregated_metrics.csv'), index=False)
+
+    if save_raw_data:
+        for metric_name, df in metrics_dataframes.items():
+            df.to_csv(os.path.join(dir, dataset + '_' + metric_name + '.csv'))
 if __name__ == "__main__":
     model_names = [
         "Normal",
