@@ -46,7 +46,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
             results_dict = {"Model": model_name}
             for metric_name, metric in tqdm(metrics.items()):
                 res = metric(
-                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=2
+                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=10000
                 )
                 results_dict[metric_name] = res
             results.append(results_dict)
@@ -74,7 +74,6 @@ def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
                     aggregated[name] = res
 
             if len(long_form_metric_group) != 0 and save_raw_data:
-                print(long_form_metric_group)
                 metric_df = pd.DataFrame(data=long_form_metric_group)
                 metric_df['Model'] = aggregated['Model']
                 if metrics_dataframes[metric_group] is None:
@@ -90,7 +89,6 @@ def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
 
     if save_raw_data:
         for metric_name, df in metrics_dataframes.items():
-            print(metric_name, df is None)
             if df is None: 
                 continue
             df.to_csv(os.path.join(dir, dataset_name + '_' + metric_name + '.csv'))

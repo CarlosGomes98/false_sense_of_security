@@ -24,7 +24,8 @@ def run_masking_benchmarks(
     batch_size=128,
     return_dict=False,
     save_fig=None,
-    subset_size=10000
+    subset_size=10000,
+    report_results=False
 ):
     """
     This method runs through a checklist of potential indicators of gradient masking, as exposed in 
@@ -118,11 +119,11 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon,
-            iters=2, #10
-            nb_sample=16, #128
+            iters=10, #10
+            nb_sample=128, #128
             batch_size=8,
             device=device,
-            subset_size=10, #500
+            subset_size=500, #500
         )
         * 100
     )
@@ -133,11 +134,11 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon / 2,
-            iters=2,
-            nb_sample=16,
+            iters=10,
+            nb_sample=128,
             batch_size=8,
             device=device,
-            subset_size=10, #500
+            subset_size=500, #500
         )
         * 100
     )
@@ -156,27 +157,33 @@ def run_masking_benchmarks(
     )
     results["Random Accuracy - Range"] = random_acc
     pbar.update(1)
-    print("Model accuracy: {}%".format(acc))
-
+    
     pbar.set_description("Plotting")
-    print("FGSM accuracy - eps = {}: {}%".format(epsilon, fgsm_acc[9]))
-    results["FGSM Accuracy eps: 0.06"] = fgsm_acc[9]
-    print("FGSM accuracy - eps = {}: {}%".format(epsilon / 2, fgsm_acc[4]))
-    results["FGSM Accuracy eps: 0.03"] = fgsm_acc[4]
-    print("PGD accuracy - eps = {}: {}%".format(epsilon, pgd_acc))
-    print("PGD accuracy - eps = {}: {}%".format(epsilon / 2, pgd_acc_small))
-    print("Unbounded PGD model accuracy: {}%".format(pgd_unbounded))
-
-    print("SPSA accuracy - eps = {}: {}%".format(epsilon, spsa_acc))
-    print("SPSA accuracy - eps = {}: {}%".format(epsilon / 2, spsa_acc_small))
     fig, ax = plt.subplots(figsize=(12, 8))
     ax.plot(epsilons, fgsm_acc, label="FGSM Accuracy")
     ax.plot(epsilons, random_acc, label="Random Attack Accuracy")
     ax.set(xlabel="Epsilon", ylabel="Accuracy (%)")
     ax.set_ylim(0, 100)
     ax.legend()
+    if report_results:
+        print("Model accuracy: {}%".format(acc))
+        print("FGSM accuracy - eps = {}: {}%".format(epsilon, fgsm_acc[9]))
+        results["FGSM Accuracy eps: 0.06"] = fgsm_acc[9]
+        print("FGSM accuracy - eps = {}: {}%".format(epsilon / 2, fgsm_acc[4]))
+        results["FGSM Accuracy eps: 0.03"] = fgsm_acc[4]
+        print("PGD accuracy - eps = {}: {}%".format(epsilon, pgd_acc))
+        print("PGD accuracy - eps = {}: {}%".format(epsilon / 2, pgd_acc_small))
+        print("Unbounded PGD model accuracy: {}%".format(pgd_unbounded))
+
+        print("SPSA accuracy - eps = {}: {}%".format(epsilon, spsa_acc))
+        print("SPSA accuracy - eps = {}: {}%".format(epsilon / 2, spsa_acc_small))
+    
     if save_fig is not None:
         fig.savefig(save_fig, dpi=fig.dpi)
+    
+    if report_results:
+        plt.show()
+    
     pbar.update(1)
     pbar.close()
 
