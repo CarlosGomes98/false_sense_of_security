@@ -103,12 +103,11 @@ if __name__ == "__main__":
         "FGSM eps: 0.03",
         "PGD eps: 0.06",
         "PGD eps: 0.03",
-        "Jacobian Regularization 0.01",
-        "Jacobian Regularization 0.02",
         "Jacobian Regularization 0.05",
         "Jacobian Regularization 0.1",
         "Jacobian Regularization 0.5",
         "Jacobian Regularization 1",
+        "STEP",
         "CURE",
     ]
     all_metrics = {
@@ -197,16 +196,7 @@ if __name__ == "__main__":
     step_ll_model_small.load_state_dict(
         torch.load("models/step_ll_e8_20e.model", map_location=device)
     )
-    # # CIFAR-10  ResNet Model trained through Jacobian regularization ld0.1
-    jac_regularization_model_001 = CIFAR_Res_Net().to(device).eval()
-    jac_regularization_model_001.load_state_dict(
-        torch.load("models/jac_regularization_ld001_20.model", map_location=device)
-    )
-    # # CIFAR-10  ResNet Model trained through Jacobian regularization ld0.2
-    jac_regularization_model_002 = CIFAR_Res_Net().to(device).eval()
-    jac_regularization_model_002.load_state_dict(
-        torch.load("models/jac_regularization_ld002_20.model", map_location=device)
-    )
+
     # # CIFAR-10  ResNet Model trained through Jacobian regularization ld0.5
     jac_regularization_model_005 = CIFAR_Res_Net().to(device).eval()
     jac_regularization_model_005.load_state_dict(
@@ -227,6 +217,10 @@ if __name__ == "__main__":
     jac_regularization_model_1.load_state_dict(
         torch.load("models/jac_regularization_ld1_20.model", map_location=device)
     )
+    # Step
+    step = StepResNet18().to(device).eval()
+    step.load_state_dict(
+        torch.load("../models/rn18_std_step_convergence1.pt", map_location=device)['model_state_dict'])
     ## Pretrained CIFAR-10 RESNET trained using CURE
     cure = CUREResNet18().to(device).eval()
     cure[1].load_state_dict(
@@ -248,6 +242,7 @@ if __name__ == "__main__":
         jac_regularization_model_01,
         jac_regularization_model_05,
         jac_regularization_model_1,
+        step,
         cure,
     ]
 
