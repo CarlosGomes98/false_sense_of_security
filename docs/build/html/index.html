@@ -63,37 +63,37 @@ Circumventing Defenses to Adversarial Examples”
 particularly for deeper networks.</p>
 </dd></dl>
 
-<span class="target" id="module-Nets"></span><dl class="py class">
-<dt id="Nets.CIFAR_Net">
-<em class="property">class </em><code class="sig-prename descclassname">Nets.</code><code class="sig-name descname">CIFAR_Net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Nets.CIFAR_Net" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-load_architecture"></span><dl class="py class">
+<dt id="load_architecture.CIFAR_Net">
+<em class="property">class </em><code class="sig-prename descclassname">load_architecture.</code><code class="sig-name descname">CIFAR_Net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_architecture.CIFAR_Net" title="Permalink to this definition">¶</a></dt>
 <dd><p>Very simple Conv Net for CIFAR-10.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="Nets.CIFAR_Res_Net">
-<em class="property">class </em><code class="sig-prename descclassname">Nets.</code><code class="sig-name descname">CIFAR_Res_Net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Nets.CIFAR_Res_Net" title="Permalink to this definition">¶</a></dt>
+<dt id="load_architecture.CIFAR_Res_Net">
+<em class="property">class </em><code class="sig-prename descclassname">load_architecture.</code><code class="sig-name descname">CIFAR_Res_Net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_architecture.CIFAR_Res_Net" title="Permalink to this definition">¶</a></dt>
 <dd><p>ResNet 18 from robustbench zoo extended with a normalization layer at the beggining.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="Nets.CIFAR_Wide_Res_Net">
-<em class="property">class </em><code class="sig-prename descclassname">Nets.</code><code class="sig-name descname">CIFAR_Wide_Res_Net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Nets.CIFAR_Wide_Res_Net" title="Permalink to this definition">¶</a></dt>
+<dt id="load_architecture.CIFAR_Wide_Res_Net">
+<em class="property">class </em><code class="sig-prename descclassname">load_architecture.</code><code class="sig-name descname">CIFAR_Wide_Res_Net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_architecture.CIFAR_Wide_Res_Net" title="Permalink to this definition">¶</a></dt>
 <dd><p>WideResNet-28-10 from robustbench zoo(Carmon2019UnlabeledNet) extended with a normalization layer at the beggining.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="Nets.Gradient_Masked_MNIST">
-<em class="property">class </em><code class="sig-prename descclassname">Nets.</code><code class="sig-name descname">Gradient_Masked_MNIST</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">log_interval</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">test_batch_size</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">binary</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0.5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Nets.Gradient_Masked_MNIST" title="Permalink to this definition">¶</a></dt>
+<dt id="load_architecture.Gradient_Masked_MNIST">
+<em class="property">class </em><code class="sig-prename descclassname">load_architecture.</code><code class="sig-name descname">Gradient_Masked_MNIST</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">log_interval</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">test_batch_size</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">binary</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0.5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_architecture.Gradient_Masked_MNIST" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt id="Nets.MNIST_Net">
-<em class="property">class </em><code class="sig-prename descclassname">Nets.</code><code class="sig-name descname">MNIST_Net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">log_interval</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">test_batch_size</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">oracle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">binary</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Nets.MNIST_Net" title="Permalink to this definition">¶</a></dt>
+<dt id="load_architecture.MNIST_Net">
+<em class="property">class </em><code class="sig-prename descclassname">load_architecture.</code><code class="sig-name descname">MNIST_Net</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">log_interval</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">test_batch_size</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">oracle</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">binary</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_architecture.MNIST_Net" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
-<dt id="Nets.Normalization">
-<em class="property">class </em><code class="sig-prename descclassname">Nets.</code><code class="sig-name descname">Normalization</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em>, <em class="sig-param"><span class="n">mean</span></em>, <em class="sig-param"><span class="n">std</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Nets.Normalization" title="Permalink to this definition">¶</a></dt>
+<dt id="load_architecture.Normalization">
+<em class="property">class </em><code class="sig-prename descclassname">load_architecture.</code><code class="sig-name descname">Normalization</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span></em>, <em class="sig-param"><span class="n">mean</span></em>, <em class="sig-param"><span class="n">std</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_architecture.Normalization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Torch layer that handles normalization of data.</p>
 <p>This normalization class ensures the attacks do not need to know about 
 the preprocessing steps done on the data, and therefore step size can
@@ -101,8 +101,8 @@ remain unchaged.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="Nets.PGD_MNIST">
-<em class="property">class </em><code class="sig-prename descclassname">Nets.</code><code class="sig-name descname">PGD_MNIST</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">log_interval</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">test_batch_size</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0.7</span></em>, <em class="sig-param"><span class="n">iters</span><span class="o">=</span><span class="default_value">7</span></em>, <em class="sig-param"><span class="n">binary</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Nets.PGD_MNIST" title="Permalink to this definition">¶</a></dt>
+<dt id="load_architecture.PGD_MNIST">
+<em class="property">class </em><code class="sig-prename descclassname">load_architecture.</code><code class="sig-name descname">PGD_MNIST</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">log_interval</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">batch_size</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">test_batch_size</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0.7</span></em>, <em class="sig-param"><span class="n">iters</span><span class="o">=</span><span class="default_value">7</span></em>, <em class="sig-param"><span class="n">binary</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_architecture.PGD_MNIST" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <span class="target" id="module-train_model"></span><span class="target" id="module-trainers"></span><dl class="py class">

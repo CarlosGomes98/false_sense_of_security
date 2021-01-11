@@ -21,7 +21,7 @@ Documentation for the Code
 .. automodule:: gradient_masking_tests
    :members:
 
-.. automodule:: Nets
+.. automodule:: load_architecture
    :members:
 
 .. automodule:: train_model

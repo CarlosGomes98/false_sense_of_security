@@ -463,24 +463,24 @@
                    (0,0,0,0,2) body
               MixedStyledText('Reports the accuracy of the mode...')
                 SingleStyledText('Reports the accuracy of the mode...')
-        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc>
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Net:None <desc>
              > (0,0,1,0,2) object description
           StaticGroupedFlowables(style='signatures')
                > (0,0,2,0,3) object signatures
-            Paragraph('class Nets.CIFAR_Net ( device='c...', id='Nets.CIFAR_Net')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:1 <desc_signature>
+            Paragraph('class load_architecture.CIFAR_Net ( device='c...', id='load_architecture.CIFAR_Net')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Net:1 <desc_signature>
                  > (0,0,2,0,5) object signature
                    (0,0,0,0,2) body
-              MixedStyledText('class Nets.CIFAR_Net ( device='c...')
-                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_annotation>
+              MixedStyledText('class load_architecture.CIFAR_Net ( device='c...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Net:None <desc_annotation>
                      > (0,0,3,0,6) object annotation
                   SingleStyledText('class ')
-                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_addname>
+                MixedStyledText('load_architecture.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Net:None <desc_addname>
                      > (0,0,3,0,6) additional name part
-                  SingleStyledText('Nets.')
-                MixedStyledText('CIFAR_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_name>
+                  SingleStyledText('load_architecture.')
+                MixedStyledText('CIFAR_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Net:None <desc_name>
                      > (0,0,3,0,6) object name
                   SingleStyledText('CIFAR_Net')
-                MixedStyledText(' ( device='cpu' ) ')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_parameterlist>
+                MixedStyledText(' ( device='cpu' ) ')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Net:None <desc_parameterlist>
                   MixedStyledText(' ( device='cpu'')
                     SingleStyledText(' ( ', style='parentheses')
                          > (0,0,3,0,6) object parentheses
@@ -496,31 +496,31 @@
                           SingleStyledText(''cpu'')
                   SingleStyledText(' ) ', style='parentheses')
                        > (0,0,3,0,6) object parentheses
-          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:None <desc_content>
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Net:None <desc_content>
                > (0,0,2,0,3) object description content
-            Paragraph('Very simple Conv Net for CIFAR-1...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Net:1 <paragraph>
+            Paragraph('Very simple Conv Net for CIFAR-1...')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Net:1 <paragraph>
                  > (0,0,2,0,5) object description content paragraph
                    (0,0,0,0,2) body
               MixedStyledText('Very simple Conv Net for CIFAR-1...')
                 SingleStyledText('Very simple Conv Net for CIFAR-1...')
-        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc>
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Res_Net:None <desc>
              > (0,0,1,0,2) object description
           StaticGroupedFlowables(style='signatures')
                > (0,0,2,0,3) object signatures
-            Paragraph('class Nets.CIFAR_Res_Net ( devic...', id='Nets.CIFAR_Res_Net')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:1 <desc_signature>
+            Paragraph('class load_architecture.CIFAR_Res_Net ( devic...', id='load_architecture.CIFAR_Res_Net')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Res_Net:1 <desc_signature>
                  > (0,0,2,0,5) object signature
                    (0,0,0,0,2) body
-              MixedStyledText('class Nets.CIFAR_Res_Net ( devic...')
-                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_annotation>
+              MixedStyledText('class load_architecture.CIFAR_Res_Net ( devic...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Res_Net:None <desc_annotation>
                      > (0,0,3,0,6) object annotation
                   SingleStyledText('class ')
-                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_addname>
+                MixedStyledText('load_architecture.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Res_Net:None <desc_addname>
                      > (0,0,3,0,6) additional name part
-                  SingleStyledText('Nets.')
-                MixedStyledText('CIFAR_Res_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_name>
+                  SingleStyledText('load_architecture.')
+                MixedStyledText('CIFAR_Res_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Res_Net:None <desc_name>
                      > (0,0,3,0,6) object name
                   SingleStyledText('CIFAR_Res_Net')
-                MixedStyledText(' ( device ) ')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_parameterlist>
+                MixedStyledText(' ( device ) ')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Res_Net:None <desc_parameterlist>
                   MixedStyledText(' ( device')
                     SingleStyledText(' ( ', style='parentheses')
                          > (0,0,3,0,6) object parentheses
@@ -532,31 +532,31 @@
                           SingleStyledText('device')
                   SingleStyledText(' ) ', style='parentheses')
                        > (0,0,3,0,6) object parentheses
-          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:None <desc_content>
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Res_Net:None <desc_content>
                > (0,0,2,0,3) object description content
-            Paragraph('ResNet 18 from robustbench zoo e...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Res_Net:1 <paragraph>
+            Paragraph('ResNet 18 from robustbench zoo e...')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Res_Net:1 <paragraph>
                  > (0,0,2,0,5) object description content paragraph
                    (0,0,0,0,2) body
               MixedStyledText('ResNet 18 from robustbench zoo e...')
                 SingleStyledText('ResNet 18 from robustbench zoo e...')
-        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc>
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Wide_Res_Net:None <desc>
              > (0,0,1,0,2) object description
           StaticGroupedFlowables(style='signatures')
                > (0,0,2,0,3) object signatures
-            Paragraph('class Nets.CIFAR_Wide_Res_Net ( ...', id='Nets.CIFAR_Wide_Res_Net')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:1 <desc_signature>
+            Paragraph('class load_architecture.CIFAR_Wide_Res_Net ( ...', id='load_architecture.CIFAR_Wide_Res_Net')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Wide_Res_Net:1 <desc_signature>
                  > (0,0,2,0,5) object signature
                    (0,0,0,0,2) body
-              MixedStyledText('class Nets.CIFAR_Wide_Res_Net ( ...')
-                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_annotation>
+              MixedStyledText('class load_architecture.CIFAR_Wide_Res_Net ( ...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Wide_Res_Net:None <desc_annotation>
                      > (0,0,3,0,6) object annotation
                   SingleStyledText('class ')
-                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_addname>
+                MixedStyledText('load_architecture.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Wide_Res_Net:None <desc_addname>
                      > (0,0,3,0,6) additional name part
-                  SingleStyledText('Nets.')
-                MixedStyledText('CIFAR_Wide_Res_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_name>
+                  SingleStyledText('load_architecture.')
+                MixedStyledText('CIFAR_Wide_Res_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Wide_Res_Net:None <desc_name>
                      > (0,0,3,0,6) object name
                   SingleStyledText('CIFAR_Wide_Res_Net')
-                MixedStyledText(' ( device ) ')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_parameterlist>
+                MixedStyledText(' ( device ) ')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Wide_Res_Net:None <desc_parameterlist>
                   MixedStyledText(' ( device')
                     SingleStyledText(' ( ', style='parentheses')
                          > (0,0,3,0,6) object parentheses
@@ -568,9 +568,9 @@
                           SingleStyledText('device')
                   SingleStyledText(' ) ', style='parentheses')
                        > (0,0,3,0,6) object parentheses
-          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:None <desc_content>
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Wide_Res_Net:None <desc_content>
                > (0,0,2,0,3) object description content
-            Paragraph('WideResNet-28-10 from robustbenc...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.CIFAR_Wide_Res_Net:1 <paragraph>
+            Paragraph('WideResNet-28-10 from robustbenc...')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.CIFAR_Wide_Res_Net:1 <paragraph>
                  > (0,0,2,0,5) object description content paragraph
                    (0,0,0,0,2) body
               MixedStyledText('WideResNet-28-10 from robustbenc...')
@@ -579,20 +579,20 @@
              > (0,0,1,0,2) object description
           StaticGroupedFlowables(style='signatures')
                > (0,0,2,0,3) object signatures
-            Paragraph('class Nets.Gradient_Masked_MNIST...', id='Nets.Gradient_Masked_MNIST')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:1 <desc_signature>
+            Paragraph('class load_architecture.Gradient_Masked_MNIST...', id='load_architecture.Gradient_Masked_MNIST')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Gradient_Masked_MNIST:1 <desc_signature>
                  > (0,0,2,0,5) object signature
                    (0,0,0,0,2) body
-              MixedStyledText('class Nets.Gradient_Masked_MNIST...')
-                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_annotation>
+              MixedStyledText('class load_architecture.Gradient_Masked_MNIST...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Gradient_Masked_MNIST:None <desc_annotation>
                      > (0,0,3,0,6) object annotation
                   SingleStyledText('class ')
-                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_addname>
+                MixedStyledText('load_architecture.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Gradient_Masked_MNIST:None <desc_addname>
                      > (0,0,3,0,6) additional name part
-                  SingleStyledText('Nets.')
-                MixedStyledText('Gradient_Masked_MNIST', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_name>
+                  SingleStyledText('load_architecture.')
+                MixedStyledText('Gradient_Masked_MNIST', style='main object name')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Gradient_Masked_MNIST:None <desc_name>
                      > (0,0,3,0,6) object name
                   SingleStyledText('Gradient_Masked_MNIST')
-                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_parameterlist>
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Gradient_Masked_MNIST:None <desc_parameterlist>
                   MixedStyledText(' ( device='cpu', log_interval=10...')
                     SingleStyledText(' ( ', style='parentheses')
                          > (0,0,3,0,6) object parentheses
@@ -653,26 +653,26 @@
                           SingleStyledText('0.5')
                   SingleStyledText(' ) ', style='parentheses')
                        > (0,0,3,0,6) object parentheses
-          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Gradient_Masked_MNIST:None <desc_content>
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Gradient_Masked_MNIST:None <desc_content>
                > (0,0,2,0,3) object description content
         LabeledFlowable(style='object description')   None:None <desc>
              > (0,0,1,0,2) object description
           StaticGroupedFlowables(style='signatures')
                > (0,0,2,0,3) object signatures
-            Paragraph('class Nets.MNIST_Net ( device='c...', id='Nets.MNIST_Net')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:1 <desc_signature>
+            Paragraph('class load_architecture.MNIST_Net ( device='c...', id='load_architecture.MNIST_Net')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.MNIST_Net:1 <desc_signature>
                  > (0,0,2,0,5) object signature
                    (0,0,0,0,2) body
-              MixedStyledText('class Nets.MNIST_Net ( device='c...')
-                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_annotation>
+              MixedStyledText('class load_architecture.MNIST_Net ( device='c...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.MNIST_Net:None <desc_annotation>
                      > (0,0,3,0,6) object annotation
                   SingleStyledText('class ')
-                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_addname>
+                MixedStyledText('load_architecture.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.MNIST_Net:None <desc_addname>
                      > (0,0,3,0,6) additional name part
-                  SingleStyledText('Nets.')
-                MixedStyledText('MNIST_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_name>
+                  SingleStyledText('load_architecture.')
+                MixedStyledText('MNIST_Net', style='main object name')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.MNIST_Net:None <desc_name>
                      > (0,0,3,0,6) object name
                   SingleStyledText('MNIST_Net')
-                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_parameterlist>
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.MNIST_Net:None <desc_parameterlist>
                   MixedStyledText(' ( device='cpu', log_interval=10...')
                     SingleStyledText(' ( ', style='parentheses')
                          > (0,0,3,0,6) object parentheses
@@ -733,26 +733,26 @@
                           SingleStyledText('False')
                   SingleStyledText(' ) ', style='parentheses')
                        > (0,0,3,0,6) object parentheses
-          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.MNIST_Net:None <desc_content>
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.MNIST_Net:None <desc_content>
                > (0,0,2,0,3) object description content
-        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc>
+        LabeledFlowable(style='object description')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Normalization:None <desc>
              > (0,0,1,0,2) object description
           StaticGroupedFlowables(style='signatures')
                > (0,0,2,0,3) object signatures
-            Paragraph('class Nets.Normalization ( devic...', id='Nets.Normalization')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:1 <desc_signature>
+            Paragraph('class load_architecture.Normalization ( devic...', id='load_architecture.Normalization')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Normalization:1 <desc_signature>
                  > (0,0,2,0,5) object signature
                    (0,0,0,0,2) body
-              MixedStyledText('class Nets.Normalization ( devic...')
-                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_annotation>
+              MixedStyledText('class load_architecture.Normalization ( devic...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Normalization:None <desc_annotation>
                      > (0,0,3,0,6) object annotation
                   SingleStyledText('class ')
-                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_addname>
+                MixedStyledText('load_architecture.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Normalization:None <desc_addname>
                      > (0,0,3,0,6) additional name part
-                  SingleStyledText('Nets.')
-                MixedStyledText('Normalization', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_name>
+                  SingleStyledText('load_architecture.')
+                MixedStyledText('Normalization', style='main object name')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Normalization:None <desc_name>
                      > (0,0,3,0,6) object name
                   SingleStyledText('Normalization')
-                MixedStyledText(' ( device, mean, std ) ')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_parameterlist>
+                MixedStyledText(' ( device, mean, std ) ')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Normalization:None <desc_parameterlist>
                   MixedStyledText(' ( device, mean, std')
                     SingleStyledText(' ( ', style='parentheses')
                          > (0,0,3,0,6) object parentheses
@@ -774,14 +774,14 @@
                           SingleStyledText('std')
                   SingleStyledText(' ) ', style='parentheses')
                        > (0,0,3,0,6) object parentheses
-          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:None <desc_content>
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Normalization:None <desc_content>
                > (0,0,2,0,3) object description content
-            Paragraph('Torch layer that handles normali...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:1 <paragraph>
+            Paragraph('Torch layer that handles normali...')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Normalization:1 <paragraph>
                  > (0,0,2,0,5) object description content paragraph
                    (0,0,0,0,2) body
               MixedStyledText('Torch layer that handles normali...')
                 SingleStyledText('Torch layer that handles normali...')
-            Paragraph('This normalization class ensures...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.Normalization:3 <paragraph>
+            Paragraph('This normalization class ensures...')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.Normalization:3 <paragraph>
                  > (0,0,2,0,5) object description content paragraph
                    (0,0,0,0,2) body
               MixedStyledText('This normalization class ensures...')
@@ -790,20 +790,20 @@
              > (0,0,1,0,2) object description
           StaticGroupedFlowables(style='signatures')
                > (0,0,2,0,3) object signatures
-            Paragraph('class Nets.PGD_MNIST ( device='c...', id='Nets.PGD_MNIST')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:1 <desc_signature>
+            Paragraph('class load_architecture.PGD_MNIST ( device='c...', id='load_architecture.PGD_MNIST')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.PGD_MNIST:1 <desc_signature>
                  > (0,0,2,0,5) object signature
                    (0,0,0,0,2) body
-              MixedStyledText('class Nets.PGD_MNIST ( device='c...')
-                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_annotation>
+              MixedStyledText('class load_architecture.PGD_MNIST ( device='c...')
+                MixedStyledText('class ', style='annotation')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.PGD_MNIST:None <desc_annotation>
                      > (0,0,3,0,6) object annotation
                   SingleStyledText('class ')
-                MixedStyledText('Nets.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_addname>
+                MixedStyledText('load_architecture.', style='additional name part')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.PGD_MNIST:None <desc_addname>
                      > (0,0,3,0,6) additional name part
-                  SingleStyledText('Nets.')
-                MixedStyledText('PGD_MNIST', style='main object name')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_name>
+                  SingleStyledText('load_architecture.')
+                MixedStyledText('PGD_MNIST', style='main object name')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.PGD_MNIST:None <desc_name>
                      > (0,0,3,0,6) object name
                   SingleStyledText('PGD_MNIST')
-                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_parameterlist>
+                MixedStyledText(' ( device='cpu', log_interval=10...')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.PGD_MNIST:None <desc_parameterlist>
                   MixedStyledText(' ( device='cpu', log_interval=10...')
                     SingleStyledText(' ( ', style='parentheses')
                          > (0,0,3,0,6) object parentheses
@@ -882,7 +882,7 @@
                           SingleStyledText('False')
                   SingleStyledText(' ) ', style='parentheses')
                        > (0,0,3,0,6) object parentheses
-          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\Nets.py:docstring of Nets.PGD_MNIST:None <desc_content>
+          StaticGroupedFlowables(style='content')   D:\Libraries\Documents\false_sense_of_security\load_architecture.py:docstring of load_architecture.PGD_MNIST:None <desc_content>
                > (0,0,2,0,3) object description content
 #### DownExpandingContainer('footer')
   StaticGroupedFlowables()
@@ -1884,11 +1884,11 @@
              > (0,0,0,0,2) index section label
                (0,0,0,0,1) body
           SingleStyledText('n')
-        IndexEntry('Nets, 3')
+        IndexEntry('load_architecture, 3')
              > (0,0,0,1,2) level 1 index entry
                (0,0,0,0,1) body
-          MixedStyledText('Nets, 3')
-            SingleStyledText('Nets', style='domain')
+          MixedStyledText('load_architecture, 3')
+            SingleStyledText('load_architecture', style='domain')
                  > (0,0,1,0,3) domain index entry name
             SingleStyledText(', ')
             Reference('3')
@@ -2006,20 +2006,20 @@
              > (0,0,0,0,2) index section label
                (0,0,0,0,1) body
           SingleStyledText('C')
-        IndexEntry('CIFAR_Net (class in Nets), 3')
+        IndexEntry('CIFAR_Net (class in load_architecture), 3')
              > (0,0,0,1,2) level 1 index entry
                (0,0,0,0,1) body
-          MixedStyledText('CIFAR_Net (class in Nets), 3')
-            SingleStyledText('CIFAR_Net (class in Nets), ')
+          MixedStyledText('CIFAR_Net (class in load_architecture), 3')
+            SingleStyledText('CIFAR_Net (class in load_architecture), ')
             MixedStyledText('3')
               Reference('3')
                    > (0,0,0,1,1) linked reference
                 SingleStyledText('3')
-        IndexEntry('CIFAR_Res_Net (class in Nets), 3')
+        IndexEntry('CIFAR_Res_Net (class in load_architecture), 3')
              > (0,0,0,1,2) level 1 index entry
                (0,0,0,0,1) body
-          MixedStyledText('CIFAR_Res_Net (class in Nets), 3')
-            SingleStyledText('CIFAR_Res_Net (class in Nets), ')
+          MixedStyledText('CIFAR_Res_Net (class in load_architecture), 3')
+            SingleStyledText('CIFAR_Res_Net (class in load_architecture), ')
             MixedStyledText('3')
               Reference('3')
                    > (0,0,0,1,1) linked reference
@@ -2130,11 +2130,11 @@
              > (0,0,0,0,2) index section label
                (0,0,0,0,1) body
           SingleStyledText('M')
-        IndexEntry('MNIST_Net (class in Nets), 3')
+        IndexEntry('MNIST_Net (class in load_architecture), 3')
              > (0,0,0,1,2) level 1 index entry
                (0,0,0,0,1) body
-          MixedStyledText('MNIST_Net (class in Nets), 3')
-            SingleStyledText('MNIST_Net (class in Nets), ')
+          MixedStyledText('MNIST_Net (class in load_architecture), 3')
+            SingleStyledText('MNIST_Net (class in load_architecture), ')
             MixedStyledText('3')
               Reference('3')
                    > (0,0,0,1,1) linked reference
@@ -2152,11 +2152,11 @@
               Reference('3')
                    > (0,0,0,1,1) linked reference
                 SingleStyledText('3')
-        IndexEntry('Nets, 3')
+        IndexEntry('load_architecture, 3')
              > (0,0,0,1,2) level 2 index entry
                (0,0,0,0,1) body
-          MixedStyledText('Nets, 3')
-            SingleStyledText('Nets, ')
+          MixedStyledText('load_architecture, 3')
+            SingleStyledText('load_architecture, ')
             MixedStyledText('3')
               Reference('3')
                    > (0,0,0,1,1) linked reference
@@ -2198,10 +2198,10 @@
              > (0,0,0,0,2) index section label
                (0,0,0,0,1) body
           SingleStyledText('N')
-        IndexEntry('Nets')
+        IndexEntry('load_architecture')
              > (0,0,0,1,2) level 1 index entry
                (0,0,0,0,1) body
-          SingleStyledText('Nets')
+          SingleStyledText('load_architecture')
         IndexEntry('module, 3')
              > (0,0,0,1,2) level 2 index entry
                (0,0,0,0,1) body
@@ -2211,11 +2211,11 @@
               Reference('3')
                    > (0,0,0,1,1) linked reference
                 SingleStyledText('3')
-        IndexEntry('Normalization (class in Nets), 3')
+        IndexEntry('Normalization (class in load_architecture), 3')
              > (0,0,0,1,2) level 1 index entry
                (0,0,0,0,1) body
-          MixedStyledText('Normalization (class in Nets), 3')
-            SingleStyledText('Normalization (class in Nets), ')
+          MixedStyledText('Normalization (class in load_architecture), 3')
+            SingleStyledText('Normalization (class in load_architecture), ')
             MixedStyledText('3')
               Reference('3')
                    > (0,0,0,1,1) linked reference
@@ -2233,11 +2233,11 @@
               Reference('4')
                    > (0,0,0,1,1) linked reference
                 SingleStyledText('4')
-        IndexEntry('PGD_MNIST (class in Nets), 3')
+        IndexEntry('PGD_MNIST (class in load_architecture), 3')
              > (0,0,0,1,2) level 1 index entry
                (0,0,0,0,1) body
-          MixedStyledText('PGD_MNIST (class in Nets), 3')
-            SingleStyledText('PGD_MNIST (class in Nets), ')
+          MixedStyledText('PGD_MNIST (class in load_architecture), 3')
+            SingleStyledText('PGD_MNIST (class in load_architecture), ')
             MixedStyledText('3')
               Reference('3')
                    > (0,0,0,1,1) linked reference

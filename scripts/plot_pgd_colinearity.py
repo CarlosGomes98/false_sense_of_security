@@ -11,7 +11,7 @@ from foolbox.attacks import LinfPGD, FGSM
 from advertorch.attacks import LinfSPSAAttack
 from src.trainers import Trainer, FGSMTrainer
 from src.utils import adversarial_accuracy, fgsm_, pgd_, plot_along_grad_n
-from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net, CUREResNet18
+from src.load_architecture import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net, CUREResNet18
 from src.gradient_masking_tests import run_masking_benchmarks, get_accuracy, pgd_collinearity
 
 # setup

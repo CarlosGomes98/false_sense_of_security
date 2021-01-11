@@ -13,7 +13,7 @@ from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM, LinfDeepFoolAttack
 from advertorch.attacks import LinfSPSAAttack
 from src.utils import adversarial_accuracy, fgsm_, random_step_, pgd_
-from src.Nets import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
+from src.load_architecture import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
 
 def run_masking_benchmarks(
@@ -42,7 +42,7 @@ def run_masking_benchmarks(
     pbar.set_description("Computing Accuracy")
     acc = (
         get_accuracy(
-            model, test_dataset, epsilon=epsilon, device=device, batch_size=batch_size, subset_size=subset_size
+            model, test_dataset, attack=None, device=device, batch_size=batch_size, subset_size=subset_size
         )
         * 100
     )
