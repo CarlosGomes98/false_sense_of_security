@@ -1,4 +1,7 @@
 .ipynb_checkpoints
+models
 data
 *.egg-info
 __pycache__
+*.csv
+metrics
