@@ -106,6 +106,9 @@ if __name__ == "__main__":
         "Jacobian Regularization 0.01",
         "Jacobian Regularization 0.02",
         "Jacobian Regularization 0.05",
+        "Jacobian Regularization 0.1",
+        "Jacobian Regularization 0.5",
+        "Jacobian Regularization 1",
         "CURE",
     ]
     all_metrics = {
@@ -209,6 +212,21 @@ if __name__ == "__main__":
     jac_regularization_model_005.load_state_dict(
         torch.load("models/jac_regularization_ld005_20.model", map_location=device)
     )
+
+    jac_regularization_model_01 = CIFAR_Res_Net().to(device).eval()
+    jac_regularization_model_01.load_state_dict(
+        torch.load("models/jac_regularization_ld01_20.model", map_location=device)
+    )
+
+    jac_regularization_model_05 = CIFAR_Res_Net().to(device).eval()
+    jac_regularization_model_05.load_state_dict(
+        torch.load("models/jac_regularization_ld05_20.model", map_location=device)
+    )
+    
+    jac_regularization_model_1 = CIFAR_Res_Net().to(device).eval()
+    jac_regularization_model_1.load_state_dict(
+        torch.load("models/jac_regularization_ld1_20.model", map_location=device)
+    )
     ## Pretrained CIFAR-10 RESNET trained using CURE
     cure = CUREResNet18().to(device).eval()
     cure[1].load_state_dict(
@@ -227,6 +245,9 @@ if __name__ == "__main__":
         jac_regularization_model_001,
         jac_regularization_model_002,
         jac_regularization_model_005,
+        jac_regularization_model_01,
+        jac_regularization_model_05,
+        jac_regularization_model_1,
         cure,
     ]
 
