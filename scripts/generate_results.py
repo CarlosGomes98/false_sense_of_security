@@ -28,6 +28,7 @@ from src.gradient_masking_tests import (
 def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
     # setup
     device = torch.device(device)
+    print("Running on {}".format(device))
     batch_size = 128
     transform = transform = transforms.Compose([transforms.ToTensor()])
 
@@ -46,8 +47,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
             results_dict = {"Model": model_name}
             for metric_name, metric in tqdm(metrics.items()):
                 res = metric(
-                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=10000
-                )
+                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=5000)
                 results_dict[metric_name] = res
             results.append(results_dict)
         save_data_and_overview(results, dir, dataset_name, save_raw_data, list(metrics.keys()))
@@ -103,7 +103,6 @@ if __name__ == "__main__":
         "FGSM eps: 0.03",
         "PGD eps: 0.06",
         "PGD eps: 0.03",
-        "Jacobian Regularization 0.05",
         "Jacobian Regularization 0.1",
         "Jacobian Regularization 0.5",
         "Jacobian Regularization 1",
@@ -220,7 +219,7 @@ if __name__ == "__main__":
     # Step
     step = StepResNet18().to(device).eval()
     step.load_state_dict(
-        torch.load("../models/rn18_std_step_convergence1.pt", map_location=device)['model_state_dict'])
+        torch.load("models/rn18_std_step_convergence1.pt", map_location=device)['model_state_dict'])
     ## Pretrained CIFAR-10 RESNET trained using CURE
     cure = CUREResNet18().to(device).eval()
     cure[1].load_state_dict(
@@ -236,9 +235,6 @@ if __name__ == "__main__":
         fgsm_model_small_2,
         pgd_model_6,
         pgd_model,
-        jac_regularization_model_001,
-        jac_regularization_model_002,
-        jac_regularization_model_005,
         jac_regularization_model_01,
         jac_regularization_model_05,
         jac_regularization_model_1,

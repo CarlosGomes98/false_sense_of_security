@@ -249,7 +249,7 @@ def spsa_accuracy(
     model,
     test_dataset,
     eps=0.03,
-    iters=1,
+    iters=10,
     nb_sample=128,
     batch_size=8,
     device="cpu",
@@ -281,7 +281,7 @@ def spsa_accuracy(
     return correct / len(subset_loader.dataset)
 
 
-def gradient_norm(model, dataset, device="cpu", subset_size=5000, return_dict=True, batch_size=128):
+def gradient_norm(model, dataset, device="cpu", subset_size=1000, return_dict=True, batch_size=128):
     """
     Computes the gradient norm w.r.t. the loss at the given points.
     """
@@ -316,9 +316,9 @@ def gradient_norm(model, dataset, device="cpu", subset_size=5000, return_dict=Tr
 def linearization_error(
     model,
     dataset,
-    subset_size=100,
+    subset_size=500,
     batch_size=128,
-    n_perturbations=128 * 10,
+    n_perturbations=128 * 2,
     epsilons=[0.03, 0.06],
     device="cpu",
     loss=False,
@@ -481,7 +481,7 @@ def fgsm_pgd_cos_dif(
     model,
     test_dataset,
     epsilons=[0.03, 0.06],
-    subset_size=5000,
+    subset_size=1000,
     device="cpu",
     batch_size=128,
     n_steps_pgd=10,
@@ -590,7 +590,7 @@ def pgd_collinearity(
     dataset,
     epsilon=0.03,
     device="cpu",
-    subset_size=5000,
+    subset_size=1000,
     batch_size=128,
     random_step=False,
     sequential=False,
