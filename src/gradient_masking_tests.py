@@ -158,14 +158,16 @@ def run_masking_benchmarks(
     results["Random Accuracy - Range"] = random_acc
     pbar.update(1)
     
+    
     pbar.set_description("Plotting")
-    fig, ax = plt.subplots(figsize=(12, 8))
-    ax.plot(epsilons, fgsm_acc, label="FGSM Accuracy")
-    ax.plot(epsilons, random_acc, label="Random Attack Accuracy")
-    ax.set(xlabel="Epsilon", ylabel="Accuracy (%)")
-    ax.set_ylim(0, 100)
-    ax.legend()
     if report_results:
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.plot(epsilons, fgsm_acc, label="FGSM Accuracy")
+        ax.plot(epsilons, random_acc, label="Random Attack Accuracy")
+        ax.set(xlabel="Epsilon", ylabel="Accuracy (%)")
+        ax.set_ylim(0, 100)
+        ax.legend()
+        plt.show()
         print("Model accuracy: {}%".format(acc))
         print("FGSM accuracy - eps = {}: {}%".format(epsilon, fgsm_acc[9]))
         results["FGSM Accuracy eps: 0.06"] = fgsm_acc[9]
@@ -180,10 +182,7 @@ def run_masking_benchmarks(
     
     if save_fig is not None:
         fig.savefig(save_fig, dpi=fig.dpi)
-    
-    if report_results:
-        plt.show()
-    
+       
     pbar.update(1)
     pbar.close()
 
