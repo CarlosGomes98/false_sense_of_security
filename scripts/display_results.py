@@ -12,11 +12,12 @@ def aggregated_metrics(dir, file_name, save_dir):
     aggregated_data = pd.read_csv(os.path.join(dir, file_name), index_col='Model').drop(columns=['Epsilons Range', 'FGSM Accuracy - Range', 'Random Accuracy - Range'])
     # reorder columns so that 0.03 comes before 0.06
     columns = aggregated_data.columns.tolist()
-    columns[1], columns[2], columns[4], columns[5] = columns[2], columns[1], columns[5], columns[4]
+    columns[1], columns[2], columns[3], columns[4], columns[6], columns[7] = columns[2], columns[1], columns[4], columns[3], columns[7], columns[6]
     aggregated_data = aggregated_data[columns]
     # group metrics together
-    aggregated_data.columns=pd.MultiIndex.from_arrays([['Clean Accuracy', 'PGD Accuracy', 'PGD Accuracy', 'PGD Accuracy', 'SPSA Accuracy', 'SPSA Accuracy', 'Gradient Norm', 'FGSM PGD Cosine Similarity', 'FGSM PGD Cosine Similarity', 'Linearization Error', 'Linearization Error', 'PGD Collinearity', 'Gradient Information'],
-                                        ['-', '8/255', '16/255', 'Unbounded', '8/255', '16/255', '-', '8/255', '16/255', '8/255', '16/255', '-', '-']])
+    aggregated_data.columns=pd.MultiIndex.from_arrays([['Clean Accuracy', 'FGSM Accuracy', 'FGSM Accuracy', 'PGD Accuracy', 'PGD Accuracy', 'PGD Accuracy', 'SPSA Accuracy', 'SPSA Accuracy', 'Gradient Norm', 'FGSM PGD Cosine Similarity', 'FGSM PGD Cosine Similarity', 'Linearization Error', 'Linearization Error', 'PGD Collinearity', 'Gradient Information'],
+                                     ['-', '8/255', '16/255', '8/255', '16/255', 'Unbounded', '8/255', '16/255', '-', '8/255', '16/255', '8/255', '16/255', '-', '-']])
+
 
     table = aggregated_data.reset_index().to_latex(index=False)
     with open(os.path.join(save_dir, file_name[:-4] + '_table.tex'), "w") as text_file:
