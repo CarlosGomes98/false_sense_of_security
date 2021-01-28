@@ -22,6 +22,8 @@ NAME_TO_MODEL = {
 '''
 Train a given model architecture with a given robustness strategy
 Can also save the norm of gradients w.r.t. input at each iteration
+
+Example call: python src/train_model.py --strategy pgd --epochs 20 --output_path models/cifar_res_net_pgd_20e_03.model --eps 0.03
 '''
 
 

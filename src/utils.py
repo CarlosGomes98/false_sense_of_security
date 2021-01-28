@@ -193,10 +193,14 @@ def adversarial_accuracy(
     return correct / len(dataset_loader.dataset) * 100
 
 
-# should i take loss w.r.t. target or to currently predicted class? seyed suggested currently predicted i think. im not sure
 def plot_along_grad(
     perturbations, model, datapoint, target, batch_size, device="cpu", axis=None, draw=True
 ):
+
+    """
+    Method that measures the loss when following the gradient direction from a data point at increasing epsilons.
+    Also visualizes it if draw is True.
+    """
     losses = []
     datapoint = datapoint.unsqueeze(0)
     datapoint = datapoint.to(device)
@@ -244,7 +248,11 @@ def find_first_true(vector):
             return i
     
     return -1
+
 def plot_along_grad_n(model, datasets, batch_size, n, device="cpu", draw=100):
+    """
+    Makes use of plot_along_grad for several data points
+    """
     perturbations = torch.arange(0, 0.16, 0.002).to(device)
     fig, ax = plt.subplots(1, len(datasets), figsize=(12, 5))
     for axis, dataset in zip(ax, datasets):
@@ -297,6 +305,9 @@ def plot_along_grad_n(model, datasets, batch_size, n, device="cpu", draw=100):
 def compare_models_on_measure(
     measure_function, models, labels, data_loader, device="cpu", height=2, bins=100, lim=None, **kwargs
 ):
+    """
+    Utility function that compares a metric over several models. Displays a histogram for each model, in a grid.
+    """
     measures = [
         measure_function(model, data_loader, device=device, **kwargs).detach().cpu().numpy()
         for model in models
