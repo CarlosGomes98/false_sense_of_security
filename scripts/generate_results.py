@@ -96,17 +96,17 @@ def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
 if __name__ == "__main__":
     model_names = [
         "Normal",
-        "Step-ll eps: 0.06",
-        "Step-ll eps: 0.03",
-        "FGSM eps: 0.06",
-        "FGSM eps: 0.03 (catastrophic overfitting)",
-        "FGSM eps: 0.03",
-        "PGD eps: 0.06",
-        "PGD eps: 0.03",
+        "Step-ll eps: 8/255",
+        "Step-ll eps: 16/255",
+        "FGSM eps: 8/255",
+        "FGSM eps: 8/255 (catastrophic overfitting)",
+        "FGSM eps: 16/255",
+        "PGD eps: 8/255",
+        "PGD eps: 16/255",
         "Jacobian Regularization 0.1",
         "Jacobian Regularization 0.5",
         "Jacobian Regularization 1",
-        "STEP",
+        "Lipschitz",
         "CURE",
     ]
     all_metrics = {
@@ -228,13 +228,13 @@ if __name__ == "__main__":
 
     models = [
         model,
-        step_ll_model,
         step_ll_model_small,
-        fgsm_model,
-        fgsm_model_small,
+        step_ll_model,
         fgsm_model_small_2,
-        pgd_model_6,
+        fgsm_model_small,
+        fgsm_model,
         pgd_model,
+        pgd_model_6,
         jac_regularization_model_01,
         jac_regularization_model_05,
         jac_regularization_model_1,

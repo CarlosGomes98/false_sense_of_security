@@ -369,7 +369,7 @@ class JacobianRegularizationTrainer(Trainer):
                 gradient = gradient.view(data.shape[0], -1)
                 norms += torch.linalg.norm(gradient, dim=1)**2
             
-            loss = loss + self.cur_lambda * norms.sum().sqrt()
+            loss = loss + self.cur_lambda * norms.sqrt().sum()
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()

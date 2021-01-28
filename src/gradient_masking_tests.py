@@ -311,6 +311,34 @@ def gradient_norm(model, dataset, device="cpu", subset_size=1000, return_dict=Tr
         return {"Gradient Norm": grad_norm.detach().cpu().numpy()}
     return grad_norm
 
+def jacobian_norm(model, dataset, device="cpu", subset_size=1000, return_dict=True, batch_size=128):
+    """
+    Computes the jacobian norm w.r.t. the loss at the given points.
+    """
+
+    subset = torch.utils.data.Subset(
+        dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
+    )
+    subset_loader = torch.utils.data.DataLoader(
+        subset, batch_size=batch_size, shuffle=False, num_workers=2
+    )
+
+    jac_norms = []
+    for (data, target) in subset_loader:
+        data = data.to(device).requires_grad_()
+        output = model(data)
+        norms = torch.zeros(data.shape[0]).to(device)
+        for i in range(10):
+            model.zero_grad()
+            logit = output[:, i]
+            gradient = torch.autograd.grad(outputs=logit, inputs=data, grad_outputs=torch.ones_like(logit), only_inputs=True, create_graph=True)[0]
+            gradient = gradient.view(data.shape[0], -1)
+            norms += torch.linalg.norm(gradient, dim=1)**2
+        jac_norms.append(norms.sqrt())
+    jac_norm = torch.cat(jac_norms)
+    if return_dict:
+        return {"Gradient Norm": jac_norm.detach().cpu().numpy()}
+    return jac_norm
 
 def linearization_error(
     model,
@@ -395,7 +423,7 @@ def gradient_information(
     device="cpu",
     subset_size=1000,
     batch_size=128,
-    grad_collinearity=False,
+    grad_collinearity=True,
     return_dict=False,
 ):
     """
