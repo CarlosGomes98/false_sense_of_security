@@ -11,6 +11,7 @@ import seaborn as sns
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM
 from advertorch.attacks import LinfSPSAAttack
+from robustbench.utils import load_model
 from src.trainers import Trainer, FGSMTrainer
 from src.utils import adversarial_accuracy, fgsm_, pgd_, plot_along_grad_n
 from src.load_architecture import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net, CUREResNet18, StepResNet18
@@ -30,7 +31,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
     device = torch.device(device)
     print("Running on {}".format(device))
     batch_size = 128
-    transform = transform = transforms.Compose([transforms.ToTensor()])
+    transform = transforms.Compose([transforms.ToTensor()])
 
     train_dataset = datasets.CIFAR10(
         root="./data", train=True, download=True, transform=transform
@@ -122,10 +123,10 @@ if __name__ == "__main__":
         description="Run a set of metrics on a set of models"
     )
     parser.add_argument(
-        "--model",
+        "--models",
         default=None,
-        choices=model_names,
-        help="Model to run metrics on. If flag not used will run on all models.",
+        nargs='*',
+        help="Models to run metrics on. If flag not used will run on all models.",
     )
     parser.add_argument(
         "--metric",
@@ -243,8 +244,16 @@ if __name__ == "__main__":
     ]
 
     all_models = dict(zip(model_names, models))
-    if args.model is None:
+    if args.models is None:
         models = all_models
     else:
-        models = {args.model: all_models[args.model]}
+        models = {}
+        for model_name in args.models:
+            if model_name in model_names:
+                models[model_name]: all_models[model_name]}
+            else:
+                try:
+                    models[model_name]: load_model(model_name=model_name, dataset='cifar10', model_dir='models', threat_model='Linf')}
+                except:
+                    raise Exception("Model {} cannot be loaded".format(model_name))
     generate_results(models, metrics, args.dir, device=device)

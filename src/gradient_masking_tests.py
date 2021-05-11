@@ -194,7 +194,7 @@ def get_accuracy(
     model,
     test_dataset,
     attack=None,
-    epsilon=0.03,
+    epsilon=8/256,
     subset_size=10000,
     device="cpu",
     batch_size=128,

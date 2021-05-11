@@ -7,8 +7,8 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 from src.utils import fgsm_, pgd_
-from robustbench.model_zoo.models import Carmon2019UnlabeledNet
-from robustbench.model_zoo.resnet import ResNet, BasicBlock
+from robustbench.model_zoo.cifar10 import Carmon2019UnlabeledNet
+from robustbench.model_zoo.architectures.resnet import ResNet, BasicBlock
 from torch.nn.modules.utils import _pair
 from .Nets.CURE import CUREResNet, CUREBasicBlock
 from .Nets.STEP import resnet as StepResNet

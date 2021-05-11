@@ -9,7 +9,7 @@ from torch.optim.lr_scheduler import StepLR
 import matplotlib.pyplot as plt
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM
-from src.trainers import Trainer, FGSMTrainer, JacobianRegularizationTrainer, CurvatureRegularizationTrainer, GradientRegularizationTrainer, StepllTrainer, PGDTrainer
+from src.trainers import Trainer, FGSMTrainer, JacobianRegularizationTrainer, GradientRegularizationTrainer, StepllTrainer, PGDTrainer
 from src.load_architecture import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 
 # Main file used to instantiate and train models
