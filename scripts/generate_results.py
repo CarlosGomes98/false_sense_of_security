@@ -30,7 +30,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
     # setup
     device = torch.device(device)
     print("Running on {}".format(device))
-    batch_size = 128
+    batch_size = 4 # 128
     transform = transforms.Compose([transforms.ToTensor()])
 
     train_dataset = datasets.CIFAR10(
@@ -48,7 +48,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
             results_dict = {"Model": model_name}
             for metric_name, metric in tqdm(metrics.items()):
                 res = metric(
-                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=5000)
+                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=4)
                 results_dict[metric_name] = res
             results.append(results_dict)
         save_data_and_overview(results, dir, dataset_name, save_raw_data, list(metrics.keys()))
@@ -250,10 +250,10 @@ if __name__ == "__main__":
         models = {}
         for model_name in args.models:
             if model_name in model_names:
-                models[model_name]: all_models[model_name]}
+                models[model_name] = all_models[model_name]
             else:
                 try:
-                    models[model_name]: load_model(model_name=model_name, dataset='cifar10', model_dir='models', threat_model='Linf')}
+                    models[model_name] = load_model(model_name=model_name, dataset='cifar10', model_dir='models', threat_model='Linf')
                 except:
                     raise Exception("Model {} cannot be loaded".format(model_name))
     generate_results(models, metrics, args.dir, device=device)
