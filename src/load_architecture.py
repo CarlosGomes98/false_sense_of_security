@@ -7,7 +7,7 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
 from src.utils import fgsm_, pgd_
-from robustbench.model_zoo.cifar10 import Carmon2019UnlabeledNet
+from robustbench.model_zoo.architectures.wide_resnet import WideResNet
 from robustbench.model_zoo.architectures.resnet import ResNet, BasicBlock
 from torch.nn.modules.utils import _pair
 from .Nets.CURE import CUREResNet, CUREBasicBlock
@@ -47,9 +47,9 @@ class CIFAR_Res_Net(ResNet):
         return super().forward(x)
 
 
-class CIFAR_Wide_Res_Net(Carmon2019UnlabeledNet):
+class CIFAR_Wide_Res_Net(WideResNet):
     """
-    WideResNet-28-10 from robustbench zoo(Carmon2019UnlabeledNet) extended with a normalization layer at the beggining.
+    WideResNet-28-10 from robustbench zoo(WideResNet) extended with a normalization layer at the beggining.
     """
     def __init__(self):
         super(CIFAR_Wide_Res_Net, self).__init__()
