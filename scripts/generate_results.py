@@ -109,6 +109,8 @@ if __name__ == "__main__":
         "Jacobian Regularization 1",
         "Lipschitz",
         "CURE",
+        "Adversarial Interpolation",
+        "Feature Scatter"
     ]
     all_metrics = {
         "benchmarks": run_masking_benchmarks,
@@ -226,6 +228,18 @@ if __name__ == "__main__":
     cure[1].load_state_dict(
         torch.load("models/RN18_CURE.pth", map_location=device)["net"]
     )
+    
+    #advInterp
+    adv_interp_weights = torch.load("models/advInterp", map_location=device)['net']
+    adv_interp_weights_fixed = {key[7:]: val for (key, val) in adv_interp_weights.items()}
+    adv_interp = CIFAR_Wide_Res_Net().eval().to(device)
+    adv_interp.load_state_dict(adv_interp_weights_fixed)
+
+    #featureScatter
+    feature_scatter_weights = torch.load("models/featureScatter", map_location=device)['net']
+    feature_scatter_weights_fixed = {key[17:]: val for (key, val) in feature_scatter_weights.items()}
+    feature_scatter = CIFAR_Wide_Res_Net().eval().to(device)
+    feature_scatter.load_state_dict(feature_scatter_weights_fixed)
 
     models = [
         model,
@@ -241,6 +255,8 @@ if __name__ == "__main__":
         jac_regularization_model_1,
         step,
         cure,
+        adv_interp,
+        feature_scatter
     ]
 
     all_models = dict(zip(model_names, models))
@@ -253,7 +269,7 @@ if __name__ == "__main__":
                 models[model_name] = all_models[model_name]
             else:
                 try:
-                    models[model_name] = load_model(model_name=model_name, dataset='cifar10', model_dir='models', threat_model='Linf')
+                    models[model_name] = load_model(model_name=model_name, dataset='cifar10', model_dir='models', threat_model='Linf').to(device)
                 except:
                     raise Exception("Model {} cannot be loaded".format(model_name))
     generate_results(models, metrics, args.dir, device=device)
