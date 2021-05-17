@@ -44,9 +44,10 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
 
         results = []
         for model_name, model in tqdm(models.items()):
-
-            results_dict = {"Model": model_name}
+            print("\nRunning model {}:".format(model_name))
+            results_dict = {"\tModel": model_name}
             for metric_name, metric in tqdm(metrics.items()):
+                print("\nRunning metric {}".format(metric_name))
                 res = metric(
                     model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=5000)
                 results_dict[metric_name] = res
@@ -136,6 +137,11 @@ if __name__ == "__main__":
         choices=list(all_metrics.keys()),
         help="Metric to execute. If flag not used will execute all metrics",
     )
+    
+    parser.add_argument(
+        "--skip_benchmarks", action="store_true", help="Skip the benchmarks, which take a while"
+    )
+
     parser.add_argument(
         "--plot", action="store_true", help="Also save results in plots and tables"
     )
@@ -155,7 +161,9 @@ if __name__ == "__main__":
 
     os.mkdir(args.dir)
     if args.metric is None:
-        metrics = all_metrics
+        metrics = dict(all_metrics)
+        if args.skip_benchmarks:
+            del metrics["benchmarks"]
     else:
         metrics = {args.metric: all_metrics[args.metric]}
 
