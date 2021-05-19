@@ -45,9 +45,9 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
         results = []
         for model_name, model in tqdm(models.items()):
             print("\nRunning model {}:".format(model_name))
-            results_dict = {"\tModel": model_name}
+            results_dict = {'Model': model_name}
             for metric_name, metric in tqdm(metrics.items()):
-                print("\nRunning metric {}".format(metric_name))
+                print("\n\tRunning metric {}".format(metric_name))
                 res = metric(
                     model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=5000)
                 results_dict[metric_name] = res
