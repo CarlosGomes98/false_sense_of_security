@@ -110,8 +110,8 @@ if __name__ == "__main__":
         "Jacobian Regularization 1",
         "Lipschitz",
         "CURE",
-        "Adversarial Interpolation",
-        "Feature Scatter"
+        "Adversarial_Interpolation",
+        "Feature_Scatter"
     ]
     all_metrics = {
         "benchmarks": run_masking_benchmarks,

@@ -9,7 +9,7 @@ from tqdm import tqdm
 FILE_NAMES = ['_aggregated_metrics.csv', '_benchmarks.csv', '_fgsm_pgd_cos.csv', '_gradient_information.csv', '_gradient_norm.csv', '_linearization_error.csv', '_pgd_collinearity.csv']
 
 def aggregated_metrics(dir, file_name, save_dir):
-    aggregated_data = pd.read_csv(os.path.join(dir, file_name), index_col='Model').drop(columns=['Epsilons Range', 'FGSM Accuracy - Range', 'Random Accuracy - Range'])
+    aggregated_data = pd.read_csv(os.path.join(dir, file_name), index_col='Model').drop(columns=['Epsilons Range', 'FGSM Accuracy - Range', 'Random Accuracy - Range'], errors='ignore')
     # reorder columns so that 0.03 comes before 0.06
     columns = aggregated_data.columns.tolist()
     columns[1], columns[2], columns[3], columns[4], columns[6], columns[7] = columns[2], columns[1], columns[4], columns[3], columns[7], columns[6]
@@ -115,7 +115,7 @@ def pgd_collinearity(dir, file_name, save_dir):
 FUNCTIONS = [aggregated_metrics, benchmarks, fgsm_pgd_cos, gradient_information, gradient_norm, linearization_error, pgd_collinearity]
 
 
-def display_results(dir):
+def display_results(dir, skip_benchmarks=False):
     if os.path.isdir(os.path.join(dir, 'results')):
         raise Exception ("Results already displayed. Remove directory 'results' and run this script again")
     os.mkdir(os.path.join(dir, "results"))
@@ -127,6 +127,9 @@ def display_results(dir):
 
 if __name__ == '__main__':
     arguments = sys.argv
-    if len(arguments) != 2 or not os.path.isdir(sys.argv[1]):
+    if len(arguments) < 2 or not os.path.isdir(sys.argv[1]):
         raise Exception("Provide the directory where the results were generated")
-    display_results(sys.argv[1])
+    if len(arguments) > 2:
+        display_results(sys.argv[1], skip_benchmarks=sys.argv[2].lower()=='true')
+    else:
+        display_results(sys.argv[1])
