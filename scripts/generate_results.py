@@ -40,7 +40,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
         root="./data", train=False, download=True, transform=transform
     )
 
-    for dataset_name, dataset in tqdm(zip(["Train", "Test"], [train_dataset, test_dataset])):
+    for dataset_name, dataset in tqdm(zip(["Test"], [test_dataset])):
 
         results = []
         for model_name, model in tqdm(models.items()):
@@ -156,10 +156,10 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if os.path.isdir(args.dir):
-        raise Exception("Directory already exists")
+    #if os.path.isdir(args.dir):
+    #    raise Exception("Directory already exists")
 
-    os.mkdir(args.dir)
+    #os.mkdir(args.dir)
     if args.metric is None:
         metrics = dict(all_metrics)
         if args.skip_benchmarks:
