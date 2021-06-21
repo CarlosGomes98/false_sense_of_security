@@ -12,6 +12,7 @@ from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM
 from advertorch.attacks import LinfSPSAAttack
 from robustbench.utils import load_model
+import torchvision.models as torchvision_models
 from src.trainers import Trainer, FGSMTrainer
 from src.utils import adversarial_accuracy, fgsm_, pgd_, plot_along_grad_n
 from src.load_architecture import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net, CUREResNet18, StepResNet18
@@ -111,7 +112,8 @@ if __name__ == "__main__":
         "Lipschitz",
         "CURE",
         "Adversarial_Interpolation",
-        "Feature_Scatter"
+        "Feature_Scatter",
+        "Pre_Training"
     ]
     all_metrics = {
         "benchmarks": run_masking_benchmarks,
@@ -170,72 +172,73 @@ if __name__ == "__main__":
     device = torch.device(args.device)
     # # Regular CIFAR-10  ResNet Model
     model = CIFAR_Res_Net().eval().to(device)
-    model.load_state_dict(torch.load("models/normal_20e.model", map_location=device))
+    # model.load_state_dict(torch.load("models/normal_20e.model", map_location=device))
     # CIFAR-10  ResNet Model trained with pgd 03
     pgd_model = CIFAR_Res_Net().to(device).eval()
-    pgd_model.load_state_dict(
-        torch.load("models/pgd_e8_20e.model", map_location=device)
-    )
+    # pgd_model.load_state_dict(
+        # torch.load("models/pgd_e8_20e.model", map_location=device)
+    # )
     # CIFAR-10  ResNet Model trained with pgd 06
     pgd_model_6 = CIFAR_Res_Net().to(device).eval()
-    pgd_model_6.load_state_dict(
-        torch.load("models/pgd_e16_20e.model", map_location=device)
-    )
+    # pgd_model_6.load_state_dict(
+        # torch.load("models/pgd_e16_20e.model", map_location=device)
+    # )
     # CIFAR-10  ResNet Model trained with large FGSM steps
     fgsm_model = CIFAR_Res_Net().to(device).eval()
-    fgsm_model.load_state_dict(
-        torch.load("models/fgsm_e16_20e.model", map_location=device)
-    )
+    # fgsm_model.load_state_dict(
+    #     torch.load("models/fgsm_e16_20e.model", map_location=device)
+    # )
     # # # # CIFAR-10  ResNet Model trained with small FGSM steps (grad mask)
     fgsm_model_small = CIFAR_Res_Net().to(device).eval()
-    fgsm_model_small.load_state_dict(
-        torch.load("models/fgsm_e8_20e.model", map_location=device)
-    )
+    # fgsm_model_small.load_state_dict(
+    #     torch.load("models/fgsm_e8_20e.model", map_location=device)
+    # )
     # # # # CIFAR-10  ResNet Model trained with small FGSM steps (no grad mask)
     fgsm_model_small_2 = CIFAR_Res_Net().to(device).eval()
-    fgsm_model_small_2.load_state_dict(
-        torch.load("models/fgsm_e8_20e_2.model", map_location=device)
-    )
+    # fgsm_model_small_2.load_state_dict(
+    #     torch.load("models/fgsm_e8_20e_2.model", map_location=device)
+    # )
     # # # CIFAR-10  ResNet Model trained with large Step-ll steps
     step_ll_model = CIFAR_Res_Net().to(device).eval()
-    step_ll_model.load_state_dict(
-        torch.load("models/step_ll_e16_20e.model", map_location=device)
-    )
+    # step_ll_model.load_state_dict(
+    #     torch.load("models/step_ll_e16_20e.model", map_location=device)
+    # )
     # # # CIFAR-10  ResNet Model trained with small Step-ll steps
     step_ll_model_small = CIFAR_Res_Net().to(device).eval()
-    step_ll_model_small.load_state_dict(
-        torch.load("models/step_ll_e8_20e.model", map_location=device)
-    )
+    # step_ll_model_small.load_state_dict(
+    #     torch.load("models/step_ll_e8_20e.model", map_location=device)
+    # )
 
     # # CIFAR-10  ResNet Model trained through Jacobian regularization ld0.5
     jac_regularization_model_005 = CIFAR_Res_Net().to(device).eval()
-    jac_regularization_model_005.load_state_dict(
-        torch.load("models/jac_regularization_ld005_20.model", map_location=device)
-    )
+    # jac_regularization_model_005.load_state_dict(
+    #     torch.load("models/jac_regularization_ld005_20.model", map_location=device)
+    # )
 
     jac_regularization_model_01 = CIFAR_Res_Net().to(device).eval()
-    jac_regularization_model_01.load_state_dict(
-        torch.load("models/jac_regularization_ld01_20.model", map_location=device)
-    )
+    # jac_regularization_model_01.load_state_dict(
+    #     torch.load("models/jac_regularization_ld01_20.model", map_location=device)
+    # )
 
     jac_regularization_model_05 = CIFAR_Res_Net().to(device).eval()
-    jac_regularization_model_05.load_state_dict(
-        torch.load("models/jac_regularization_ld05_20.model", map_location=device)
-    )
+    # jac_regularization_model_05.load_state_dict(
+    #     torch.load("models/jac_regularization_ld05_20.model", map_location=device)
+    # )
     
     jac_regularization_model_1 = CIFAR_Res_Net().to(device).eval()
-    jac_regularization_model_1.load_state_dict(
-        torch.load("models/jac_regularization_ld1_20.model", map_location=device)
-    )
+    # jac_regularization_model_1.load_state_dict(
+    #     torch.load("models/jac_regularization_ld1_20.model", map_location=device)
+    # )
     # Step
     step = StepResNet18().to(device).eval()
-    step.load_state_dict(
-        torch.load("models/rn18_std_step_convergence1.pt", map_location=device)['model_state_dict'])
+    # step.load_state_dict(
+    #     torch.load("models/rn18_std_step_convergence1.pt", map_location=device)['model_state_dict'])
+    
     ## Pretrained CIFAR-10 RESNET trained using CURE
     cure = CUREResNet18().to(device).eval()
-    cure[1].load_state_dict(
-        torch.load("models/RN18_CURE.pth", map_location=device)["net"]
-    )
+    # cure[1].load_state_dict(
+    #     torch.load("models/RN18_CURE.pth", map_location=device)["net"]
+    # )
     
     #advInterp
     adv_interp_weights = torch.load("models/advInterp", map_location=device)['net']
@@ -248,6 +251,20 @@ if __name__ == "__main__":
     feature_scatter_weights_fixed = {key[17:]: val for (key, val) in feature_scatter_weights.items()}
     feature_scatter = CIFAR_Wide_Res_Net().eval().to(device)
     feature_scatter.load_state_dict(feature_scatter_weights_fixed)
+
+    # #hendrycks
+    # hendrycks_weights = torch.load("D:\Libraries\Downloads\cifar10wrn_baseline_epoch_4.pt", map_location=device)
+    # hendrycks_weights_fixed = {key.replace("module.", ""): val for (key, val) in hendrycks_weights.items()}
+    # hendrycks_model = CIFAR_Wide_Res_Net().eval().to(device)
+    # hendrycks_model.load_state_dict(hendrycks_weights_fixed)
+
+    full_resnet_weights = torch.load("../models/resnet_full_train.model", map_location=device)['net']
+    full_resnet_weights_fixed = {key.replace("module.", ""): val for (key, val) in full_resnet_weights.items()}
+    full_resnet = CIFAR_Res_Net(normalization_mean=[0.4914, 0.4822, 0.4465], normalization_std=[0.2023, 0.1994, 0.2010]).to(device).eval()
+    full_resnet.load_state_dict(
+        full_resnet_weights_fixed
+    )
+
 
     models = [
         model,

@@ -22,7 +22,7 @@ def aggregated_metrics(dir, file_name, save_dir):
 
     # replace STEP with Lipschitz
     index = list(aggregated_data.index)
-    index[-2] = 'Lipschitz'
+    index[index.index('STEP')] = 'Lipschitz'
     aggregated_data.index = index
 
     table = aggregated_data.reset_index().to_latex(index=False)
