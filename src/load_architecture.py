@@ -51,9 +51,9 @@ class CIFAR_Wide_Res_Net(WideResNet):
     """
     WideResNet-28-10 from robustbench zoo(WideResNet) extended with a normalization layer at the beggining.
     """
-    def __init__(self):
+    def __init__(self, normalization_mean=[0.5, 0.5, 0.5], normalization_std=[0.5, 0.5, 0.5]):
         super(CIFAR_Wide_Res_Net, self).__init__()
-        self.norm = Normalization([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+        self.norm = Normalization(normalization_mean, normalization_std)
 
 
     def forward(self, x):
@@ -93,6 +93,9 @@ class CIFAR_Net(nn.Module):
 
 def CUREResNet18():
     return nn.Sequential(Normalization([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010]), CUREResNet(CUREBasicBlock, [2,2,2,2]))
+
+def CUREWideResNet28():
+    return nn.Sequential(Normalization([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010]), WideResNet(CUREBasicBlock, [2,2,2,2]))
 
 def StepResNet18():
     return nn.Sequential(Normalization([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010]), StepResNet('resnet18'))

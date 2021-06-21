@@ -68,6 +68,8 @@ def run_masking_benchmarks(
     )
     pbar.update(1)
     results["FGSM Accuracy - Range"] = fgsm_acc
+    results["FGSM Accuracy eps: 0.06"] = fgsm_acc[9]
+    results["FGSM Accuracy eps: 0.03"] = fgsm_acc[4]
 
     pbar.set_description("Computing PGD Accuracy")
     pgd_acc = (
@@ -119,8 +121,8 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon,
-            iters=10, #10
-            nb_sample=128, #128
+            iters=15, #10
+            nb_sample=256, #128
             batch_size=8,
             device=device,
             subset_size=500, #500
@@ -134,8 +136,8 @@ def run_masking_benchmarks(
             model,
             test_dataset,
             eps=epsilon / 2,
-            iters=10,
-            nb_sample=128,
+            iters=15,
+            nb_sample=256,
             batch_size=8,
             device=device,
             subset_size=500, #500
@@ -170,9 +172,7 @@ def run_masking_benchmarks(
         plt.show()
         print("Model accuracy: {}%".format(acc))
         print("FGSM accuracy - eps = {}: {}%".format(epsilon, fgsm_acc[9]))
-        results["FGSM Accuracy eps: 0.06"] = fgsm_acc[9]
         print("FGSM accuracy - eps = {}: {}%".format(epsilon / 2, fgsm_acc[4]))
-        results["FGSM Accuracy eps: 0.03"] = fgsm_acc[4]
         print("PGD accuracy - eps = {}: {}%".format(epsilon, pgd_acc))
         print("PGD accuracy - eps = {}: {}%".format(epsilon / 2, pgd_acc_small))
         print("Unbounded PGD model accuracy: {}%".format(pgd_unbounded))
