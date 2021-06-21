@@ -40,7 +40,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
         root="./data", train=False, download=True, transform=transform
     )
 
-    for dataset_name, dataset in tqdm(zip(["Test"], [test_dataset])):
+    for dataset_name, dataset in tqdm(zip(["Train", "Test"], [train_dataset, test_dataset])):
 
         results = []
         for model_name, model in tqdm(models.items()):
@@ -156,10 +156,10 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    #if os.path.isdir(args.dir):
-    #    raise Exception("Directory already exists")
+    if os.path.isdir(args.dir):
+        raise Exception("Directory already exists")
 
-    #os.mkdir(args.dir)
+    os.mkdir(args.dir)
     if args.metric is None:
         metrics = dict(all_metrics)
         if args.skip_benchmarks:
@@ -249,8 +249,15 @@ if __name__ == "__main__":
     feature_scatter = CIFAR_Wide_Res_Net().eval().to(device)
     feature_scatter.load_state_dict(feature_scatter_weights_fixed)
 
+    full_resnet_weights = torch.load("models/full_trained_resnet.model", map_location=device)['net']
+    full_resnet_weights_fixed = {key.replace("module.", ""): val for (key, val) in full_resnet_weights.items()}
+    full_resnet = CIFAR_Res_Net(normalization_mean=[0.4914, 0.4822, 0.4465], normalization_std=[0.2023, 0.1994, 0.2010]).to(device).eval()
+    full_resnet.load_state_dict(
+        full_resnet_weights_fixed
+    )
+    
     models = [
-        model,
+        full_resnet,
         step_ll_model_small,
         step_ll_model,
         fgsm_model_small_2,
