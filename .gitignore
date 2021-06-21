@@ -2,6 +2,7 @@
 models
 data
 *.egg-info
-*__pycache__*
+__pycache__
 *.csv
 metrics
+*.pyc
