@@ -41,8 +41,8 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
         root="./data", train=False, download=True, transform=transform
     )
 
-    train_subset = get_dataset_subset_loader(train_dataset, subset_size, batch_size=200)
-    test_subset = get_dataset_subset_loader(test_dataset, subset_size, batch_size=200)
+    train_subset = get_dataset_subset_loader(train_dataset, subset_size, batch_size=batch_size)
+    test_subset = get_dataset_subset_loader(test_dataset, subset_size, batch_size=batch_size)
     for dataset_name, dataset in tqdm(zip(["Train", "Test"], [train_subset, test_subset])):
 
         results = []
@@ -100,23 +100,24 @@ def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
 
 if __name__ == "__main__":
     model_names = [
-        "Weak_Resnet",
-        "Normal",
-        "Step-ll eps: 8/255",
-        "Step-ll eps: 16/255",
-        "FGSM eps: 8/255",
-        "FGSM eps: 8/255 (catastrophic overfitting)",
-        "FGSM eps: 16/255",
-        "PGD eps: 8/255",
-        "PGD eps: 16/255",
-        "Jacobian Regularization 0.1",
-        "Jacobian Regularization 0.5",
-        "Jacobian Regularization 1",
+        "ResNet-18 20 epochs",
+        "Normal ResNet-18",
+        "Step-ll \epsilon: 8/255",
+        "Step-ll \epsilon: 16/255",
+        "FGSM \epsilon: 8/255",
+        "FGSM \epsilon: 8/255 (CO)",
+        "FGSM \epsilon: 16/255",
+        "PGD \epsilon: 8/255",
+        "PGD \epsilon: 16/255",
+        "Jacobian Regularization \lambda: 0.1",
+        "Jacobian Regularization \lambda: 0.5",
+        "Jacobian Regularization \lambda: 1",
         "Lipschitz",
         "CURE",
-        "Adversarial_Interpolation",
-        "Feature_Scatter"
+        "Adversarial Interpolation",
+        "Feature Scatter"
     ]
+
     all_metrics = {
         "benchmarks": run_masking_benchmarks,
         "gradient_norm": gradient_norm,
