@@ -49,7 +49,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
             for metric_name, metric in tqdm(metrics.items()):
                 print("\n\tRunning metric {}".format(metric_name))
                 res = metric(
-                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=5000)
+                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=200)
                 results_dict[metric_name] = res
             results.append(results_dict)
         save_data_and_overview(results, dir, dataset_name, save_raw_data, list(metrics.keys()))
@@ -97,6 +97,7 @@ def save_data_and_overview(results, dir, dataset_name, save_raw_data, metrics):
 
 if __name__ == "__main__":
     model_names = [
+        "Weak_Resnet",
         "Normal",
         "Step-ll eps: 8/255",
         "Step-ll eps: 16/255",
@@ -131,13 +132,14 @@ if __name__ == "__main__":
         nargs='*',
         help="Models to run metrics on. If flag not used will run on all models.",
     )
+
     parser.add_argument(
         "--metric",
         default=None,
         choices=list(all_metrics.keys()),
         help="Metric to execute. If flag not used will execute all metrics",
     )
-    
+
     parser.add_argument(
         "--skip_benchmarks", action="store_true", help="Skip the benchmarks, which take a while"
     )
@@ -255,8 +257,11 @@ if __name__ == "__main__":
     full_resnet.load_state_dict(
         full_resnet_weights_fixed
     )
+
+    robustbench_names = ["Standard", "Gowal2020Uncovering_28_10_extra", "Wu2020Adversarial_extra", "Carmon2019Unlabeled", "Wang2020Improving", "Zhang2020Geometry", "Wong2020Fast", "Hendrycks2019Using", "Sehwag2020Hydra"]
     
     models = [
+        model,
         full_resnet,
         step_ll_model_small,
         step_ll_model,
@@ -276,6 +281,8 @@ if __name__ == "__main__":
 
     all_models = dict(zip(model_names, models))
     if args.models is None:
+        for model_name in robustbench_names:
+            all_models[model_name] = load_model(model_name=model_name, dataset='cifar10', model_dir='models', threat_model='Linf').to(device)
         models = all_models
     else:
         models = {}

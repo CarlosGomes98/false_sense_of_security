@@ -79,7 +79,7 @@ def run_masking_benchmarks(
             epsilon=epsilon,
             device=device,
             batch_size=batch_size,
-            attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
+            attack=LinfPGD(steps=25, rel_stepsize=1 / 10),
             subset_size=subset_size
         )
         * 100
@@ -93,7 +93,7 @@ def run_masking_benchmarks(
             epsilon=epsilon / 2,
             device=device,
             batch_size=batch_size,
-            attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
+            attack=LinfPGD(steps=25, rel_stepsize=1 / 10),
             subset_size=subset_size
         )
         * 100
@@ -107,7 +107,7 @@ def run_masking_benchmarks(
             epsilon=0.5,
             device=device,
             batch_size=batch_size,
-            attack=LinfPGD(steps=7, rel_stepsize=1 / 4),
+            attack=LinfPGD(steps=25, rel_stepsize=1 / 10),
             subset_size=subset_size
         )
         * 100
@@ -125,7 +125,7 @@ def run_masking_benchmarks(
             nb_sample=256, #128
             batch_size=8,
             device=device,
-            subset_size=500, #500
+            subset_size=200, #500
         )
         * 100
     )
@@ -140,7 +140,7 @@ def run_masking_benchmarks(
             nb_sample=256,
             batch_size=8,
             device=device,
-            subset_size=500, #500
+            subset_size=200, #500
         )
         * 100
     )
@@ -422,7 +422,7 @@ def gradient_information(
     iters=5,
     device="cpu",
     subset_size=1000,
-    batch_size=128,
+    batch_size=64,
     grad_collinearity=True,
     return_dict=False,
 ):
@@ -434,6 +434,8 @@ def gradient_information(
 
     Another approach is to take this same gradient at the datapoint, and check collinearity with the gradient at the boundary.
     """
+    # memory intensive: overwirte batch size to 64
+    batch_size = 64
     fmodel = PyTorchModel(model, bounds=(0, 1))
     attack = LinfDeepFoolAttack(steps=iters)
     subset = torch.utils.data.Subset(
@@ -511,7 +513,7 @@ def fgsm_pgd_cos_dif(
     subset_size=1000,
     device="cpu",
     batch_size=128,
-    n_steps_pgd=10,
+    n_steps_pgd=25,
     return_adjusted_fgsm=False,
     return_dict=False,
 ):
@@ -543,7 +545,7 @@ def fgsm_pgd_cos_dif(
             _, advs_fgsm, success_fgsm = FGSM()(
                 fmodel, images, labels, epsilons=epsilon
             )
-            _, advs_pgd, success_pgd = LinfPGD(steps=n_steps_pgd, rel_stepsize=1 / 4)(
+            _, advs_pgd, success_pgd = LinfPGD(steps=n_steps_pgd, rel_stepsize=1 / 10)(
                 fmodel, images, labels, epsilons=epsilon
             )
             fgsm_perturbation = advs_fgsm - images
@@ -650,8 +652,8 @@ def pgd_collinearity(
             images,
             predicted,
             eps=epsilon,
-            step=1 / 16,
-            iters=25,
+            step= 1 / 16,
+            iters=40,
             targeted=False,
             device=device,
             clip_min=0,
