@@ -19,12 +19,12 @@ from src.load_architecture import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 def run_masking_benchmarks(
     model,
     test_dataset,
-    epsilon=0.06,
+    epsilon=16/255,
     device="cpu",
     batch_size=128,
     return_dict=False,
     save_fig=None,
-    subset_size=10000,
+    subset_size=200,
     report_results=False
 ):
     """
@@ -35,7 +35,7 @@ def run_masking_benchmarks(
     """
 
     results = {}
-    epsilons = [epsilon * i / 100 for i in range(10, 200, 10)]
+    epsilons = [epsilon * i / 100 for i in range(10, 210, 10)]
     results["Epsilons Range"] = np.array(epsilons)
     pbar = tqdm(total=6, desc="Description")
 
@@ -194,10 +194,10 @@ def get_accuracy(
     model,
     test_dataset,
     attack=None,
-    epsilon=8/256,
-    subset_size=10000,
+    epsilon=8/255,
     device="cpu",
     batch_size=128,
+    subset_size=200
 ):
     """
     Reports the accuracy of the model, potentially under some attack (e.g. FGSM, PGD, ...)
@@ -205,13 +205,7 @@ def get_accuracy(
 
     fmodel = PyTorchModel(model, bounds=(0, 1), device=device)
     correct = 0
-    subset = torch.utils.data.Subset(
-        test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist()
-    )
-    subset_loader = torch.utils.data.DataLoader(
-        subset, batch_size=batch_size, shuffle=False, num_workers=2
-    )
-    for images, labels in subset_loader:
+    for images, labels in test_dataset:
         images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
         if attack is None:
             correct += accuracy(fmodel, images, labels) * images.shape[0]
@@ -222,37 +216,31 @@ def get_accuracy(
 
 
 def get_random_accuracy(
-    model, test_dataset, epsilon=0.03, device="cpu", batch_size=128, subset_size=10000
+    model, test_dataset, epsilon=8/255, device="cpu", batch_size=128, subset_size=200
 ):
     """
     Calculate the accuracy of the model when subjected to a random attack.
     """
     correct = 0
-    subset = torch.utils.data.Subset(
-        test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist()
-    )
-    subset_loader = torch.utils.data.DataLoader(
-        subset, batch_size=batch_size, shuffle=False, num_workers=2
-    )
-    for images, labels in subset_loader:
+    for images, labels in test_dataset:
         images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
         adv = random_step_(
             model, images, eps=epsilon, device=device, clip_min=0, clip_max=1
         )
         preds = model(adv).argmax(-1)
         correct += (preds == labels).sum().item()
-    return correct / len(subset_loader.dataset)
+    return correct / subset_size
 
 
 def spsa_accuracy(
     model,
     test_dataset,
-    eps=0.03,
+    eps=8/255,
     iters=10,
     nb_sample=128,
     batch_size=8,
     device="cpu",
-    subset_size=100,
+    subset_size=200
 ):
     """
     Reports the accuracy of the model under the SPSA attack. This method is quite expensive, so a small subset_size is reccomended,
@@ -265,35 +253,23 @@ def spsa_accuracy(
         nb_sample=nb_sample,
         loss_fn=nn.CrossEntropyLoss(reduction="none"),
     )
-    subset = torch.utils.data.Subset(
-        test_dataset, np.random.randint(0, len(test_dataset), size=subset_size).tolist()
-    )
-    subset_loader = torch.utils.data.DataLoader(
-        subset, batch_size=batch_size, shuffle=False, num_workers=2
-    )
+    
     correct = 0
-    for images, labels in subset_loader:
+    for images, labels in test_dataset:
         images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
         adv = attack.perturb(images, labels)
         preds = model(adv).argmax(-1)
         correct += (preds == labels).sum().item()
-    return correct / len(subset_loader.dataset)
+    return correct / subset_size
 
 
-def gradient_norm(model, dataset, device="cpu", subset_size=1000, return_dict=True, batch_size=128):
+def gradient_norm(model, dataset, device="cpu", subset_size=200, return_dict=True, batch_size=128):
     """
     Computes the gradient norm w.r.t. the loss at the given points.
     """
 
-    subset = torch.utils.data.Subset(
-        dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
-    )
-    subset_loader = torch.utils.data.DataLoader(
-        subset, batch_size=batch_size, shuffle=False, num_workers=2
-    )
-
     grad_norms = []
-    for (data, target) in subset_loader:
+    for (data, target) in dataset:
         input_ = data.clone().detach_().to(device)
         input_.requires_grad_()
         target = target.to(device)
@@ -311,20 +287,13 @@ def gradient_norm(model, dataset, device="cpu", subset_size=1000, return_dict=Tr
         return {"Gradient Norm": grad_norm.detach().cpu().numpy()}
     return grad_norm
 
-def jacobian_norm(model, dataset, device="cpu", subset_size=1000, return_dict=True, batch_size=128):
+def jacobian_norm(model, dataset, device="cpu", subset_size=200, return_dict=True, batch_size=128):
     """
     Computes the jacobian norm w.r.t. the loss at the given points.
     """
 
-    subset = torch.utils.data.Subset(
-        dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
-    )
-    subset_loader = torch.utils.data.DataLoader(
-        subset, batch_size=batch_size, shuffle=False, num_workers=2
-    )
-
     jac_norms = []
-    for (data, target) in subset_loader:
+    for (data, target) in dataset:
         data = data.to(device).requires_grad_()
         output = model(data)
         norms = torch.zeros(data.shape[0]).to(device)
@@ -343,10 +312,10 @@ def jacobian_norm(model, dataset, device="cpu", subset_size=1000, return_dict=Tr
 def linearization_error(
     model,
     dataset,
-    subset_size=500,
+    subset_size=200,
     batch_size=128,
     n_perturbations=128 * 2,
-    epsilons=[0.03, 0.06],
+    epsilons=[8/255, 16/255],
     device="cpu",
     loss=False,
     return_dict=False,
@@ -360,12 +329,11 @@ def linearization_error(
     Specifically, we calculate the linearization error for the logit of the target class
     """
     epsilon_errors = {}
-    datapoint_indexes = torch.randint(0, len(dataset), (subset_size,))
     ce = nn.CrossEntropyLoss(reduction="none")
     for epsilon in epsilons:
         mean_errors = []
         no_datapoints_skipped = 0
-        for index in datapoint_indexes:
+        for index in range(subset_size):
             perturbations_skipped = 0
             data = dataset[index]
             model.zero_grad()
@@ -421,7 +389,7 @@ def gradient_information(
     dataset,
     iters=5,
     device="cpu",
-    subset_size=1000,
+    subset_size=200,
     batch_size=64,
     grad_collinearity=True,
     return_dict=False,
@@ -438,14 +406,9 @@ def gradient_information(
     batch_size = 64
     fmodel = PyTorchModel(model, bounds=(0, 1))
     attack = LinfDeepFoolAttack(steps=iters)
-    subset = torch.utils.data.Subset(
-        dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
-    )
-    subset_loader = torch.utils.data.DataLoader(
-        subset, batch_size=batch_size, shuffle=False, num_workers=2
-    )
+   
     grad_information_full = []
-    for data, target in subset_loader:
+    for data, target in dataset:
         data = data.to(device).requires_grad_()
         target = target.to(device)
         logits = model(data)
@@ -509,8 +472,8 @@ def gradient_information(
 def fgsm_pgd_cos_dif(
     model,
     test_dataset,
-    epsilons=[0.03, 0.06],
-    subset_size=1000,
+    epsilons=[8/255, 16/255],
+    subset_size=200,
     device="cpu",
     batch_size=128,
     n_steps_pgd=25,
@@ -533,14 +496,7 @@ def fgsm_pgd_cos_dif(
         successes_pgd = []
         if return_adjusted_fgsm:
             successes_adjusted_fgsm = []
-        subset = torch.utils.data.Subset(
-            test_dataset,
-            np.random.randint(0, len(test_dataset), size=subset_size).tolist(),
-        )
-        subset_loader = torch.utils.data.DataLoader(
-            subset, batch_size=batch_size, shuffle=False, num_workers=2
-        )
-        for images, labels in subset_loader:
+        for images, labels in dataset:
             images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
             _, advs_fgsm, success_fgsm = FGSM()(
                 fmodel, images, labels, epsilons=epsilon
@@ -604,7 +560,7 @@ def fgsm_pgd_cos_dif(
     return results
 
 
-def multi_scale_fgsm(fmodel, images, labels, epsilon=0.03):
+def multi_scale_fgsm(fmodel, images, labels, epsilon=8/255):
     """
     Method that preforms an fgsm attack at a range of epsilons
     """
@@ -617,9 +573,9 @@ def multi_scale_fgsm(fmodel, images, labels, epsilon=0.03):
 def pgd_collinearity(
     model,
     dataset,
-    epsilon=0.03,
+    epsilon=8/255,
     device="cpu",
-    subset_size=1000,
+    subset_size=200,
     batch_size=128,
     random_step=False,
     sequential=False,
@@ -631,16 +587,9 @@ def pgd_collinearity(
     if sequential is true: computes the cosine similarity between subsequent steps
     if false, computes the cosine similarity between every step and the first step
     """
-    subset = torch.utils.data.Subset(
-        dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
-    )
-
-    subset_loader = torch.utils.data.DataLoader(
-        subset, batch_size=batch_size, shuffle=False, num_workers=2
-    )
     cos = nn.CosineSimilarity(dim=1, eps=1e-18)
     result = []
-    for images, labels in subset_loader:
+    for images, labels in dataset:
         images = images.to(device)
         labels = labels.type(torch.LongTensor).to(device)
 

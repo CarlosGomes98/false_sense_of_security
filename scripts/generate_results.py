@@ -13,7 +13,7 @@ from foolbox.attacks import LinfPGD, FGSM
 from advertorch.attacks import LinfSPSAAttack
 from robustbench.utils import load_model
 from src.trainers import Trainer, FGSMTrainer
-from src.utils import adversarial_accuracy, fgsm_, pgd_, plot_along_grad_n
+from src.utils import adversarial_accuracy, fgsm_, pgd_, plot_along_grad_n, get_dataset_subset_loader
 from src.load_architecture import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net, CUREResNet18, StepResNet18
 from src.gradient_masking_tests import (
     run_masking_benchmarks,
@@ -30,7 +30,8 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
     # setup
     device = torch.device(device)
     print("Running on {}".format(device))
-    batch_size = 128
+    batch_size = 64
+    subset_size = 200
     transform = transforms.Compose([transforms.ToTensor()])
 
     train_dataset = datasets.CIFAR10(
@@ -40,7 +41,9 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
         root="./data", train=False, download=True, transform=transform
     )
 
-    for dataset_name, dataset in tqdm(zip(["Train", "Test"], [train_dataset, test_dataset])):
+    train_subset = get_dataset_subset_loader(train_dataset, subset_size, batch_size=200)
+    test_subset = get_dataset_subset_loader(test_dataset, subset_size, batch_size=200)
+    for dataset_name, dataset in tqdm(zip(["Train", "Test"], [train_subset, test_subset])):
 
         results = []
         for model_name, model in tqdm(models.items()):
