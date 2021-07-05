@@ -301,6 +301,14 @@ def plot_along_grad_n(model, datasets, batch_size, n, device="cpu", draw=100):
         print(no_boundary_crossed)
     plt.show()
 
+def get_dataset_subset_loader(dataset, subset_size, batch_size=128):
+    subset = torch.utils.data.Subset(
+        dataset, np.random.randint(0, len(dataset), size=subset_size).tolist()
+    )
+    subset_loader = torch.utils.data.DataLoader(
+        subset, batch_size=batch_size, shuffle=False, num_workers=2
+    )
+    return subset_loader
 
 def compare_models_on_measure(
     measure_function, models, labels, data_loader, device="cpu", height=2, bins=100, lim=None, **kwargs
