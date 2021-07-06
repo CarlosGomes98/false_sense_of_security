@@ -248,7 +248,7 @@ def spsa_accuracy(
     model,
     test_dataset,
     eps=8/255,
-    iters=10,
+    iters=1,
     nb_sample=128,
     batch_size=8,
     device="cpu",
