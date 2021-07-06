@@ -52,7 +52,7 @@ def generate_results(models, metrics, dir, device="cpu", save_raw_data=True):
             for metric_name, metric in tqdm(metrics.items()):
                 print("\n\tRunning metric {}".format(metric_name))
                 res = metric(
-                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=200)
+                    model, dataset, return_dict=True, batch_size=batch_size, device=device, subset_size=200, dir=dir)
                 results_dict[metric_name] = res
             results.append(results_dict)
         save_data_and_overview(results, dir, dataset_name, save_raw_data, list(metrics.keys()))
