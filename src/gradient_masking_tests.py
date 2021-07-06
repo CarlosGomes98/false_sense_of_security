@@ -471,7 +471,7 @@ def gradient_information(
 
 def fgsm_pgd_cos_dif(
     model,
-    test_dataset,
+    dataset,
     epsilons=[8/255, 16/255],
     subset_size=200,
     device="cpu",
