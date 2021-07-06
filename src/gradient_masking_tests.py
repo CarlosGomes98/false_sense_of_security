@@ -351,6 +351,7 @@ def linearization_error(
 
     Specifically, we calculate the linearization error for the logit of the target class
     """
+    dataset = dataset.dataset
     epsilon_errors = {}
     ce = nn.CrossEntropyLoss(reduction="none")
     for epsilon in epsilons:
@@ -426,8 +427,6 @@ def gradient_information(
 
     Another approach is to take this same gradient at the datapoint, and check collinearity with the gradient at the boundary.
     """
-    # memory intensive: overwirte batch size to 64
-    batch_size = 64
     fmodel = PyTorchModel(model, bounds=(0, 1))
     attack = LinfDeepFoolAttack(steps=iters)
    
