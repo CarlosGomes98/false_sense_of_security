@@ -53,13 +53,13 @@ def run_masking_benchmarks(
     pbar.update(1)
 
     pbar.set_description("Computing AutoAttack score")
-    adversary = AutoAttack(model, norm='Linf', eps=8/255, version='standard')
+    adversary = AutoAttack(model, norm='Linf', eps=8/255, version='standard', log_path=os.path.join(dir, "auto_attack_log.txt"))
     images = torch.cat([x for (x, y) in test_dataset], 0)
     labels = torch.cat([y for (x, y) in test_dataset], 0)
 
     with torch.no_grad():
         adv_complete = adversary.run_standard_evaluation(images, labels,
-                    bs=batch_size, log_path=os.path.join(dir, "auto_attack_log.txt"))
+                    bs=batch_size)
 
     pbar.update(1)
     pbar.set_description("Computing FGSM Accuracy")
