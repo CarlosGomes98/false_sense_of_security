@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from foolbox import PyTorchModel, accuracy, samples
 from foolbox.attacks import LinfPGD, FGSM, LinfDeepFoolAttack
 from advertorch.attacks import LinfSPSAAttack
-from src.utils import adversarial_accuracy, fgsm_, random_step_, pgd_
+from src.utils import adversarial_accuracy, fgsm_, random_step_, pgd_, get_dataset_subset_loader
 from src.load_architecture import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
 from autoattack import AutoAttack
 
@@ -259,6 +259,9 @@ def spsa_accuracy(
     Reports the accuracy of the model under the SPSA attack. This method is quite expensive, so a small subset_size is reccomended,
     particularly for deeper networks.
     """
+    # set the batch size to 8
+    dataset = get_dataset_subset_loader(test_dataset, subset_size, batch_size=batch_size)
+
     attack = LinfSPSAAttack(
         model,
         eps,
@@ -268,7 +271,7 @@ def spsa_accuracy(
     )
     
     correct = 0
-    for images, labels in test_dataset:
+    for images, labels in dataset:
         images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
         adv = attack.perturb(images, labels)
         preds = model(adv).argmax(-1)
