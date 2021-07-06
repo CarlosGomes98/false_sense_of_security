@@ -282,7 +282,7 @@ def spsa_accuracy(
         adv = attack.perturb(images, labels)
         preds = model(adv).argmax(-1)
         correct += (preds == labels).sum().item()
-    return correct / subset_size
+    return correct / 100
 
 
 def gradient_norm(model, dataset, device="cpu", subset_size=200, return_dict=True, batch_size=128, dir=None):
