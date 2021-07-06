@@ -259,8 +259,14 @@ def spsa_accuracy(
     Reports the accuracy of the model under the SPSA attack. This method is quite expensive, so a small subset_size is reccomended,
     particularly for deeper networks.
     """
-    # set the batch size to 8
-    dataset = get_dataset_subset_loader(test_dataset, subset_size, batch_size=batch_size)
+    # set the batch size to 8, take only first 100
+    dataset = test_dataset.dataset
+    subset = torch.utils.data.Subset(
+            dataset, np.arange(100)
+    )
+    smaller_batches_loader = torch.utils.data.DataLoader(
+        subset, batch_size=8, shuffle=False, num_workers=2
+    )
 
     attack = LinfSPSAAttack(
         model,
@@ -271,7 +277,7 @@ def spsa_accuracy(
     )
     
     correct = 0
-    for images, labels in dataset:
+    for images, labels in smaller_batches_loader:
         images, labels = images.to(device), labels.type(torch.LongTensor).to(device)
         adv = attack.perturb(images, labels)
         preds = model(adv).argmax(-1)
