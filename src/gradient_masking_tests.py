@@ -1,3 +1,4 @@
+import os
 import argparse
 import math
 from tqdm import tqdm
@@ -14,7 +15,7 @@ from foolbox.attacks import LinfPGD, FGSM, LinfDeepFoolAttack
 from advertorch.attacks import LinfSPSAAttack
 from src.utils import adversarial_accuracy, fgsm_, random_step_, pgd_
 from src.load_architecture import CIFAR_Wide_Res_Net, CIFAR_Res_Net, CIFAR_Net
-
+from autoattack import AutoAttack
 
 def run_masking_benchmarks(
     model,
@@ -25,7 +26,8 @@ def run_masking_benchmarks(
     return_dict=False,
     save_fig=None,
     subset_size=200,
-    report_results=False
+    report_results=False,
+    dir=None
 ):
     """
     This method runs through a checklist of potential indicators of gradient masking, as exposed in 
@@ -37,7 +39,7 @@ def run_masking_benchmarks(
     results = {}
     epsilons = [epsilon * i / 100 for i in range(10, 210, 10)]
     results["Epsilons Range"] = np.array(epsilons)
-    pbar = tqdm(total=6, desc="Description")
+    pbar = tqdm(total=7, desc="Description")
 
     pbar.set_description("Computing Accuracy")
     acc = (
@@ -50,6 +52,16 @@ def run_masking_benchmarks(
     results["Clean Accuracy"] = acc
     pbar.update(1)
 
+    pbar.set_description("Computing AutoAttack score")
+    adversary = AutoAttack(model, norm='Linf', eps=8/255, version='standard')
+    images = torch.cat([x for (x, y) in test_dataset], 0)
+    labels = torch.cat([y for (x, y) in test_dataset], 0)
+
+    with torch.no_grad():
+        adv_complete = adversary.run_standard_evaluation(images, labels,
+                    bs=batch_size, log_path=os.path.join(dir, "auto_attack_log.txt"))
+
+    pbar.update(1)
     pbar.set_description("Computing FGSM Accuracy")
     fgsm_acc = np.array(
         [
@@ -216,7 +228,7 @@ def get_accuracy(
 
 
 def get_random_accuracy(
-    model, test_dataset, epsilon=8/255, device="cpu", batch_size=128, subset_size=200
+    model, test_dataset, epsilon=8/255, device="cpu", batch_size=128, subset_size=200, dir=None
 ):
     """
     Calculate the accuracy of the model when subjected to a random attack.
@@ -240,7 +252,8 @@ def spsa_accuracy(
     nb_sample=128,
     batch_size=8,
     device="cpu",
-    subset_size=200
+    subset_size=200,
+    dir=None
 ):
     """
     Reports the accuracy of the model under the SPSA attack. This method is quite expensive, so a small subset_size is reccomended,
@@ -263,7 +276,7 @@ def spsa_accuracy(
     return correct / subset_size
 
 
-def gradient_norm(model, dataset, device="cpu", subset_size=200, return_dict=True, batch_size=128):
+def gradient_norm(model, dataset, device="cpu", subset_size=200, return_dict=True, batch_size=128, dir=None):
     """
     Computes the gradient norm w.r.t. the loss at the given points.
     """
@@ -287,7 +300,7 @@ def gradient_norm(model, dataset, device="cpu", subset_size=200, return_dict=Tru
         return {"Gradient Norm": grad_norm.detach().cpu().numpy()}
     return grad_norm
 
-def jacobian_norm(model, dataset, device="cpu", subset_size=200, return_dict=True, batch_size=128):
+def jacobian_norm(model, dataset, device="cpu", subset_size=200, return_dict=True, batch_size=128, dir=None):
     """
     Computes the jacobian norm w.r.t. the loss at the given points.
     """
@@ -319,6 +332,7 @@ def linearization_error(
     device="cpu",
     loss=False,
     return_dict=False,
+    dir=None
 ):
     """
     Estimates the 'linearizability' of a model by computing the linearization error over a series of randomly sampled points
@@ -393,6 +407,7 @@ def gradient_information(
     batch_size=64,
     grad_collinearity=True,
     return_dict=False,
+    dir=None
 ):
     """
     Computes the cosine information between the gradient of point at the decision boundary w.r.t. the different in logits and the vector (point at decision boundary - original input point).
@@ -479,6 +494,7 @@ def fgsm_pgd_cos_dif(
     n_steps_pgd=25,
     return_adjusted_fgsm=False,
     return_dict=False,
+    dir=None
 ):
     """
     Method that evaluates how informative the gradients of the network are. Preforms pgd and fgsm and compares the solutions.
@@ -560,7 +576,7 @@ def fgsm_pgd_cos_dif(
     return results
 
 
-def multi_scale_fgsm(fmodel, images, labels, epsilon=8/255):
+def multi_scale_fgsm(fmodel, images, labels, epsilon=8/255, dir=None):
     """
     Method that preforms an fgsm attack at a range of epsilons
     """
@@ -579,7 +595,8 @@ def pgd_collinearity(
     batch_size=128,
     random_step=False,
     sequential=False,
-    return_dict=False
+    return_dict=False,
+    dir=None
 ):
     """
     Compute a measure of the collinearity of pgd steps.
