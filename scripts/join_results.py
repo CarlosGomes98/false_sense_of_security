@@ -1,9 +1,9 @@
 import os
 import pandas as pd
 
-original_dir = 'full_results_really_now'
-papers_dir = 'even_more_papers_full'
-new_dir = 'full_results_really_now_more'
+original_dir = 'metrics_papers'
+papers_dir = 'even_more_papers'
+new_dir = 'metrics_papers_full'
 
 os.mkdir(new_dir)
 for file_name in os.listdir(original_dir):

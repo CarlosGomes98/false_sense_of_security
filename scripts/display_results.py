@@ -22,7 +22,7 @@ def aggregated_metrics(dir, file_name, save_dir):
 
     # replace STEP with Lipschitz
     index = list(aggregated_data.index)
-    index[index.index('STEP')] = 'Lipschitz'
+    # index[index.index('STEP')] = 'Lipschitz'
     aggregated_data.index = index
 
     table = aggregated_data.reset_index().to_latex(index=False)
@@ -37,31 +37,33 @@ def aggregated_metrics(dir, file_name, save_dir):
         text_file.write(table)
     
     metrics_data = aggregated_data[metrics_columns]
-    relative_metrics_data = ((metrics_data / metrics_data.loc['PGD eps: 16/255']) * 100).astype(int)
-    table = metrics_data.reset_index().to_latex(index=False)
-    with open(os.path.join(save_dir, file_name[:-22] + 'metrics_table.tex'), "w") as text_file:
-        text_file.write(table)
+    # relative_metrics_data = ((metrics_data / aggregated_data['PGD Accuracy']['16/255'].to_numpy().reshape(-1, 1)) * 100).astype(int)
+    # table = metrics_data.reset_index().to_latex(index=False)
+    # with open(os.path.join(save_dir, file_name[:-22] + 'metrics_table.tex'), "w") as text_file:
+    #     text_file.write(table)
     
-    table = relative_metrics_data.reset_index().to_latex(index=False)
-    with open(os.path.join(save_dir, file_name[:-22] + 'relative_metrics_table.tex'), "w") as text_file:
-        text_file.write(table)
+    # table = relative_metrics_data.reset_index().to_latex(index=False)
+    # with open(os.path.join(save_dir, file_name[:-22] + 'relative_metrics_table.tex'), "w") as text_file:
+    #     text_file.write(table)
 
 
 def benchmarks(dir, file_name, save_dir):
     benchmarks_data = pd.read_csv(os.path.join(dir, file_name)).drop(columns=['Unnamed: 0'])
     # replace STEP with Lipschitz
-    benchmarks_data.loc[benchmarks_data['Model'] == 'STEP', 'Model'] = 'Lipschitz'
+    # benchmarks_data.loc[benchmarks_data['Model'] == 'STEP', 'Model'] = 'Lipschitz'
 
     g = sns.FacetGrid(benchmarks_data, col="Model", col_wrap=5)
     g.map(sns.lineplot,"Epsilons Range", "FGSM Accuracy - Range", label='FGSM')
     g.map(sns.lineplot,"Epsilons Range", "Random Accuracy - Range", color='red', label='Random')
     g.axes[0].legend()
+    for y_index in range(g.axes.shape[0]):
+        g.axes[y_index].set_ylabel("Accuracy")
     g.savefig(os.path.join(save_dir, file_name[:-4] + "_plot.png"))
 
 def fgsm_pgd_cos(dir, file_name, save_dir):
     fgsm_pgd = pd.read_csv(os.path.join(dir, file_name)).drop(columns=['Unnamed: 0'])
     # replace STEP with Lipschitz
-    fgsm_pgd.loc[fgsm_pgd['Model'] == 'STEP', 'Model'] = 'Lipschitz'
+    # fgsm_pgd.loc[fgsm_pgd['Model'] == 'STEP', 'Model'] = 'Lipschitz'
     fgsm_pgd.columns = ['0.03', '0.06', 'Model']
     long_form_cos_dif_data = pd.melt(fgsm_pgd, id_vars=['Model'], var_name='epsilon')
     fig, ax = plt.subplots(figsize=(20, 12))
@@ -71,7 +73,7 @@ def fgsm_pgd_cos(dir, file_name, save_dir):
 def gradient_information(dir, file_name, save_dir):
     grad_info = pd.read_csv(os.path.join(dir, file_name)).drop(columns=['Unnamed: 0'])
     # replace STEP with Lipschitz
-    grad_info.loc[grad_info['Model'] == 'STEP', 'Model'] = 'Lipschitz'
+    # grad_info.loc[grad_info['Model'] == 'STEP', 'Model'] = 'Lipschitz'
     g = sns.FacetGrid(grad_info, col="Model", col_wrap=5, sharex=False, xlim=(-1, 1), ylim = (0, 500))
     g.map(sns.histplot, "Gradient Information")
     means = grad_info.groupby('Model', sort=False).mean()['Gradient Information'].tolist()
@@ -84,7 +86,7 @@ def gradient_information(dir, file_name, save_dir):
 def gradient_norm(dir, file_name, save_dir):
     grad_norm = pd.read_csv(os.path.join(dir, file_name)).drop(columns=['Unnamed: 0'])
     # replace STEP with Lipschitz
-    grad_norm.loc[grad_norm['Model'] == 'STEP', 'Model'] = 'Lipschitz'
+    # grad_norm.loc[grad_norm['Model'] == 'STEP', 'Model'] = 'Lipschitz'
     g = sns.FacetGrid(grad_norm, col="Model", col_wrap=5, sharex=False, xlim=(10e-11, 10e0))
     g.map(sns.histplot, "Gradient Norm", log_scale=True, binwidth=1.5e-1)
     means = grad_norm.groupby('Model', sort=False).mean()['Gradient Norm'].tolist()
@@ -97,7 +99,7 @@ def gradient_norm(dir, file_name, save_dir):
 def linearization_error(dir, file_name, save_dir):
     lin_error = pd.read_csv(os.path.join(dir, file_name)).drop(columns=['Unnamed: 0'])
     # replace STEP with Lipschitz
-    lin_error.loc[lin_error['Model'] == 'STEP', 'Model'] = 'Lipschitz'
+    # lin_error.loc[lin_error['Model'] == 'STEP', 'Model'] = 'Lipschitz'
     lin_error.columns = ['0.03', '0.06', 'Model']
     long_form_lin_error_data = pd.melt(lin_error, id_vars=['Model'], var_name='epsilon')
     fig, ax = plt.subplots(figsize=(20, 12))
@@ -107,7 +109,7 @@ def linearization_error(dir, file_name, save_dir):
 def pgd_collinearity(dir, file_name, save_dir):
     pgd_col = pd.read_csv(os.path.join(dir, file_name)).drop(columns=['Unnamed: 0'])
     # replace STEP with Lipschitz
-    pgd_col.loc[pgd_col['Model'] == 'STEP', 'Model'] = 'Lipschitz'
+    # pgd_col.loc[pgd_col['Model'] == 'STEP', 'Model'] = 'Lipschitz'
     fig, ax = plt.subplots(figsize=(20, 12))
     sns.barplot(ax=ax, data=pgd_col, y='Model', x='PGD collinearity')
     fig.savefig(os.path.join(save_dir, file_name[:-4] + "_plot.png"), bbox_inches='tight')
